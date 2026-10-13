@@ -1,0 +1,11 @@
+# 本地/私有文件
+.codebuddy/
+local.properties
+*.keystore
+*.jks
+
+# 构建产物
+android/build/
+android/app/build/
+android/.gradle/
+.gradle/

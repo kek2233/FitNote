@@ -1,0 +1,37 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.bodyfat.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.bodyfat.app'
+        minSdk 23
+        targetSdk 34
+        versionCode 2
+        versionName '1.1.0'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('release.keystore')
+            storePassword 'android'
+            keyAlias 'bft'
+            keyPassword 'android'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
