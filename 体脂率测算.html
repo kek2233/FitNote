@@ -458,8 +458,10 @@
   }
 })()
 </script>
-<!-- 本地离线推理引擎（onnxruntime-web 1.17.1 classic，必须从 assets 加载，file:// 下零网络） -->
-<script src="ort.min.js"></script>
+<!-- 本地离线推理引擎（onnxruntime-web 1.17.1 classic）：v1.4.2 起改为按需加载——
+     启动时不再解析 540KB 脚本，首次使用拍照识餐时由 FoodAI.load() 动态注入，
+     加快启动、降低低端机 WebView 渲染进程的内存压力。fetch 垫片已先行就位，
+     动态注入后相对路径的 wasm/onnx 请求仍会走 XHR。 -->
 <script>
 'use strict';
 /* =====================================================================
@@ -993,20 +995,31 @@ var FoodAI = (function () {
   /* 101 类 → [中文名, kcal/100g]；命中后 ensure 自动入库 */
   var ZH = { apple_pie:['苹果派',265], baby_back_ribs:['烤猪肋排',302], baklava:['果仁蜜饼',428], beef_carpaccio:['生牛肉薄片',217], beef_tartare:['鞑靼牛肉',217], beet_salad:['甜菜沙拉',90], beignets:['法式糖糕',380], bibimbap:['韩式拌饭',130], bread_pudding:['面包布丁',220], breakfast_burrito:['早餐卷',206], bruschetta:['意式烤面包',190], caesar_salad:['凯撒沙拉',190], cannoli:['意式奶油卷',300], caprese_salad:['卡布里沙拉',160], carrot_cake:['胡萝卜蛋糕',410], ceviche:['酸橘汁腌鱼',110], cheesecake:['芝士蛋糕',321], cheese_plate:['奶酪拼盘',328], chicken_curry:['咖喱鸡',140], chicken_quesadilla:['墨西哥鸡肉饼',250], chicken_wings:['炸鸡翅',290], chocolate_cake:['巧克力蛋糕',370], chocolate_mousse:['巧克力慕斯',340], churros:['西班牙油条',280], clam_chowder:['蛤蜊浓汤',90], club_sandwich:['总汇三明治',240], crab_cakes:['蟹肉饼',230], creme_brulee:['焦糖布丁',300], croque_madame:['法式火腿蛋三明治',300], cup_cakes:['纸杯蛋糕',360], deviled_eggs:['魔鬼蛋',190], donuts:['甜甜圈',420], dumplings:['饺子(猪肉)',240], edamame:['毛豆',121], eggs_benedict:['班尼迪克蛋',300], escargots:['法式蜗牛',90], falafel:['炸鹰嘴豆丸',333], filet_mignon:['菲力牛排',220], fish_and_chips:['炸鱼薯条',232], foie_gras:['鹅肝',460], french_fries:['炸薯条',312], french_onion_soup:['法式洋葱汤',60], french_toast:['法式吐司',229], fried_calamari:['炸鱿鱼圈',175], fried_rice:['炒饭',163], frozen_yogurt:['冻酸奶',90], garlic_bread:['蒜香面包',350], gnocchi:['意式土豆团子',170], greek_salad:['希腊沙拉',110], grilled_cheese_sandwich:['烤芝士三明治',350], grilled_salmon:['烤三文鱼',200], guacamole:['牛油果酱',150], gyoza:['煎饺',220], hamburger:['汉堡',295], hot_and_sour_soup:['酸辣汤',45], hot_dog:['热狗',247], huevos_rancheros:['墨西哥农民蛋',220], hummus:['鹰嘴豆泥',166], ice_cream:['冰淇淋',127], lasagna:['千层面',135], lobster_bisque:['龙虾浓汤',110], lobster_roll_sandwich:['龙虾卷',260], macaroni_and_cheese:['芝士通心粉',164], macarons:['马卡龙',400], miso_soup:['味噌汤',40], mussels:['青口贝',86], nachos:['玉米片',306], omelette:['煎蛋卷',154], onion_rings:['洋葱圈',411], oysters:['生蚝',73], pad_thai:['泰式炒河粉',190], paella:['西班牙海鲜饭',160], pancakes:['煎饼',227], panna_cotta:['意式奶冻',260], peking_duck:['烤鸭',436], pho:['越南河粉',85], pizza:['披萨',266], pork_chop:['猪排',231], poutine:['肉汁奶酪薯条',350], prime_rib:['上等肋排',280], pulled_pork_sandwich:['手撕猪肉三明治',250], ramen:['日式拉面',130], ravioli:['意式饺子',200], red_velvet_cake:['红丝绒蛋糕',380], risotto:['意式烩饭',145], samosa:['咖喱角',300], sashimi:['生鱼片',130], scallops:['干贝',88], seaweed_salad:['海藻沙拉',65], shrimp_and_grits:['鲜虾玉米粥',160], spaghetti_bolognese:['肉酱意面',160], spaghetti_carbonara:['培根蛋面',190], spring_rolls:['春卷',240], steak:['牛排',271], strawberry_shortcake:['草莓奶油蛋糕',290], sushi:['寿司',130], tacos:['墨西哥塔可',220], takoyaki:['章鱼小丸子',180], tiramisu:['提拉米苏',300], tuna_tartare:['金枪鱼鞑靼',144], waffles:['华夫饼',291] }
   function ready(){ return !!session }
+  /* 按需加载 ort.min.js：启动不解析它，首次识餐才注入 */
+  function ensureOrt(){
+    if (typeof ort !== 'undefined') return Promise.resolve()
+    return new Promise(function (res, rej){
+      var s = document.createElement('script')
+      s.src = 'ort.min.js'
+      s.onload = function (){ res() }
+      s.onerror = function (){ rej(new Error('推理引擎加载失败')) }
+      document.head.appendChild(s)
+    })
+  }
   function load(){
     if (session) return Promise.resolve(session)
     if (loading) return loading
-    /* 单线程执行：无需 SharedArrayBuffer / COOP-COEP，降低兼容性门槛；wasm 与脚本同目录 */
-    try {
-      if (ort.env && ort.env.wasm) {
-        ort.env.wasm.numThreads = 1
-        ort.env.wasm.proxy = false
-        if (!ort.env.wasm.wasmPaths) ort.env.wasm.wasmPaths = './'
-      }
-    } catch (e) {}
-    loading = ort.InferenceSession.create('mobilenet_v2_food101.onnx', { executionProviders: ['wasm'] })
-      .then(function (s){ session = s; return s })
-      .catch(function (e){ loading = null; throw e })
+    loading = ensureOrt().then(function (){
+      /* 单线程执行：无需 SharedArrayBuffer / COOP-COEP，降低兼容性门槛；wasm 与脚本同目录 */
+      try {
+        if (ort.env && ort.env.wasm) {
+          ort.env.wasm.numThreads = 1
+          ort.env.wasm.proxy = false
+          if (!ort.env.wasm.wasmPaths) ort.env.wasm.wasmPaths = './'
+        }
+      } catch (e) {}
+      return ort.InferenceSession.create('mobilenet_v2_food101.onnx', { executionProviders: ['wasm'] })
+    }).then(function (s){ session = s; return s }, function (e){ loading = null; throw e })
     return loading
   }
   /* cover 裁剪居中 + torchvision 归一化（mean/std） */
