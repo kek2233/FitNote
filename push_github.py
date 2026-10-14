@@ -47,7 +47,9 @@ def blob_bytes(blob_sha):
 
 
 def local_head_message():
-    """远端提交信息 = 本地 HEAD 的提交信息（含正文），避免写死过时文案。"""
+    """远端提交信息 = 本地 HEAD 的提交信息（含正文）；可用第 2 个参数覆盖。"""
+    if len(sys.argv) > 2 and sys.argv[2].strip():
+        return sys.argv[2].strip()
     try:
         msg = run("log", "-1", "--pretty=%B").stdout.decode("utf-8").strip()
     except Exception:
@@ -58,7 +60,8 @@ def local_head_message():
 def main():
     token = sys.argv[1].strip() if len(sys.argv) > 1 else os.environ.get("GITHUB_TOKEN", "").strip()
     if not token:
-        print("用法: python3 push_github.py <GITHUB_TOKEN>（或设置环境变量 GITHUB_TOKEN）", file=sys.stderr)
+        print("用法: python3 push_github.py <GITHUB_TOKEN> [自定义提交信息]"
+              "（令牌也可用环境变量 GITHUB_TOKEN）", file=sys.stderr)
         return 2
     headers = {
         "Authorization": "Bearer " + token,
