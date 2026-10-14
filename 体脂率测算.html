@@ -414,6 +414,42 @@
 <!-- SVG 滤镜容器：不能用 display:none（会导致 filter 失效），用 0 尺寸 + absolute -->
 <svg id="lgDefs" width="0" height="0" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
 
+<!-- file:// fetch 垫片：必须早于 ort.min.js 执行。
+     WebView 用 file:// 加载本页面，而 ort-web 内部用 fetch 请求 wasm 与模型，
+     浏览器禁止 fetch("file://...")（"URL scheme file is not supported"）。
+     这里在遇到 file:// 时改走 XMLHttpRequest（file:// 下可用），并补齐
+     application/wasm 的 Content-Type，使 instantiateStreaming 能正常工作。 -->
+<script>
+(function () {
+  var _fetch = (typeof window.fetch === 'function') ? window.fetch.bind(window) : null
+  function mimeFor(u){
+    if (/\.wasm(\?|$)/i.test(u)) return 'application/wasm'
+    if (/\.onnx(\?|$)/i.test(u)) return 'application/octet-stream'
+    return 'application/octet-stream'
+  }
+  function viaXhr(url){
+    return new Promise(function (res, rej){
+      var x = new XMLHttpRequest()
+      x.open('GET', url, true)
+      x.responseType = 'arraybuffer'
+      x.onload = function (){
+        if (x.status === 0 || (x.status >= 200 && x.status < 300)){
+          try { res(new Response(x.response, { status:200, headers:{ 'Content-Type': mimeFor(url) } })) }
+          catch (e) { rej(e) }
+        } else rej(new TypeError('HTTP ' + x.status + ' for ' + url))
+      }
+      x.onerror = function (){ rej(new TypeError('Failed to fetch ' + url)) }
+      try { x.send() } catch (e) { rej(e) }
+    })
+  }
+  window.fetch = function (input, init){
+    var url = (typeof input === 'string') ? input : (input && input.url) || ''
+    if (url.indexOf('file://') === 0) return viaXhr(url)
+    if (_fetch) return _fetch(input, init)
+    return Promise.reject(new TypeError('fetch unavailable'))
+  }
+})()
+</script>
 <!-- 本地离线推理引擎（onnxruntime-web 1.17.1 classic，必须从 assets 加载，file:// 下零网络） -->
 <script src="ort.min.js"></script>
 <script>
@@ -942,7 +978,7 @@ var LocalVision = (function () {
 
 /* ---------------- 本地离线识别：Food-101 MobileNetV2 + onnxruntime-web ----------------
    模型 9.4MB / 输入 224×224 / 输出 101 类 logits（需 softmax）
-   完全离线；WebView 已开启 allowFileAccessFromFileURLs，可从 assets fetch 模型。 */
+   完全离线；App 通过本地 http://127.0.0.1 提供 assets，onnxruntime-web 可同源 fetch wasm/onnx。 */
 var FoodAI = (function () {
   var session = null, loading = null
   var CLASSES = ['apple_pie','baby_back_ribs','baklava','beef_carpaccio','beef_tartare','beet_salad','beignets','bibimbap','bread_pudding','breakfast_burrito','bruschetta','caesar_salad','cannoli','caprese_salad','carrot_cake','ceviche','cheesecake','cheese_plate','chicken_curry','chicken_quesadilla','chicken_wings','chocolate_cake','chocolate_mousse','churros','clam_chowder','club_sandwich','crab_cakes','creme_brulee','croque_madame','cup_cakes','deviled_eggs','donuts','dumplings','edamame','eggs_benedict','escargots','falafel','filet_mignon','fish_and_chips','foie_gras','french_fries','french_onion_soup','french_toast','fried_calamari','fried_rice','frozen_yogurt','garlic_bread','gnocchi','greek_salad','grilled_cheese_sandwich','grilled_salmon','guacamole','gyoza','hamburger','hot_and_sour_soup','hot_dog','huevos_rancheros','hummus','ice_cream','lasagna','lobster_bisque','lobster_roll_sandwich','macaroni_and_cheese','macarons','miso_soup','mussels','nachos','omelette','onion_rings','oysters','pad_thai','paella','pancakes','panna_cotta','peking_duck','pho','pizza','pork_chop','poutine','prime_rib','pulled_pork_sandwich','ramen','ravioli','red_velvet_cake','risotto','samosa','sashimi','scallops','seaweed_salad','shrimp_and_grits','spaghetti_bolognese','spaghetti_carbonara','spring_rolls','steak','strawberry_shortcake','sushi','tacos','takoyaki','tiramisu','tuna_tartare','waffles']
@@ -952,8 +988,14 @@ var FoodAI = (function () {
   function load(){
     if (session) return Promise.resolve(session)
     if (loading) return loading
-    /* 防御性：确保 wasm 与脚本同目录（file:// 与 http 均按页面目录回退） */
-    try { if (ort.env && ort.env.wasm && !ort.env.wasm.wasmPaths) ort.env.wasm.wasmPaths = './' } catch (e) {}
+    /* 单线程执行：无需 SharedArrayBuffer / COOP-COEP，降低兼容性门槛；wasm 与脚本同目录 */
+    try {
+      if (ort.env && ort.env.wasm) {
+        ort.env.wasm.numThreads = 1
+        ort.env.wasm.proxy = false
+        if (!ort.env.wasm.wasmPaths) ort.env.wasm.wasmPaths = './'
+      }
+    } catch (e) {}
     loading = ort.InferenceSession.create('mobilenet_v2_food101.onnx', { executionProviders: ['wasm'] })
       .then(function (s){ session = s; return s })
       .catch(function (e){ loading = null; throw e })

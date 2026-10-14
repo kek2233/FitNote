@@ -24,19 +24,23 @@
 ```
 .
 ├── 体脂率测算.html          # 网页版（单文件，双击即可用；也是 APK 内的页面）
-├── 体脂率测算-1.2.0.apk      # 已签名的安卓安装包（内含离线识别模型）
-├── android/                 # 安卓工程（WebView 壳 + Gradle 标准构建）
+├── 体脂率测算-1.2.1.apk      # 已签名的安卓安装包（内含离线识别模型）
+├── gradle-app/              # 安卓工程（WebView 壳 + 本地 aapt2/d8 构建）
 │   ├── settings.gradle
 │   ├── build.gradle
 │   ├── gradle.properties
 │   └── app/
 │       ├── build.gradle
+│       ├── release.keystore
 │       └── src/main/
 │           ├── AndroidManifest.xml
-│           ├── java/com/bodyfat/app/     # MainActivity（WebView + 原生桥）
+│           ├── java/com/bodyfat/app/     # MainActivity（WebView + 原生桥 + 本地资源服务器）
 │           ├── res/                      # 图标 / 字符串
 │           └── assets/
-│               └── index.html            # 打包进 APK 的页面
+│               ├── index.html            # 打包进 APK 的页面
+│               ├── ort.min.js            # onnxruntime-web 1.17.1（经典版，非多线程）
+│               ├── ort-wasm-simd.wasm    # wasm 运行时
+│               └── mobilenet_v2_food101.onnx  # Food-101 模型
 └── docs/screenshots/        # 界面截图
 ```
 
@@ -45,37 +49,50 @@
 **网页版**：把 `体脂率测算.html` 用浏览器打开即可（手机浏览器同样可用）。
 离线形态识别需要同目录放置 `ort.min.js` / `ort-wasm-simd.wasm` / `mobilenet_v2_food101.onnx`；缺失时会优雅降级为本地颜色识别算法。
 
-**安卓版**：安装 `体脂率测算-1.2.0.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
+**安卓版**：安装 `体脂率测算-1.2.1.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
+
+> **v1.2.1 关键修复**：此前离线识别在 APK 内无法运行——onnxruntime-web 在其 Web Worker 内部用 `fetch()` 加载 wasm/onnx，而 `fetch()` 在 `file://` 协议下被浏览器直接拒绝（"URL scheme file is not supported"），主线程的 XHR 垫片也够不到 Worker 内部。本版本在 App 内启动一个绑定 `127.0.0.1` 的本地 HTTP 服务器来提供 assets，WebView 改为 `http://127.0.0.1:端口/index.html` 加载，同源 `http://` 下 Worker 可正常 `fetch`，离线识别在真机 APK 中即可生效。该服务器仅监听回环地址，不暴露到任何外部网络。
 
 ## 🔨 自行构建 APK
 
-前置：JDK 17+、Android SDK（platform 34 + build-tools 34）。
+前置：JDK 17+、Android SDK（`platforms/android-34` + `build-tools/34.0.0`）。
 
 ```bash
-cd android
-
-# 配置 SDK 路径（二选一）
 export ANDROID_HOME=/path/to/android-sdk
-# 或写入 local.properties: sdk.dir=/path/to/android-sdk
+SDK=$ANDROID_HOME
+BT=$SDK/build-tools/34.0.0
+PLATFORM=$SDK/platforms/android-34/android.jar
+ROOT=gradle-app/app/src/main
+WORK=/tmp/apkbuild
 
-# 首次构建前生成签名文件（仓库不含 keystore，避免私钥泄露）
-keytool -genkeypair -v -keystore app/release.keystore -alias bft \
-  -keyalg RSA -keysize 2048 -validity 10950 \
-  -storepass android -keypass android \
-  -dname "CN=BodyFat, OU=App, O=App, L=CN, ST=CN, C=CN"
-
-# 构建
-gradle assembleRelease
-# 产物：app/build/outputs/apk/release/app-release.apk
+mkdir -p $WORK/classes
+# 1) 资源编译 + 链接（顺便把 assets 打进包）
+$BT/aapt2 compile --dir $ROOT/res -o $WORK/res.zip
+$BT/aapt2 link -o $WORK/base.apk -I $PLATFORM \
+  --manifest $ROOT/AndroidManifest.xml -A $ROOT/assets $WORK/res.zip
+# 2) 编译 Java → dex
+javac --release 8 -classpath $PLATFORM -d $WORK/classes \
+  $ROOT/java/com/bodyfat/app/MainActivity.java \
+  $ROOT/java/com/bodyfat/app/FileProvider.java
+$BT/d8 --release --lib $PLATFORM --output $WORK \
+  $WORK/classes/com/bodyfat/app/MainActivity.class \
+  $WORK/classes/com/bodyfat/app/FileProvider.class
+# 3) 合并 dex + 对齐 + 签名
+cp $WORK/base.apk $WORK/app-dex.apk
+zip -q -j $WORK/app-dex.apk $WORK/classes.dex
+$BT/zipalign -f -p 4 $WORK/app-dex.apk $WORK/app-aligned.apk
+$BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
+  --ks-pass pass:android --key-pass pass:android \
+  --out 体脂率测算-1.2.1.apk $WORK/app-aligned.apk
 ```
 
-### 可选：启用离线食物识别
+### 离线食物识别所需资源
 
-仓库内的 APK 已内置模型。若要从源码构建出同样的离线识别能力，需下载三个文件放到 `android/app/src/main/assets/`：
+仓库内的 APK 已内置模型。若要从源码构建出同样的离线识别能力，需下载三个文件放到 `gradle-app/app/src/main/assets/`：
 
 | 文件 | 大小 | 来源 |
 |---|---|---|
-| `ort.min.js` | 540 KB | [onnxruntime-web **1.17.1**](https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.min.js)（须用此版本：1.19+ 为 ESM/多线程，`file://` 下无法加载） |
+| `ort.min.js` | 540 KB | [onnxruntime-web **1.17.1**](https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.min.js)（经典版，非 ESM/多线程，单线程即可跑） |
 | `ort-wasm-simd.wasm` | 10.1 MB | 同上 CDN，同版本 `dist/` 目录 |
 | `mobilenet_v2_food101.onnx` | 9.4 MB | ONNX Model Zoo 的 Food-101 MobileNetV2（101 类，Apache-2.0） |
 
