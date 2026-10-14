@@ -182,6 +182,18 @@ $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
 所有数据（测算记录、计划、签到、热量账本、自定义食物）保存在设备本地，**不会上传到任何服务器**。
 默认识别流程完全在本机完成；仅当你主动配置 AI 密钥时，图片才会发送给对应的云服务。导出备份通过原生桥写入设备「下载」目录，不经网络。
 
+## 📦 第三方依赖与许可
+
+本项目以 **MIT** 发布；"自研"仅指判定层与算法（体脂测算 / 热量计算 / 计划生成 / 动作判定），底层运行时与视觉模型来自开源上游：
+
+| 组件 | 用途 | 许可 |
+|---|---|---|
+| [onnxruntime-web 1.17.1](https://github.com/microsoft/onnxruntime) | 本地推理运行时 | MIT |
+| [mobilenet_v2_food101.onnx](https://github.com/onnx/models) | 离线食物识别 | ONNX Model Zoo 声明许可（Apache-2.0）；Food-101 数据集版权归 ETH Zurich 原作者 |
+| 姿态估计模型（规划中） | 训练动作识别 | Apache-2.0 |
+
+完整声明（含**文件 SHA-256 校验值**，用于保证构建可复现）见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
+
 ## 📄 许可
 
 MIT License
