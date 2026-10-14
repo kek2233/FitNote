@@ -15,7 +15,7 @@ import time
 
 import requests
 
-REPO = "kek2233/bodyfat-calculator"
+REPO = "kek2233/FitNote"
 BRANCH = "main"
 API = "https://api.github.com/repos/" + REPO
 WORKDIR = "/workspace"

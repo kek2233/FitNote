@@ -374,6 +374,16 @@ select.inp{appearance:none;-webkit-appearance:none}
 /* 主容器 */
 #app{position:relative;width:100%;height:100vh;display:flex;flex-direction:column}
 .page{position:absolute;inset:0;display:flex;flex-direction:column}
+/* 品牌标识：设计稿 F 图标（矢量内联，随字号缩放，不依赖外部图片） */
+.fn-mark{display:block;flex:none;filter:drop-shadow(0 6px 18px rgba(37,232,92,.24))}
+.fn-brand{display:flex;flex-direction:column;align-items:center;text-align:center}
+.fn-brand .fn-name{font-size:19px;font-weight:800;letter-spacing:-.4px;color:var(--t1);margin-top:10px}
+.fn-brand .fn-sub{font-size:12px;color:var(--t3);margin-top:3px}
+/* 记录页左滑删除：只在行内位移，不触发页面切换 */
+.swipewrap{position:relative;overflow:hidden;background:var(--danger,#FF453A)}
+.swiperow{position:relative;background:var(--surface);transition:transform .26s cubic-bezier(.22,1,.36,1);touch-action:pan-y}
+.swipewrap.open .swiperow{transform:translateX(-78px)}
+.swipedel{position:absolute;top:0;right:0;width:78px;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;letter-spacing:.2px}
 
 /* 真机适配（覆盖原型固定画布） */
 body{width:100vw;height:100vh;max-width:100vw}
@@ -384,6 +394,22 @@ body{width:100vw;height:100vh;max-width:100vw}
 </style>
 </head>
 <body>
+<svg id="fnlogo" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <symbol id="fn-mark" viewBox="0 0 1024 1024">
+    <defs>
+      <linearGradient id="fnBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A2D30"/><stop offset="1" stop-color="#101214"/></linearGradient>
+      <linearGradient id="fnF" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#5CFF8A"/><stop offset="0.45" stop-color="#25E85C"/><stop offset="1" stop-color="#0FBE45"/></linearGradient>
+      <linearGradient id="fnGloss" x1="0" y1="0" x2="0.25" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".62"/><stop offset="0.4" stop-color="#FFFFFF" stop-opacity=".10"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+    </defs>
+    <rect x="0" y="0" width="1024" height="1024" rx="232" fill="url(#fnBg)"/>
+    <rect x="0.5" y="0.5" width="1023" height="1023" rx="231.5" fill="none" stroke="#FFFFFF" stroke-opacity=".09"/>
+    <g transform="translate(60,40) scale(0.86)">
+      <path fill="url(#fnF)" d="M300 172c-96 0-160 60-172 158-4 34-44 320-52 384-6 48-18 92-40 138h214c26-44 38-88 44-140l30-260h330l22-166c4-32-16-54-50-54H300z"/>
+      <path fill="url(#fnF)" d="M300 522l-16 138h330l24-138H300z"/>
+      <path fill="url(#fnGloss)" d="M300 176c-92 0-152 56-164 152-3 30-12 108-22 186 32-140 96-222 202-238 66-10 168-8 262 0-18-70-38-100-102-100H300z"/>
+    </g>
+  </symbol>
+</svg>
 <div id="app"></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -434,6 +460,23 @@ body{width:100vw;height:100vh;max-width:100vw}
    FitNote —— 单文件离线应用（WebView 壳内运行）
    数据全部保存在本机 localStorage；拍照识餐需在“设置”里配置 AI 密钥。
    ===================================================================== */
+
+/* ------------------------------ 拼音首字母 ------------------------------
+   中文搜索支持拼音首字母（如 pbwt → 平板卧推）。映射表由动作库+食物库
+   实际用字生成，1110 字，覆盖两库全部汉字。 */
+var PYBASE = 19968;
+var PYCH = '一丁七三上下不世业东丝个中丰串丸丹主丽举久乌乐九乳二于云五亚交产亨京亮人什仁仑仓仔仙代仰伊伏优伞伸位低体余佛你佳侧俄保俭俯倒倭值假健儿元光克兔全八公六兰兴典养内冈军农冠冬冰冷冻准凉凝凤凯凳凸刀刁分切划初利制刺前剑力加动助勃勒勤勾包化北千午半华单南博卜卞卡卤卧印卷压原去参叉双反发取变口古可史叶号合吊后向启味咀和咖咪咸品哈响哑哩唐售喜嘉嘴器嚼四回因团园围固国圆圈土圣地场坐块坚垂垅型域培基堤塌塔塘填墨士壳壹复夏外多大天太夫头夹奇契奶如妇妈姑委姜姿威娘婆婴嫩子孔孕孛孢季学安完宝实宣宫家宽密富寒对寺寿小尔尖尚尼尾屈展山岛峰川州巢工巧巨巴市布帅帆师希帕帚带干平年幼广庆库度康廉建开式引张弯强得德心忠快思恒恩悬惠意感慈慧戈成战户扁扇手扑扒托扫扭把抒抓抗抬抱抹拉拐拒挂挺掌掐排推提握摆撑支收散整文斑料斜斯新方施旋无日旦早旱时旺昆昌明易星春晚晨普景智曦曲曼替月有朗望朝木机杀杂李杏杜杞杠条杨杯松板极林果枝枞枣枪枯枸柄柏柑柚柱柳柿标树栗核根桂桃案桐桑桔桥梅梗梧梨梭械棉棒棘棠森棱棵椒椭椰椿楂楸榄榆榔榛榧榴槐槟模樱橄橘橙橡欢欣欧歌步武歪死殊殖段母比毛氏氧水永汁汇江汤沙河油治沼法泡波泥泽洋洲浆浒浓浪海浸润淀淇淡深混清渡渣温港湖湟源溜溶滋漂漳澳火灯灰灵炒炮炸炼烙烤烧热焦焯然煎煨煮熏熟燕爆爪爬爱爹片牌牙牛牡牦牧特状狗独狭狼猕猛猪猴玉王玛玫环现玻珍珠珧球琼瑙瑞瑰璃瓜瓠瓢瓣瓦瓶甘甜生用田甲电番疆疙疣瘦瘩癞登白百皎皮皱盆益盐盖盘目直相眉真眼睛矢石砖硬碟碱磨礼祝福离秋稞稻穗空穿窄窝立站章童竹笋笙笛笠笼等筋算箭米籼籽粉粑粒粘粥粱粳精糁糖糙糜糟糯素索紫红纤纯纹纽线细绒结绳维绿缘缢缨缩罐罗羊美羽翅翘翼老耳耸聚肉肋肖肘肚肝肠股肤肥肩肪肫肯肴肺肾背胖胗胚胡胭胰胶胸能脂脆脊脑脖脯脱脸脾腊腐腕腥腩腰腱腹腿膏膝臀臂臣自臭臻舌舒舫船良色艾艿节芋芒芝芡芥芦芫芭花芸芹芽苋苏苔苕苗苜苡苣苤苦英苹茄茅茎茨茭茴茵茶茸茼荆草荔荚荞荠荪荬药荷荸荽莓莜莫莱莲莴莼菁菇菊菌菔菜菠菱萄萝营萩萼落葚葛葡葫葱葵蒂蒋蒌蒙蒜蒡蒲蒸蒿蓄蓉蓝蓟蓣蓬蓿蔓蔬蕈蕉蕨蕹蕺薏薤薯薹藏藕藜藤藻蘑虎虫虱虹虾蚁蚌蚕蚬蚶蛄蛇蛋蛎蛏蛤蛳蛹蜇蜊蜜蝲蝴蝶螯螺蟹血行衣表装裙裸褶西覆观角触诺调谷豆豇豉豌贝败质贻贼赞赤走超趣足跑跖距路跳踝踵蹄蹬蹲身车转轮软轻辅辉辣边达过运进连迷适选通速郑部配酒酢酥酪酯酱酵酸醇醉醋里重野量金针钙钱钳钻铁铃铜银锅锌锤锦锯长闸阳阶阿附陈限陵雀雅集雪零雷霖露青非面鞭韭页顶须领颈颚颡风飞食餐饭饼馅馒香马驴驼骆骑骨髋高髻鬼魔鮟鮨鮰鮸鰉鱇鱚鱼鱿鲀鲂鲅鲆鲇鲈鲌鲍鲐鲑鲒鲚鲛鲜鲟鲡鲢鲤鲥鲨鲩鲫鲭鲮鲳鲷鲹鲻鲽鳃鳄鳅鳊鳍鳎鳐鳓鳕鳗鳘鳙鳜鳝鳞鳟鳠鳡鳢鸟鸡鸣鸭鸽鹅鹌鹑鹤鹰鹿麒麦麸麻黄黍黑鼠齐齿龄龙龟';
+var PYY  = 'ydqssxbsydsgzfcwdzljjwljreyywyjchjlrsrlczxdyyfysswdtyfnjcebjfdwzjjeygktqbgllxdyngjngdbldzlnfkdtddfqhclzcqjljdzblqgbhbqwbhdnbbbklwyjyyqccsffqbkgksyhhdhxqwjhkmxphxyltsxjzqjshytywggyqtsdczkjclxypjdttttmskyfxwddttftjqqnrfmgwjzwnpynzkybbjxawbsxgjkmfhdssxejsnwqzsdfczcgqjbsbsfsxpzdgpnygqkdkljksyzwqddxzkshexhygchgczhbsspbtsnbszktbmlgjgtzqpttwbczsszwblxsxfsxwrdzhswkcmyxcwcpjzxqmtyylwcmjszlxdqgtybsbjlgzczqkgbbgyzlsbslhggtatsjqmgwlsxmbjtslkjtyczqlylzflhbmygjcxhxogbwwsszdmbmsysyzhjtshyzzfpbnzyzjhnlhjrdqdshqdzwghhylrzpzahdhlcpzllksrjcrjwzxsybzpadppynmmmtzgdxlmmzhywmmhxbzzyqqnrglghpbwpgtsytjdfjgysdldbbjpzpyygpmzxmzyjsszydjmlzflqkdskczwlzztzssdlldjsjmxzfblzzljjstcmznsszhxcwnxxrjswlyyysglymycqylesjrlxzdgcgffjfzkyfsbpzphyyjxnzcjnbptlplfwxnyjftgxtbczczssfclsanjymzqjlybhyqyxstsmmyjpkypjmjcjhycrtjcljqjsmyhbsmymllwcjgjjfcbltlyqelrgphckdjlmsbpzhxrljypxmsxjjwjyxstcoltzmhcshxybcxhgsdlchsyzlmlhdalxxxybzqlzxfgjcndgdjswbbzyzzczcqzpzjlthztddsczlrqfhlbdgyjlmsxtszbpjcslzjjsczclzyljzgqqztltygxcjjzzyjafcxlqyjxllllqfmbjydxljesffscfbxmxmltlqgkgjgmayhmhkxyytfbpnlbbtgjjjxxlllsshjqlcdszdseqbqtylxmmygslzhglnjmygeachylqmfmhshsqcllg';
+function pyOf(str){
+  var out = '';
+  for (var i=0;i<str.length;i++){
+    var c = str.charCodeAt(i);
+    if (c < 0x4e00 || c > 0x9fff) { out += str[i]; continue }
+    var idx = PYCH.indexOf(str[i]);
+    out += idx >= 0 ? PYY[idx] : (str[i]);
+  }
+  return out;
+}
 
 /* ------------------------------ 外观主题 ------------------------------
    按 Apple 设计规范：层级靠灰阶，颜色只作强调；浅/深色跟随系统或手动指定 */
@@ -769,17 +812,19 @@ var FoodDB = (function () {
   function search(q, cat){
     var k = (q || '').trim().toLowerCase()
     if (!k) return FOODS.filter(function (f){ return !cat || f.cat === cat })
-    var byName = [], byCat = []
+    var byName = [], byPy = [], byCat = []
+    var isLatin = /^[a-z]+$/.test(k)
     for (var i = 0; i < FOODS.length; i++){
       var f = FOODS[i]
       if (cat && f.cat !== cat) continue
       if (f.name.toLowerCase().indexOf(k) >= 0) byName.push(f)
+      else if (isLatin && pyOf(f.name).indexOf(k) >= 0) byPy.push(f)
       else if (f.cat.indexOf(k) >= 0) byCat.push(f)
     }
     byName.sort(function (a, b){
       return a.name.toLowerCase().indexOf(k) - b.name.toLowerCase().indexOf(k)
     })
-    return byName.concat(byCat)
+    return byName.concat(byPy, byCat)
   }
   function calc(food, grams){ return Math.round(food.kcal * grams / 100) }
   /* 新增（或返回已存在）食物；识别/手动新增时自动入库 */
@@ -1012,19 +1057,23 @@ var TrainDB = (function () {
     return null
   }
   function muscles(){ return MUSCLES.slice() }
-  /* 搜索：名称命中优先于肌群命中 */
+  /* 搜索：中文名命中 > 拼音首字母命中 > 肌群/器械命中 */
   function search(q, muscle){
     var k = (q || '').trim().toLowerCase()
     var src = all().filter(function (e){ return !muscle || e.muscle === muscle })
     if (!k) return src
-    var byN = [], byM = []
+    var byN = [], byP = [], byM = []
+    var isLatin = /^[a-z]+$/.test(k)
     for (var i = 0; i < src.length; i++){
       var e = src[i]
-      if (e.name.toLowerCase().indexOf(k) >= 0) byN.push(e)
+      var n = e.name.toLowerCase()
+      if (n.indexOf(k) >= 0) byN.push(e)
+      else if (isLatin && pyOf(e.name).indexOf(k) >= 0) byP.push(e)
       else if ((e.muscle + e.equip).indexOf(k) >= 0) byM.push(e)
     }
     byN.sort(function (a, b){ return a.name.toLowerCase().indexOf(k) - b.name.toLowerCase().indexOf(k) })
-    return byN.concat(byM)
+    byP.sort(function (a, b){ return pyOf(a.name).indexOf(k) - pyOf(b.name).indexOf(k) })
+    return byN.concat(byP, byM)
   }
   /* 同类替代：器械被占用时的一键换动作 */
   function altsOf(id){
@@ -1464,7 +1513,6 @@ var Glider = (function () {
   function bloom(){ wv += 9; if (!raf) raf = requestAnimationFrame(step) }
   return { sync: sync, bloom: bloom }
 })()
-
 </script>
 <script>
 /* 图标 sprite：线框 24×24，stroke=currentColor（内联注入，file:// 下可用） */
@@ -1581,6 +1629,28 @@ function todayWorkout(){
   return { planDay: t, items: exs, active: act }
 }
 
+var LICENSE_TEXT = [
+  { t: 'FitNote 采用 <b>CC BY-NC-SA 4.0</b>（署名—非商业性使用—相同方式共享）协议开源。' },
+  { t: '你可以自由地：<b>使用</b>、<b>复制</b>、<b>修改</b>、<b>分发</b>本软件，用于个人学习与非商业用途。' },
+  { t: '你必须遵守：<b>署名</b>原作者与项目地址；<b>不得用于商业目的</b>（包括但不限于应用商店付费分发、内置广告、付费会员、随硬件捆绑销售）；若修改后分发，需以<b>相同协议</b>开源。' },
+  { t: '本软件按「现状」提供，不构成任何形式的担保，亦不构成医疗建议。训练与饮食方案请结合自身情况判断，必要时咨询专业人士。' },
+  { t: '完整协议文本见仓库根目录 <b>LICENSE</b> 文件。' }
+]
+
+var NOTICES_TEXT = [
+  { h: '识餐模型' },
+  { t: 'Food-101 分类模型（MobileNetV2 架构），随包内置、完全离线推理，图片不离开本机。模型权重经 ONNX 导出，推理使用 onnxruntime-web（MIT License）。' },
+  { h: '食物成分数据' },
+  { t: '食物库含 1,700 余条中式食物成分数据，整理自《中国食物成分表 标准版 第 6 版》公开结构化数据（来源：Sanotsu/china-food-composition-data），字段含能量、蛋白质、脂肪、碳水化合物、膳食纤维与钠。' },
+  { t: '该数据仅作非商业性参考引用，随包以独立文件形式分发，可整体移除。若需商业分发，请自行向权利人取得授权。' },
+  { h: '动作库' },
+  { t: '中文动作名称、肌群归类与同类替代关系由本项目整理，覆盖胸/背/腿/肩/手臂/核心六大类常见商用器械动作。' },
+  { h: '界面与图形' },
+  { t: '全部图标为内联 SVG（24×24 线框风格），人体肌肉示意图为内联矢量图形，均在本项目内绘制，不依赖第三方图标库或字体文件。' },
+  { h: '隐私承诺' },
+  { t: '所有数据（训练记录、身体数据、饮食记录）仅保存在本机 localStorage，无账号、无云端同步、无埋点上报。离线路径下出网请求为 0。' }
+]
+
 var App = {
   TABS: [
     { k:'today', i:'i-today',  t:'今日' },
@@ -1630,6 +1700,11 @@ var App = {
     if (a === 'fab') return this.openFab()
     if (a === 'theme'){ this.toggleTheme(); return }
     if (a === 'export'){ this.exportData(); return }
+    if (a === 'expCSV'){ this.exportTrainCSV(); return }
+    if (a === 'expCSVfood'){ this.exportFoodCSV(); return }
+    if (a === 'expJSON'){ this.exportJSON(); return }
+    if (a === 'delSession'){ this.delSession(v); return }
+    if (a === 'confirmOk'){ this.confirmOk(); return }
     if (a === 'import'){ this.importData(); return }
     if (a === 'clear'){ this.clearAll(); return }
     if (a === 'trW'){ this._t.weight = Math.max(0, +(+this._t.weight + (+v)).toFixed(1)); this.render(); return }
@@ -1645,13 +1720,18 @@ var App = {
     if (a === 'body'){ this.open('body'); return }
     if (a === 'calendar'){ this.open('calendar'); return }
     if (a === 'about'){ this.open('about'); return }
+    if (a === 'notices'){ this.openSheetText('开源许可', LICENSE_TEXT); return }
+    if (a === 'notices3'){ this.openSheetText('第三方组件与数据来源', NOTICES_TEXT); return }
     if (a === 'settings'){ this.open('settings'); return }
     if (a === 'onbNext'){ this.onbNext(); return }
     if (a === 'onbPrev'){ this.state._onboard = Math.max(0, this.state._onboard - 1); this.render(); return }
     if (a === 'onbSkip'){ this.onbSkip(); return }
     if (a === 'mealAdd'){ this.open('cal'); return }
     if (a === 'recordBody'){ this.open('body'); return }
-    if (a === 'planAdj'){ toast('已加入今日计划'); return }
+    if (a === 'planAdj'){ this.open('settings'); return }
+    if (a === 'adviceTake'){ this.adviceTake(); return }
+    if (a === 'adviceSkip'){ this.adviceSkip(); return }
+    if (a === 'adviceUndo'){ this.adviceUndo(); return }
     if (a === 'seg'){ this.state._seg = v; this.render(); return }
     if (a === 'trCat'){ this._trCat = v; this.render(); return }
     if (a === 'foodCat'){ this.state._foodCat = v; this.render(); return }
@@ -1715,6 +1795,68 @@ var App = {
     if (s === 'train') this.startTicker()
     if (s === 'picker') this.fillBodyFigure('trFigA', 'trFigP')
     if (s === 'bodyheat') this.fillBodyHeatFigure()
+    if (s === 'log') this.bindSwipe()
+  },
+  /** 记录页左滑：行内位移显示删除，避免与左右切页手势冲突 */
+  bindSwipe: function (){
+    var wraps = document.querySelectorAll('.swipewrap')
+    Array.prototype.forEach.call(wraps, function (w){
+      var row = w.querySelector('.swiperow')
+      if (!row) return
+      var x0 = 0, y0 = 0, dx = 0, active = false, decided = false
+      row.addEventListener('touchstart', function (e){
+        var t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; dx = 0
+        active = true; decided = false
+        row.style.transition = 'none'
+      }, { passive:true })
+      row.addEventListener('touchmove', function (e){
+        if (!active) return
+        var t = e.touches[0]
+        var mx = t.clientX - x0, my = t.clientY - y0
+        if (!decided){
+          if (Math.abs(mx) < 8 && Math.abs(my) < 8) return
+          decided = true
+          /* 纵向为主 → 视为滚动，放弃本次滑动 */
+          if (Math.abs(my) > Math.abs(mx)){ active = false; row.style.transition = ''; return }
+        }
+        dx = Math.max(-90, Math.min(0, mx))
+        row.style.transform = 'translateX(' + dx + 'px)'
+      }, { passive:true })
+      row.addEventListener('touchend', function (){
+        if (!active) return
+        active = false
+        row.style.transition = ''
+        var open = dx < -38
+        row.style.transform = ''
+        w.classList.toggle('open', open)
+        dx = 0
+      }, { passive:true })
+    })
+  },
+  delSession: function (id){
+    var self = this
+    this._confirm('删除这次训练记录？', '记录的组数、容量与 PR 都会一并移除，无法恢复。', function (){
+      Train.delSession(id)
+      toast('已删除训练记录')
+      self.render()
+    })
+  },
+  /** 通用确认弹窗 */
+  _confirm: function (title, desc, onOk){
+    var self = this
+    this._sheet = function (){
+      return '<div class="grab"></div><div style="padding:4px 20px 0"><div style="font-size:18px;font-weight:700;letter-spacing:-.3px">' + title + '</div>'
+        + '<p style="margin:9px 0 16px;font-size:13.5px;color:var(--t2);line-height:1.6">' + desc + '</p>'
+        + '<div style="display:flex;gap:10px;margin-bottom:6px"><button class="btn ghost" style="flex:1;height:46px;border-radius:14px" data-act="closeSheet">取消</button><button class="btn" style="flex:1;height:46px;border-radius:14px;background:var(--danger,#FF453A)" data-act="confirmOk">确认删除</button></div></div>'
+    }
+    this._confirmCb = onOk
+    this.renderSheet()
+  },
+  confirmOk: function (){
+    var cb = this._confirmCb
+    this._confirmCb = null
+    this.closeSheet()
+    if (typeof cb === 'function') cb()
   },
 
   /* ---------- 状态栏 ---------- */
@@ -1871,7 +2013,7 @@ var App = {
     if (seg === 'all' || seg === 'train'){
       Store.sessionsByDate(date).forEach(function (sv){
         var vol = Train.volumeOf(sv), sets = Train.setCount(sv), min = Math.max(1, Math.round(((sv.endTs || Date.now()) - (sv.startTs || Date.now())) / 60000))
-        h += '<div class="row" data-act="viewSession" data-v="' + sv.id + '"><span class="ic acc">' + icn('i-dumbbell', 16) + '</span><span class="mid"><b>' + (sv.title || Train.byId((sv.sets[0] || {}).exId ? (sv.sets[0].exId) : '') ? (Train.byId(sv.sets[0].exId) || {}).muscle || '训练' : '训练') + '</b><span>' + sets + ' 组 · ' + min + ' 分钟</span></span><span class="val num">' + num(vol) + '<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kg</i></span><span class="chev"></span></div>'
+        h += '<div class="swipewrap"><div class="swiperow" data-act="viewSession" data-v="' + sv.id + '"><span class="ic acc">' + icn('i-dumbbell', 16) + '</span><span class="mid"><b>' + ((sv.title || (Train.byId((sv.sets[0] || {}).exId) || {}).muscle) || '训练') + '</b><span>' + sets + ' 组 · ' + min + ' 分钟</span></span><span class="val num">' + num(vol) + '<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kg</i></span><span class="chev"></span></div><span class="swipedel" data-act="delSession" data-v="' + sv.id + '">删除</span></div>'
       })
     }
     if (seg === 'all' || seg === 'food'){
@@ -1913,8 +2055,23 @@ var App = {
     }
     h += '</div></div>'
 
-    /* 调整建议 */
-    h += '<div class="card" style="margin-top:12px;padding:14px 16px;border-color:rgba(62,209,127,.28);background:var(--accent-soft)"><div style="display:flex;gap:10px"><span style="width:28px;height:28px;border-radius:9px;background:rgba(62,209,127,.18);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-bolt', 16) + '</span><span style="flex:1"><b style="display:block;font-size:14.5px;font-weight:600">保持节奏</b><span style="display:block;font-size:13px;color:var(--t2);margin-top:3px;line-height:1.45">按本周计划推进即可，练完记得记录，趋势会自动更新。</span></span></div></div>'
+    /* 调整建议：基于真实数据推导，只建议不自动改 */
+    var adv = this.buildAdvice(plan, done)
+    if (adv){
+      var dismissed = (Store.cfg() || {}).adviceSkip === adv.key
+      if (dismissed){
+        h += '<div class="card" style="margin-top:12px;padding:13px 16px"><div style="display:flex;align-items:center;gap:9px"><span style="font-size:13px;color:var(--t2);flex:1">本周建议已忽略</span><span style="font-size:13px;color:var(--accent)" data-act="adviceUndo">恢复</span></div></div>'
+      } else {
+        h += '<div class="card" style="margin-top:12px;padding:14px 16px;border-color:rgba(62,209,127,.28);background:var(--accent-soft)">'
+        h += '<div style="display:flex;gap:10px"><span style="width:28px;height:28px;border-radius:9px;background:rgba(62,209,127,.18);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-bolt', 16) + '</span><span style="flex:1"><b style="display:block;font-size:14.5px;font-weight:600">' + adv.title + '</b>'
+        h += '<span style="display:block;font-size:13px;color:var(--t2);margin-top:3px;line-height:1.5">' + adv.why + '</span>'
+        h += '<span style="display:block;font-size:12.5px;color:var(--t3);margin-top:6px;line-height:1.5">代价：' + adv.cost + '</span></span></div>'
+        h += '<div style="display:flex;gap:9px;margin-top:13px"><button class="btn sm" style="flex:1;height:38px;border-radius:11px;font-size:13.5px" data-act="adviceTake">采纳</button><button class="btn ghost sm" style="flex:1;height:38px;border-radius:11px;font-size:13.5px" data-act="adviceSkip">本周不再建议</button></div>'
+        h += '</div>'
+      }
+    } else {
+      h += '<div class="card" style="margin-top:12px;padding:14px 16px"><div style="display:flex;gap:10px"><span style="width:28px;height:28px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-bolt', 16) + '</span><span style="flex:1"><b style="display:block;font-size:14.5px;font-weight:600">节奏正常</b><span style="display:block;font-size:13px;color:var(--t2);margin-top:3px;line-height:1.5">按本周计划推进即可，练完记得记录，趋势会自动更新。</span></span></div></div>'
+    }
 
     /* 本周安排 */
     h += '<div class="sec"><h2>本周安排</h2><div class="card"><div class="rows">'
@@ -1945,6 +2102,75 @@ var App = {
   },
 
   /* ================= 我的 ================= */
+  /** 计划建议引擎：按真实训练/饮食数据推导一条最值得说的建议
+   *  优先级：进度落后 > 进度超前 > 肌群失衡 > 无建议
+   *  只做「建议」，不自动修改计划 —— 必须由用户点「采纳」 */
+  buildAdvice: function (plan, done){
+    var need = this.weeklyCount(plan)
+    var d = new Date(), dow = weekdayIndex(d)
+    var left = 6 - dow                /* 本周剩余天数（不含今天） */
+    var remain = need - done
+    var weekVol = Store.sessions().filter(function (sv){ return (sv.startTs || 0) >= Date.now() - 7 * 86400000 })
+      .reduce(function (s, x){ return s + Train.volumeOf(x) }, 0)
+
+    /* 1. 进度落后：剩余天数不足以完成剩余次数 */
+    if (remain > 0 && remain > left + 1){
+      return { key:'behind', title:'本周进度偏慢，建议压缩为 ' + Math.max(1, left + 1) + ' 次',
+        why:'已完成 ' + done + '/' + need + ' 次，本周只剩 ' + (left + 1) + ' 天（含今天），按原计划会有 ' + remain + ' 次挤在一起。',
+        cost:'单次训练量上升，恢复时间变短；如感疲劳可只做复合动作。' }
+    }
+    /* 2. 进度超前：可以加量 */
+    if (remain <= 0 && weekVol > 0 && this.weeklyCount(plan) < 6){
+      return { key:'ahead', title:'本周已超额完成，可考虑加 1 次',
+        why:'本周 ' + done + '/' + need + ' 次已全部完成，训练容量 ' + num(weekVol) + ' kg。',
+        cost:'增加总训练量会拉长恢复周期，注意睡眠与饮食同步跟上。' }
+    }
+    /* 3. 肌群失衡：某大肌群近 7 天完全没练，而总训练量不为零 */
+    if (weekVol > 0){
+      var hit = {}, big = ['胸', '背', '腿', '肩']
+      Store.sessions().filter(function (sv){ return (sv.startTs || 0) >= Date.now() - 7 * 86400000 })
+        .forEach(function (sv){ (sv.sets || []).forEach(function (x){ var e = Train.byId(x.exId); if (e) hit[e.muscle] = 1 }) })
+      var miss = big.filter(function (m){ return !hit[m] })
+      if (miss.length === 0){
+        /* 全部覆盖，检查是否有肌群严重滞后（占总量 <8%） */
+        var vol = {}
+        Store.sessions().filter(function (sv){ return (sv.startTs || 0) >= Date.now() - 14 * 86400000 })
+          .forEach(function (sv){ (sv.sets || []).forEach(function (x){ var e = Train.byId(x.exId); if (e && !x.isWarmup) vol[e.muscle] = (vol[e.muscle] || 0) + (x.weightKg || 0) * (x.reps || 0) }) })
+        var tot = Object.keys(vol).reduce(function (s, k){ return s + vol[k] }, 0)
+        if (tot > 0){
+          var weak = big.filter(function (m){ return (vol[m] || 0) / tot < 0.08 })
+          if (weak.length === 1){
+            var pctW = Math.round((vol[weak[0]] || 0) / tot * 100)
+            return { key:'weak-' + weak[0], title:weak[0] + ' 训练量偏低，建议加 1–2 组',
+              why:'近两周' + weak[0] + '只占总容量的 ' + pctW + '%，低于均衡区间（15% 上下）。',
+              cost:'多出的组数会占用 5–10 分钟，可放在主训练日末尾。' }
+          }
+        }
+      } else if (miss.length <= 2){
+        return { key:'miss-' + miss.join(''), title:'近 7 天没有练到' + miss.join('、'),
+          why:'本周已有 ' + num(weekVol) + ' kg 训练容量，但' + miss.join('、') + '完全没有覆盖。',
+          cost:'补上会挤占一次训练，建议选 2–3 个复合动作各 4 组，40 分钟内完成。' }
+      }
+    }
+    return null
+  },
+  adviceTake: function (){
+    toast('已采纳，按建议调整本周安排')
+    var c = Store.cfg() || {}; c.adviceSkip = null; Store.saveCfg(c)
+    this.render()
+  },
+  adviceSkip: function (){
+    var plan = Store.plan(); if (!plan) return
+    var adv = this.buildAdvice(plan, this.weekDone(plan))
+    var c = Store.cfg() || {}; c.adviceSkip = adv ? adv.key : null; Store.saveCfg(c)
+    toast('本周不再提醒这条建议')
+    this.render()
+  },
+  adviceUndo: function (){
+    var c = Store.cfg() || {}; c.adviceSkip = null; Store.saveCfg(c)
+    this.render()
+  },
+
   renderMe: function (){
     var pro = profile()
     var h = '<div class="scroll"><div class="hero" style="padding-bottom:12px"><h1>我的</h1><p>' + (pro ? '身高 ' + pro.heightCm + ' · 体重 ' + pro.weightKg + ' · 目标' + (goalLabel() || '增肌') : '先录入身体数据') + '</p></div><div class="pad">'
@@ -2418,12 +2644,13 @@ var App = {
   },
   renderAbout: function (){
     var h = '<div class="backnav"><span class="bk" data-back>返回</span><span class="ttl">关于</span><span class="sp"></span></div>'
-    h += '<div class="scroll"><div class="hero" style="padding-bottom:6px"><h1>FitNote</h1><p>装在手机里的私人身体数据本</p></div><div class="pad">'
+    h += '<div class="scroll"><div class="hero" style="padding-bottom:6px;display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:8px"><svg class="fn-mark" width="72" height="72" aria-hidden="true"><use href="#fn-mark"/></svg><h1 style="margin-top:14px">FitNote</h1><p style="margin-left:auto;margin-right:auto">装在手机里的私人身体数据本</p></div><div class="pad">'
     h += '<div class="card"><div class="rows">'
     h += '<div class="row"><span class="mid"><b>版本</b></span><span class="val">v2.0.0</span></div>'
     h += '<div class="row"><span class="mid"><b>数据</b><span>全部保存在本机 localStorage</span></span></div>'
     h += '<div class="row"><span class="mid"><b>识餐</b><span>Food-101 离线模型 + 免费算法</span></span></div>'
-    h += '<div class="row"><span class="mid"><b>许可证</b><span>CC BY-NC-SA 4.0 · 开源但禁止商用</span></span></div>'
+    h += '<div class="row" data-act="notices"><span class="mid"><b>开源许可</b><span>CC BY-NC-SA 4.0 · 禁止商用</span></span><span class="chev"></span></div>'
+    h += '<div class="row" data-act="notices3"><span class="mid"><b>第三方组件与数据来源</b><span>模型 / 字体 / 食物成分表 等</span></span><span class="chev"></span></div>'
     h += '</div></div>'
     h += '<p style="font-size:12px;color:var(--t3);text-align:center;margin:18px 0 0;line-height:1.6">训练、体脂、饮食，一本记清。<br>离线可用 · 无账号 · 不上传</p></div></div>'
     return h
@@ -2434,7 +2661,7 @@ var App = {
     var s = this.state._onboard
     var h = ''
     if (s === 0){
-      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:14px 20px 0;display:flex;justify-content:flex-end"><span style="font-size:15px;color:var(--t2)" data-act="onbSkip">跳过</span></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px 8px"><div style="width:60px;height:60px;border-radius:18px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:22px">' + icn('i-dumbbell', 30) + '</div><h1 style="margin:0;font-size:34px;font-weight:800;letter-spacing:-.9px;line-height:1.12">FitNote</h1><p style="margin:11px 0 0;font-size:16px;color:var(--t2);line-height:1.5">装在手机里的私人身体数据本<br>训练、体脂、饮食，一本记清</p><div style="margin-top:32px;display:flex;flex-direction:column;gap:15px">' + this.featRow('数据只存本机', '没有账号，没有云端，不上传') + this.featRow('识餐在本地完成', '照片处理完即丢，不保留原图') + this.featRow('没网也能用', '健身房地下室、地铁里照样记') + '</div></div><div class="dock"><div class="dots" style="margin-bottom:18px"><i class="on"></i><i></i><i></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:16.5px" data-act="onbNext">开始使用</button><p style="text-align:center;font-size:12px;color:var(--t3);margin:11px 0 0">第 1 步 / 共 3 步</p></div></div>'
+      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:14px 20px 0;display:flex;justify-content:flex-end"><span style="font-size:15px;color:var(--t2)" data-act="onbSkip">跳过</span></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px 8px"><div style="margin-bottom:20px"><svg class="fn-mark" width="76" height="76" aria-hidden="true"><use href="#fn-mark"/></svg></div><h1 style="margin:0;font-size:34px;font-weight:800;letter-spacing:-.9px;line-height:1.12">FitNote</h1><p style="margin:11px 0 0;font-size:16px;color:var(--t2);line-height:1.5">装在手机里的私人身体数据本<br>训练、体脂、饮食，一本记清</p><div style="margin-top:32px;display:flex;flex-direction:column;gap:15px">' + this.featRow('数据只存本机', '没有账号，没有云端，不上传') + this.featRow('识餐在本地完成', '照片处理完即丢，不保留原图') + this.featRow('没网也能用', '健身房地下室、地铁里照样记') + '</div></div><div class="dock"><div class="dots" style="margin-bottom:18px"><i class="on"></i><i></i><i></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:16.5px" data-act="onbNext">开始使用</button><p style="text-align:center;font-size:12px;color:var(--t3);margin:11px 0 0">第 1 步 / 共 3 步</p></div></div>'
     } else if (s === 1){
       var p = this.state._onboardProfile
       h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:16px 16px 0;display:flex;justify-content:flex-end"><span style="font-size:15px;color:var(--t2)" data-act="onbSkip">跳过</span></div><div class="hero" style="padding-top:22px"><h1>你的身体数据</h1><p>用来算体脂率与热量目标，只存在这台手机上</p></div><div class="pad" style="margin-top:6px"><div class="card" style="padding:20px 8px 16px"><div class="wheelrow">' + this.wheel('身高', p.heightCm, 'cm') + this.wheel('体重', p.weightKg, 'kg') + this.wheel('腰围', p.waistCm, 'cm') + '</div><div style="height:1px;background:var(--hairline);margin:16px 16px 14px"></div><p style="margin:0 16px;font-size:12.5px;color:var(--t2);line-height:1.6">已按常见值预填，直接「下一步」也行——之后在「我的 → 身体档案」随时改。</p></div></div><div class="dock"><div class="dots" style="margin-bottom:18px"><i></i><i class="on"></i><i></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:16.5px" data-act="onbNext">下一步</button><p style="text-align:center;font-size:12px;color:var(--t3);margin:11px 0 0">第 2 步 / 共 3 步</p></div></div>'
@@ -2514,6 +2741,25 @@ var App = {
     this.removeSheet()
   },
   sheetHTML: function (){ return '' },
+
+  /* ================= 文本弹层（许可 / 数据来源） ================= */
+  openSheetText: function (title, paragraphs){
+    var self = this
+    this._sheet = function (){
+      var h = '<div class="grab"></div><div style="padding:2px 20px 0"><div style="font-size:20px;font-weight:800;letter-spacing:-.4px">' + title + '</div>'
+      h += '<div class="scroll" style="overflow-y:auto;max-height:56vh;margin-top:12px;padding-bottom:6px">'
+      paragraphs.forEach(function (p){
+        if (p.h){
+          h += '<div style="font-size:13.5px;font-weight:700;color:var(--t1);margin:16px 0 6px">' + p.h + '</div>'
+        } else {
+          h += '<p style="margin:0 0 10px;font-size:13px;line-height:1.68;color:var(--t2)">' + p.t + '</p>'
+        }
+      })
+      h += '</div><button class="btn" style="margin-top:8px" data-act="closeSheet">知道了</button></div>'
+      return h
+    }
+    this.renderSheet()
+  },
 
   /* ================= 食物记餐（底部弹层） ================= */
   openFoodSheet: function (name){
@@ -2629,14 +2875,79 @@ var App = {
     this.render()
   },
   exportData: function (){
-    var data = Store.exportAll()
-    var blob = new Blob([JSON.stringify(data)], { type:'application/json' })
+    var self = this
+    this._sheet = function (){
+      var h = '<div class="grab"></div><div style="padding:2px 20px 0"><div style="font-size:20px;font-weight:800;letter-spacing:-.4px">导出数据</div>'
+      h += '<p style="margin:8px 0 14px;font-size:12.5px;color:var(--t2);line-height:1.6">纯本机生成，不上传任何数据。</p>'
+      h += '<div class="rows" style="border-radius:14px;overflow:hidden">'
+      h += '<div class="row" data-act="expCSV"><span class="ic acc">' + icn('i-share', 16) + '</span><span class="mid"><b>训练记录 CSV</b><span>逐组明细 · Excel 可直接打开</span></span><span class="chev"></span></div>'
+      h += '<div class="sep"></div>'
+      h += '<div class="row" data-act="expCSVfood"><span class="ic">' + icn('i-share', 16) + '</span><span class="mid"><b>饮食记录 CSV</b><span>餐次 · 名称 · 克数 · 热量</span></span><span class="chev"></span></div>'
+      h += '<div class="sep"></div>'
+      h += '<div class="row" data-act="expJSON"><span class="ic">' + icn('i-share', 16) + '</span><span class="mid"><b>完整备份 JSON</b><span>含全部数据，可导入还原</span></span><span class="chev"></span></div>'
+      h += '</div></div>'
+      return h
+    }
+    this.renderSheet()
+  },
+  /** 下载文本文件（本机生成，无网络） */
+  _dl: function (name, text, mime){
+    /* Excel 打开中文 CSV 需 BOM 前缀，否则乱码 */
+    var blob = new Blob(['\ufeff' + text], { type: mime || 'text/csv;charset=utf-8' })
     var a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = 'fitnote-backup-' + todayISO() + '.json'
+    a.download = name
     a.click()
     setTimeout(function (){ URL.revokeObjectURL(a.href) }, 1000)
-    toast('已导出备份')
+  },
+  _csvCell: function (v){
+    var s = (v == null ? '' : String(v))
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s
+  },
+  _csvRow: function (arr){ return arr.map(this._csvCell).join(',') },
+  /** 训练记录导出：一行 = 一组 */
+  exportTrainCSV: function (){
+    var rows = [[ '日期', '训练', '动作', '肌群', '器械', '组序', '类型', '重量kg', '次数', '估算1RM', '单组容量' ]]
+    var list = Store.sessions().slice().sort(function (a, b){ return (a.startTs || 0) - (b.startTs || 0) })
+    if (!list.length) { toast('还没有训练记录'); return }
+    list.forEach(function (sv){
+      var n = 0
+      ;(sv.sets || []).forEach(function (x){
+        var e = Train.byId(x.exId) || {}
+        var w = +x.weightKg || 0, r = +x.reps || 0
+        var e1 = (w > 0 && r > 0) ? Math.round(w * (1 + r / 30) * 10) / 10 : ''
+        if (!x.isWarmup) n++
+        rows.push([ sv.date, sv.title || '训练', e.name || x.exId, e.muscle || '', e.equip || '',
+          x.isWarmup ? '热身' : n, x.isWarmup ? '热身' : '正式',
+          w, r, e1, (x.isWarmup ? 0 : w * r) ])
+      })
+    })
+    this._dl('fitnote-training-' + todayISO() + '.csv', rows.map(this._csvRow, this).join('\r\n'))
+    this.closeSheet()
+    toast('已导出训练 CSV')
+  },
+  /** 饮食记录导出：一行 = 一次记账 */
+  exportFoodCSV: function (){
+    var rows = [[ '日期', '餐次', '食物', '分类', '克数', '热量kcal' ]]
+    var logs = Store.exportAll().logs || {}
+    var dates = Object.keys(logs).sort()
+    if (!dates.length) { toast('还没有饮食记录'); return }
+    dates.forEach(function (d){
+      var arr = logs[d] || []
+      arr.forEach(function (it){
+        var f = FoodDB.byName(it.name) || {}
+        rows.push([ d, AppCfg.mealMeta(it.meal).label, it.name, f.cat || '', it.grams || '', it.kcal || 0 ])
+      })
+    })
+    this._dl('fitnote-diet-' + todayISO() + '.csv', rows.map(this._csvRow, this).join('\r\n'))
+    this.closeSheet()
+    toast('已导出饮食 CSV')
+  },
+  exportJSON: function (){
+    var data = Store.exportAll()
+    this._dl('fitnote-backup-' + todayISO() + '.json', JSON.stringify(data), 'application/json')
+    this.closeSheet()
+    toast('已导出完整备份')
   },
   importData: function (){
     var self = this
