@@ -499,7 +499,18 @@
   .card-t .link{color:var(--accent);font-weight:500}
   /* ---- 底部导航：玻璃胶囊（二级导航层，允许） ---- */
   .tabs{background:var(--nav-bg);border:.5px solid var(--hairline);box-shadow:0 8px 34px rgba(0,0,0,.28);
-    backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-radius:var(--r-nav)}
+    backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+    border-radius:var(--r-nav);overflow:visible;padding:6px 7px calc(6px + var(--safe-b))}
+  /* 中间凸起主动作（参考 rdev/liquid-glass-react 底部导航形态） */
+  .tab.mid{padding-top:0;overflow:visible}
+  .tab.mid .fab{width:54px;height:54px;border-radius:18px;margin-top:-26px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,#64d2ff,#0a84ff);color:#fff;
+    box-shadow:0 10px 26px rgba(10,132,255,.42), 0 2px 6px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(0,0,0,.18);
+    border:.5px solid rgba(255,255,255,.34);transition:transform .18s cubic-bezier(.32,.72,0,1)}
+  .tab.mid .fab svg{width:26px;height:26px;color:#fff}
+  .tab.mid:active .fab{transform:scale(.93)}
+  .tab.mid .t{margin-top:3px}
+  .tab.mid.on .t{color:var(--accent);font-weight:600}
   .tabs::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent)}
   .tab{color:var(--t3);border-radius:24px}
   .tab .t{color:inherit;font-size:10.5px;letter-spacing:.2px}
@@ -1292,8 +1303,14 @@ var App = {
     var t = this.TABS.filter(function (x){ return x.key === App.state.tab })[0]
     $('#hdTitle').textContent = t.title
     $('#hdSub').textContent = t.sub
-    $('#tabs').innerHTML = this.TABS.map(function (x){
-      return '<button class="tab' + (x.key === App.state.tab ? ' on' : '') + '" onclick="App.go(\'' + x.key + '\')"><span class="gi">' + ic(x.icon, 24) + '</span><span class="t">' + x.label + '</span></button>'
+    $('#tabs').innerHTML = this.TABS.map(function (x, i){
+      var on = x.key === App.state.tab
+      /* 中间一格做成凸起的主按钮（底部导航的主动作） */
+      if (i === 2){
+        return '<button class="tab mid' + (on ? ' on' : '') + '" onclick="App.go(\'' + x.key + '\')">' +
+          '<span class="fab">' + ic(x.icon, 26) + '</span><span class="t">' + x.label + '</span></button>'
+      }
+      return '<button class="tab' + (on ? ' on' : '') + '" onclick="App.go(\'' + x.key + '\')"><span class="gi">' + ic(x.icon, 24) + '</span><span class="t">' + x.label + '</span></button>'
     }).join('')
     var page = $('#page')
     var head = '<div class="ph"><div class="art">' + t.title + '</div><div class="ph-s">' + t.sub + '</div></div>'
@@ -2246,7 +2263,10 @@ var LiquidGlass = (function () {
         d[i] = 128 + u * 127
         d[i + 1] = 128 + v * 127
         d[i + 2] = 128
-        d[i + 3] = 255
+        /* alpha 编码「边缘掩码」：只有靠近边框的一圈为不透明 —— 
+           配合 feComponentTransfer/feComposite，让色差与位移只发生在边缘，
+           中心保持清晰（rdev/liquid-glass-react 同款做法） */
+        d[i + 3] = (Math.abs(sd) < bezel) ? 255 : 0
       }
     }
     ctx.putImageData(img, 0, 0)
@@ -2274,15 +2294,36 @@ var LiquidGlass = (function () {
     } else {
       id = 'lg' + (++seq)
     }
+    var ab = opt.aberration != null ? opt.aberration : 2.2   /* 色差强度 */
+    var s1 = m.scale
+    var s2 = m.scale * (1 - ab * 0.05)
+    var s3 = m.scale * (1 - ab * 0.10)
+    var gb = Math.max(0.1, 0.5 - ab * 0.1)
+    /* rdev/liquid-glass-react 的滤镜链：位移 + 边缘掩码 + RGB 三通道色差 + 中心保持清晰 */
     defs.insertAdjacentHTML('beforeend',
-      '<filter id="' + id + '" x="-50%" y="-50%" width="200%" height="200%" ' +
-      'color-interpolation-filters="sRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">' +
-      '<feImage href="' + m.url + '" x="' + (-w / 2) + '" y="' + (-h / 2) + '" width="' + m.cw + '" height="' + m.ch + '" ' +
-      'preserveAspectRatio="none" result="disp"/>' +
-      '<feDisplacementMap in="SourceGraphic" in2="disp" scale="' + m.scale + '" xChannelSelector="R" yChannelSelector="G"/>' +
+      '<filter id="' + id + '" x="-35%" y="-35%" width="170%" height="170%" ' +
+      'color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">' +
+      '<feImage x="' + (-w / 2) + '" y="' + (-h / 2) + '" width="' + m.cw + '" height="' + m.ch + '" ' +
+      'preserveAspectRatio="none" result="DISP" href="' + m.url + '"/>' +
+      '<feColorMatrix in="DISP" type="matrix" values="0.3 0.3 0.3 0 0  0.3 0.3 0.3 0 0  0.3 0.3 0.3 0 0  0 0 0 1 0" result="EDGE_INT"/>' +
+      '<feComponentTransfer in="EDGE_INT" result="EDGE_MASK"><feFuncA type="discrete" tableValues="0 ' + (ab * 0.05).toFixed(3) + ' 1"/></feComponentTransfer>' +
+      '<feOffset in="SourceGraphic" dx="0" dy="0" result="CENTER_ORIGINAL"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="DISP" scale="' + s1.toFixed(2) + '" xChannelSelector="R" yChannelSelector="G" result="RD"/>' +
+      '<feColorMatrix in="RD" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="RC"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="DISP" scale="' + s2.toFixed(2) + '" xChannelSelector="R" yChannelSelector="G" result="GD"/>' +
+      '<feColorMatrix in="GD" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="GC"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="DISP" scale="' + s3.toFixed(2) + '" xChannelSelector="R" yChannelSelector="G" result="BD"/>' +
+      '<feColorMatrix in="BD" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="BC"/>' +
+      '<feBlend in="GC" in2="BC" mode="screen" result="GB_COMBINED"/>' +
+      '<feBlend in="RC" in2="GB_COMBINED" mode="screen" result="RGB_COMBINED"/>' +
+      '<feGaussianBlur in="RGB_COMBINED" stdDeviation="' + gb.toFixed(2) + '" result="ABERRATED_BLURRED"/>' +
+      '<feComposite in="ABERRATED_BLURRED" in2="EDGE_MASK" operator="in" result="EDGE_ABERRATION"/>' +
+      '<feComponentTransfer in="EDGE_MASK" result="INVERTED_MASK"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>' +
+      '<feComposite in="CENTER_ORIGINAL" in2="INVERTED_MASK" operator="in" result="CENTER_CLEAN"/>' +
+      '<feComposite in="EDGE_ABERRATION" in2="CENTER_CLEAN" operator="over"/>' +
       '</filter>')
-    el.style.setProperty('-webkit-backdrop-filter', 'url(#' + id + ') blur(1px) saturate(180%)')
-    el.style.setProperty('backdrop-filter', 'url(#' + id + ') blur(1px) saturate(180%)')
+    el.style.setProperty('-webkit-backdrop-filter', 'url(#' + id + ') blur(2px) saturate(185%)')
+    el.style.setProperty('backdrop-filter', 'url(#' + id + ') blur(2px) saturate(185%)')
     return id
   }
   var dockTimer = null

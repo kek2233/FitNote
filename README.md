@@ -24,7 +24,7 @@
 ```
 .
 ├── 体脂率测算.html          # 网页版（单文件，双击即可用；也是 APK 内的页面）
-├── 体脂率测算-1.6.0.apk      # 已签名的安卓安装包（内含离线识别模型）
+├── 体脂率测算-1.7.0.apk      # 已签名的安卓安装包（内含离线识别模型）
 ├── 体脂率测算-诊断3.apk      # 诊断包：原生 UI 二分定位（旧界面 vs 新界面），失败点直接显示在屏幕上
 ├── gradle-app/              # 安卓工程（WebView 壳 + 本地 aapt2/d8 构建）
 │   ├── settings.gradle
@@ -50,8 +50,12 @@
 **网页版**：把 `体脂率测算.html` 用浏览器打开即可（手机浏览器同样可用）。
 离线形态识别需要同目录放置 `ort.min.js` / `ort-wasm-simd.wasm` / `mobilenet_v2_food101.onnx`；缺失时会优雅降级为本地颜色识别算法。
 
-**安卓版**：安装 `体脂率测算-1.6.0.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
+**安卓版**：安装 `体脂率测算-1.7.0.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
 
+> **v1.7.0：底部导航 = rdev/liquid-glass-react 同款液态玻璃**
+> 移植 [rdev/liquid-glass-react](https://github.com/rdev/liquid-glass-react) 的滤镜链：`feImage` 位移图 → **边缘掩码**（alpha 编码）→ **RGB 三通道位移 + screen 混合**（真实色散）→ 边缘色差与位移、**中心保持清晰**（`feComposite over`）；位移图沿圆角矩形 SDF 法线方向偏移，只在边框一圈生效。
+> 形态参考主流 App 的悬浮玻璃条：**中间一格做成凸起的主动作按钮**（渐变 + 投影 + 高光），其余为单色线框图标，选中态用强调色。
+>
 > **v1.6.0：按开源 Apple 设计规范重做视觉（Apple Liquid Glass）**
 > 参考 [naplesblue/apple-design-skill](https://github.com/naplesblue/apple-design-skill)（Apple 液态玻璃设计技能），落实其核心纪律：
 > - **统一表面 > 碎片化卡片**：内容回到实心表面（不再每张卡各自磨砂+描边+彩虹边），同组信息用**发丝分隔线**（0.5px）组织。
@@ -110,7 +114,7 @@ zip -q -j $WORK/app-dex.apk $WORK/dex/classes.dex
 $BT/zipalign -f -p 4 $WORK/app-dex.apk $WORK/app-aligned.apk
 $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
   --ks-pass pass:android --key-pass pass:android \
-  --out 体脂率测算-1.6.0.apk $WORK/app-aligned.apk
+  --out 体脂率测算-1.7.0.apk $WORK/app-aligned.apk
 ```
 
 ### 离线食物识别所需资源
