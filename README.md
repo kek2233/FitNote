@@ -24,7 +24,7 @@
 ```
 .
 ├── 体脂率测算.html          # 网页版（单文件，双击即可用；也是 APK 内的页面）
-├── 体脂率测算-1.4.3.apk      # 已签名的安卓安装包（内含离线识别模型）
+├── 体脂率测算-1.5.0.apk      # 已签名的安卓安装包（内含离线识别模型）
 ├── 体脂率测算-诊断3.apk      # 诊断包：原生 UI 二分定位（旧界面 vs 新界面），失败点直接显示在屏幕上
 ├── gradle-app/              # 安卓工程（WebView 壳 + 本地 aapt2/d8 构建）
 │   ├── settings.gradle
@@ -50,8 +50,15 @@
 **网页版**：把 `体脂率测算.html` 用浏览器打开即可（手机浏览器同样可用）。
 离线形态识别需要同目录放置 `ort.min.js` / `ort-wasm-simd.wasm` / `mobilenet_v2_food101.onnx`；缺失时会优雅降级为本地颜色识别算法。
 
-**安卓版**：安装 `体脂率测算-1.4.3.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
+**安卓版**：安装 `体脂率测算-1.5.0.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
 
+> **v1.5.0：iOS 26 液态玻璃视觉重做 + 默认全特效**
+> - **背景改为高饱和彩色光斑壁纸**（天空蓝 / 薄荷绿 / 紫罗兰 / 粉），玻璃卡片终于"有东西可折射"——之前背景近乎纯黑，所以卡片看着像灰板。
+> - 卡片/顶部栏/底部 Dock/弹层全面升级：更强模糊与饱和度、**顶边高光 + 底边内阴影**（玻璃"厚度"）、**跟手的镜面光斑**（`--gx/--gy/--gl` 由手指驱动）。
+> - 底部导航由贴边长条改为 **iOS 26 悬浮玻璃胶囊**，选中项为带彩色辉光的玻璃丸；按钮/胶囊加入按压缩放回弹。
+> - 真折射（SDF 位移贴图）扩展到 Dock、Hero 与顶部栏三处；**默认开启全特效与硬件加速**，不再默认降级为软件渲染（此前"安全模式默认开"是基于误判——真正的闪退原因是 dex 缺类，已修）。
+> - 安全模式降级保留为纯兜底：仅当"上次启动确实崩过"时自动启用一次，用户也可在设置里手动开关特效。
+>
 > **v1.4.3 关键修复（真机「装上打不开/一闪就退」的真正根因）**：
 > 0. **【根因】d8 漏传内部类**：改用本地 aapt2/d8 构建后，d8 只接收到 `MainActivity.class`/`FileProvider.class` 两个文件，dex 里 `class_defs_size` 只有 2，所有内部类与匿名类（`MainActivity$1`、`$AIBridge`、`$HostBridge`……）全部缺失。`onCreate` 里第一句 `new WebViewClient(){…}` 就抛 `NoClassDefFoundError`，而且崩溃记录器本身也是匿名类、来不及安装，所以表现就是「一点就闪退、毫无反应、连日志都没有」。修复后 `class_defs_size=15`（javac 产出多少类就进多少类）。此前 v1.2.x~v1.4.2 的 APK 全部受此影响，v1.1.0（Gradle/AGP 构建）不受影响，与用户反馈「最开始的版本都可以」完全吻合。
 > 1. **推理引擎按需加载**：v1.2.0 起页面启动时同步解析 540KB 的 `ort.min.js`，是启动期最大的额外负担；现改为首次使用拍照识餐时才动态注入。
@@ -95,7 +102,7 @@ zip -q -j $WORK/app-dex.apk $WORK/dex/classes.dex
 $BT/zipalign -f -p 4 $WORK/app-dex.apk $WORK/app-aligned.apk
 $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
   --ks-pass pass:android --key-pass pass:android \
-  --out 体脂率测算-1.4.3.apk $WORK/app-aligned.apk
+  --out 体脂率测算-1.5.0.apk $WORK/app-aligned.apk
 ```
 
 ### 离线食物识别所需资源
