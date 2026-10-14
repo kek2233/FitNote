@@ -22,3 +22,7 @@ gradle-app/app/src/main/assets/mobilenet_v2_food101.onnx
 *.gradle-cache
 .gradle/
 gradle-app/.gradle/
+
+# gradle 构建产物
+gradle-app/app/build/
+gradle-app/build/

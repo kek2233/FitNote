@@ -39,7 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * 体脂率测算 App 外壳（v1.4.0）
+ * FitNote App 外壳（v2.0.0）
  *
  * 设计要点（针对真机「装上但一闪就退」的加固）：
  * 1) 崩溃循环检测：每次启动先把 launch_ok 置 false；页面 JS 就绪后调 Android.onReady() 才置 true。
@@ -256,7 +256,7 @@ public class MainActivity extends Activity {
 
     private void saveCrash(Thread t, Throwable e) {
         StringBuilder sb = new StringBuilder();
-        sb.append("体脂率测算 崩溃日志\n");
+        sb.append("FitNote 崩溃日志\n");
         sb.append("时间: ").append(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.US).format(new java.util.Date())).append("\n");
         sb.append("线程: ").append(t.getName()).append("\n");
         sb.append("异常: ").append(e.toString()).append("\n");

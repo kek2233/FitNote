@@ -10,8 +10,8 @@ android {
         applicationId 'com.bodyfat.app'
         minSdk 23
         targetSdk 34
-        versionCode 17
-        versionName '1.10.0'
+        versionCode 4
+        versionName '2.0.0'
     }
 
     signingConfigs {
