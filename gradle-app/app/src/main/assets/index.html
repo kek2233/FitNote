@@ -160,8 +160,15 @@ body{
 .tabbar .tb span{font-size:10px;letter-spacing:.1px}
 .tabbar .tb.on{color:var(--accent)}
 .tabbar .tb.on span{font-weight:600}
-/* 液态滑动高光块 */
-.glider{position:absolute;top:6px;height:50px;border-radius:18px;background:var(--accent-soft);border:.5px solid rgba(62,209,127,.22)}
+/* 液态滑动高光块：本身也是小玻璃胶囊 */
+.glider{position:absolute;left:0;top:6px;height:50px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(62,209,127,.20),rgba(62,209,127,.10));
+  border:.5px solid rgba(62,209,127,.22);
+  backdrop-filter:blur(6px) saturate(160%) brightness(1.12);
+  -webkit-backdrop-filter:blur(6px) saturate(160%) brightness(1.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.30), inset 0 -1px 0 rgba(62,209,127,.18);
+  will-change:transform,width;
+}
 .fab{width:46px;height:46px;border-radius:15px;background:var(--accent);display:flex;align-items:center;justify-content:center;
   box-shadow:0 6px 18px rgba(62,209,127,.34), inset 0 1px 0 rgba(255,255,255,.34)}
 .fab svg{width:24px;height:24px;color:var(--accent-ink)}
@@ -176,19 +183,26 @@ body{
   background:var(--ground)}
 
 /* =====================================================================
-   玻璃增强（与 App 同款，纯 CSS 视觉等效）
-   注：Chromium 的 backdrop-filter 不支持 url(#svgFilter)，故不用位移滤镜
+   液态玻璃 · 真折射版（移植 shuding/liquid-glass 的 SDF 边缘折射算法）
+   五层：①半透明白纱 ②SVG 位移滤镜边缘折射(backdrop-filter:url) ③边缘色差环
+         ④顶部高光/菲涅尔内光环 ⑤动态滑块液态拉伸(Glider.bloom)
+   WebView Chromium 若不支持 backdrop-filter:url()，自动回退普通玻璃
    ===================================================================== */
 .tabbar{
-  background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.055) 58%,rgba(255,255,255,.085));
-  backdrop-filter:blur(30px) saturate(215%) brightness(1.07);
-  -webkit-backdrop-filter:blur(30px) saturate(215%) brightness(1.07);
+  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06) 58%,rgba(255,255,255,.09));
+  backdrop-filter:blur(26px) saturate(200%) brightness(1.06);
+  -webkit-backdrop-filter:blur(26px) saturate(200%) brightness(1.06);
   box-shadow:
     0 22px 52px rgba(0,0,0,.5),
     0 3px 10px rgba(0,0,0,.28),
     inset 0 1px 0 rgba(255,255,255,.58),
     inset 0 -1.5px 0 rgba(0,0,0,.32),
     inset 0 0 0 1px rgba(255,255,255,.14);
+}
+/* 支持位移滤镜时升级为真折射 */
+.tabbar.lg-on{
+  backdrop-filter:url(#navGlass) blur(2px) saturate(180%) brightness(1.04) contrast(1.08);
+  -webkit-backdrop-filter:url(#navGlass) blur(2px) saturate(180%) brightness(1.04) contrast(1.08);
 }
 .tabbar::before{
   content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;padding:1px;z-index:2;
@@ -412,6 +426,15 @@ body{width:100vw;height:100vh;max-width:100vw}
 </svg>
 <div id="app"></div>
 <div class="toast" id="toast"></div>
+<!-- 液态玻璃：tabbar 边缘折射滤镜（位移图由 JS 按 tabbar 实际尺寸生成） -->
+<svg id="glassDefs" xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
+  <defs>
+    <filter id="navGlass" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB" x="0" y="0" width="366" height="62">
+      <feImage id="navGlassMap" result="map" x="0" y="0" width="366" height="62"/>
+      <feDisplacementMap in="SourceGraphic" in2="map" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
 <script>
 
 (function () {
@@ -1475,14 +1498,91 @@ var Train = TrainDB;
 
 /* ---------------- 底部导航「液态玻璃」滑动高光（iOS 26） ----------------
    选中项之间"流"过去的玻璃块：rAF 弹簧驱动位移与宽度，移动中按速度横向拉伸。 */
+/* Glider：液态滑块。
+   修复①：querySelectorAll('.tb') 会把 FAB 插槽也算进去，导致「计划/我的」上滑块量错位置（歪）→ 用 :not(.fab-slot)
+   修复②：render() 内的 sync(false) 会把滑块瞬移，吞掉 go() 里的弹簧动画（不跟手）→ 首次才落位，重绘只重挂载
+   新增③：LiquidGlass.build() 按 tabbar 实际尺寸生成 SDF 边缘折射位移图（移植 shuding/liquid-glass） */
+var LiquidGlass = (function () {
+  function smoothStep(a, b, t){
+    t = Math.max(0, Math.min(1, (t - a) / (b - a)))
+    return t * t * (3 - 2 * t)
+  }
+  function sdf(x, y, hw, hh, r){
+    var qx = Math.abs(x) - hw + r, qy = Math.abs(y) - hh + r
+    var l = Math.sqrt(Math.max(qx, 0) * Math.max(qx, 0) + Math.max(qy, 0) * Math.max(qy, 0))
+    return Math.min(Math.max(qx, qy), 0) + l - r
+  }
+  var lastW = 0, lastH = 0
+  function build(){
+    var bar = document.getElementById('tabbar'); if (!bar) return
+    var r = bar.getBoundingClientRect()
+    var w = Math.round(r.width), h = Math.round(r.height)
+    if (w < 40 || h < 20) return
+    if (w === lastW && h === lastH) { apply(w, h); return }
+    lastW = w; lastH = h
+    var map = document.getElementById('navGlassMap')
+    var cv = document.createElement('canvas')
+    cv.width = w; cv.height = h
+    var ctx = cv.getContext('2d')
+    var img = ctx.createImageData(w, h)
+    var d = img.data
+    var raw = [], maxScale = 0
+    /* SDF 边缘折射：边缘弯折背景，中心平滑（Apple Liquid Glass 的透镜感） */
+    for (var y = 0; y < h; y++){
+      for (var x = 0; x < w; x++){
+        var ix = x / w - 0.5, iy = y / h - 0.5
+        var dist = sdf(ix, iy, 0.5, 0.5, 0.42)
+        var dsp = smoothStep(0.8, 0, dist - 0.15)
+        var sc = smoothStep(0, 1, dsp)
+        var sx = ix * sc + 0.5, sy = iy * sc + 0.5
+        var dx = sx * w - x, dy = sy * h - y
+        if (Math.abs(dx) > maxScale) maxScale = Math.abs(dx)
+        if (Math.abs(dy) > maxScale) maxScale = Math.abs(dy)
+        raw.push(dx, dy)
+      }
+    }
+    maxScale *= 0.5
+    for (var i = 0, j = 0; i < d.length; i += 4, j += 2){
+      d[i]     = (raw[j] / maxScale + 0.5) * 255
+      d[i + 1] = (raw[j + 1] / maxScale + 0.5) * 255
+      d[i + 2] = 0
+      d[i + 3] = 255
+    }
+    ctx.putImageData(img, 0, 0)
+    var url = cv.toDataURL()
+    map.setAttributeNS('http://www.w3.org/1999/xlink', 'href', url)
+    map.setAttribute('href', url)
+    apply(w, h)
+  }
+  function apply(w, h){
+    var f = document.getElementById('navGlass')
+    var map = document.getElementById('navGlassMap')
+    if (f){ f.setAttribute('width', w); f.setAttribute('height', h) }
+    if (map){ map.setAttribute('width', w); map.setAttribute('height', h) }
+  }
+  function enable(){
+    try {
+      if (!(window.CSS && CSS.supports && CSS.supports('backdrop-filter', 'url(#navGlass)'))) return false
+      var bar = document.getElementById('tabbar')
+      if (bar) bar.classList.add('lg-on')
+      return true
+    } catch (e){ return false }
+  }
+  window.addEventListener('resize', function (){ lastW = 0; build() })
+  return { build: build, enable: enable }
+})()
+
 var Glider = (function () {
   var el = null, ready = false, raf = null
   var cur = 0, tgt = 0, v = 0, w = 0, tw = 0, wv = 0
   function measure(i){
     var box = document.getElementById('tabbar'); if (!box) return null
-    var tabs = box.querySelectorAll('.tb'); if (!tabs[i]) return null
+    /* 修复①：排除 FAB 插槽，TABS 序号与 DOM 序号对齐 */
+    var tabs = box.querySelectorAll('.tb:not(.fab-slot)'); if (!tabs[i]) return null
     var r = tabs[i].getBoundingClientRect(), b = box.getBoundingClientRect()
-    return { l: r.left - b.left, w: r.width }
+    /* .glider 定位起点是 padding box（bar 左边框内侧），从 tab 坐标换算时减去边框宽 */
+    var bl = parseFloat(getComputedStyle(box).borderLeftWidth) || 0
+    return { l: r.left - b.left - bl, w: r.width }
   }
   function apply(){
     if (!el) return
@@ -1505,10 +1605,15 @@ var Glider = (function () {
     var keys = App.TABS.map(function (x){ return x.k })
     var i = keys.indexOf(App.state.screen); if (i < 0) i = 0
     var t = measure(i); if (!t) return
-    if (!ready || !animate){ ready = true; cur = tgt = t.l; w = tw = t.w; v = 0; wv = 0; apply(); return }
+    if (!ready){                       /* 首次：直接落位，无动画 */
+      ready = true; cur = tgt = t.l; w = tw = t.w; v = 0; wv = 0; apply(); return
+    }
     tgt = t.l; tw = t.w
-    apply()
-    if (!raf) raf = requestAnimationFrame(step)
+    if (animate){
+      if (!raf) raf = requestAnimationFrame(step)
+    } else {                           /* 强制重落位（如 resize）：不播动画 */
+      cur = tgt = t.l; w = tw = t.w; v = 0; wv = 0; apply()
+    }
   }
   function bloom(){ wv += 9; if (!raf) raf = requestAnimationFrame(step) }
   return { sync: sync, bloom: bloom }
@@ -1679,7 +1784,7 @@ var App = {
     var self = this
     this.state.screen = k; this.state.prev = null
     this.render()
-    Glider.sync(true)
+    Glider.bloom()   /* 液态感：点击瞬间滑块玻璃被拉伸，随弹簧回弹 */
   },
   open: function (k){
     this.state.prev = this.state.screen
@@ -1693,7 +1798,6 @@ var App = {
     if (this.state.prev){ this.state.screen = this.state.prev; this.state.prev = null }
     else this.state.screen = 'today'
     this.render()
-    Glider.sync(true)
   },
   act: function (a, v, el){
     var self = this
@@ -1727,7 +1831,14 @@ var App = {
     if (a === 'onbPrev'){ this.state._onboard = Math.max(0, this.state._onboard - 1); this.render(); return }
     if (a === 'onbSkip'){ this.onbSkip(); return }
     if (a === 'mealAdd'){ this.open('cal'); return }
-    if (a === 'recordBody'){ this.open('body'); return }
+    if (a === 'recordBody'){
+      /* 预填上次保存的身体数据——否则表单永远显示默认值，看起来像"改不了" */
+      var pr = profile()
+      if (pr){
+        this.state.form = { gender:pr.gender, age:pr.age, heightCm:pr.heightCm, weightKg:pr.weightKg, waistCm:pr.waistCm, neckCm:pr.neckCm || 38, hipCm:pr.hipCm || 95 }
+      }
+      this.open('body'); return
+    }
     if (a === 'planAdj'){ this.open('settings'); return }
     if (a === 'adviceTake'){ this.adviceTake(); return }
     if (a === 'adviceSkip'){ this.adviceSkip(); return }
@@ -1787,7 +1898,6 @@ var App = {
     var page = '<div class="page">' + head + body + (isTab ? this.tabbar() : '') + '</div>'
     var app = document.getElementById('app')
     app.innerHTML = page + (this._sheet ? this.sheetHTML() : '')
-    if (isTab) Glider.sync(false)
     this.afterRender()
   },
   afterRender: function (){
@@ -1796,6 +1906,12 @@ var App = {
     if (s === 'picker') this.fillBodyFigure('trFigA', 'trFigP')
     if (s === 'bodyheat') this.fillBodyHeatFigure()
     if (s === 'log') this.bindSwipe()
+    /* tab 页：滑块动画 + 液态玻璃（位移图只在尺寸变化时重建） */
+    if (s === 'today' || s === 'log' || s === 'plan' || s === 'me'){
+      LiquidGlass.build()
+      LiquidGlass.enable()
+      Glider.sync(true)
+    }
   },
   /** 记录页左滑：行内位移显示删除，避免与左右切页手势冲突 */
   bindSwipe: function (){
@@ -1928,16 +2044,15 @@ var App = {
     /* 饮食 */
     h += this.dietCard(today)
 
-    /* 身体 */
+    /* 身体：整卡可点进编辑（身高体重腰围随时改） */
+    h += '<div class="sec"><h2>身体档案</h2><div class="card"><div class="rows">'
     if (pro){
-      h += '<div class="sec"><h2>身体</h2><div class="card"><div class="rows">'
-      h += '<div class="row"><span class="ic">' + icn('i-trend', 16) + '</span><span class="mid"><b>体脂率</b><span>上次 ' + mdLabel(pro.ts ? isoDate(new Date(pro.ts)) : today) + ' · 围度法</span></span><span class="val num">' + fmt(pro.bf, 1) + '%</span><span class="chev"></span></div>'
-      h += '</div></div></div>'
+      h += '<div class="row" data-act="recordBody"><span class="ic">' + icn('i-user', 16) + '</span><span class="mid"><b>身高 ' + pro.heightCm + ' · 体重 ' + pro.weightKg + 'kg</b><span>腰围 ' + pro.waistCm + 'cm · 点击修改</span></span><span class="val num">' + fmt(pro.bf, 1) + '<i style="font-size:11px;font-style:normal;color:var(--t3)">%</i></span><span class="chev"></span></div>'
+      h += '<div class="row" data-act="recordBody"><span class="ic acc">' + icn('i-trend', 16) + '</span><span class="mid"><b>更新体脂率</b><span>上次 ' + mdLabel(pro.ts ? isoDate(new Date(pro.ts)) : today) + ' · 围度法实测</span></span><span class="chev"></span></div>'
     } else {
-      h += '<div class="sec"><h2>身体</h2><div class="card"><div class="rows">'
-      h += '<div class="row" data-act="recordBody"><span class="ic">' + icn('i-trend', 16) + '</span><span class="mid"><b>录入身体数据</b><span>身高体重腰围 → 体脂率</span></span><span class="chev"></span></div>'
-      h += '</div></div></div>'
+      h += '<div class="row" data-act="recordBody"><span class="ic acc">' + icn('i-trend', 16) + '</span><span class="mid"><b>录入身体数据</b><span>身高 / 体重 / 腰围 —— 用来算体脂与热量目标</span></span><span class="chev"></span></div>'
     }
+    h += '</div></div></div>'
 
     h += '</div></div>'
     return h
@@ -2600,7 +2715,7 @@ var App = {
       var lv = Engine.level(p.gender, p.bf)
       h += '<div class="card" style="margin-top:12px;padding:16px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:38px;font-weight:800;letter-spacing:-1.2px">' + fmt(p.bf, 1) + '</span><span style="font-size:14px;color:var(--t2)">%</span><span class="pill acc" style="margin-left:auto">' + lv.label + '</span></div><div class="bar" style="margin-top:12px"><i style="width:' + Math.min(100, p.bf * 2) + '%"></i></div><div style="display:flex;gap:8px;margin-top:12px"><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">BMI</div><div class="num" style="font-size:15px;font-weight:600">' + fmt(p.bmi, 1) + '</div></div><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">脂肪重量</div><div class="num" style="font-size:15px;font-weight:600">' + fmt(Engine.fatMass(p.weightKg, p.bf), 1) + ' kg</div></div><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">去脂体重</div><div class="num" style="font-size:15px;font-weight:600">' + fmt(Engine.leanMass(p.weightKg, p.bf), 1) + ' kg</div></div></div></div>'
     }
-    h += '<button class="btn" style="margin-top:14px;height:50px;border-radius:15px" data-act="bodySave">' + (p ? '保存并生成计划' : '计算') + '</button>'
+    h += '<button class="btn" style="margin-top:14px;height:50px;border-radius:15px" data-act="bodySave">' + (profile() ? '保存更新' : '计算并保存') + '</button>'
     h += '</div></div>'
     return h
   },
@@ -2704,7 +2819,6 @@ var App = {
     var c = Store.cfg() || {}; c.onboarded = true; Store.saveCfg(c)
     this.state.screen = 'today'; this.state.prev = null
     this.render()
-    Glider.sync(false)
     toast('欢迎使用 FitNote')
   },
 
