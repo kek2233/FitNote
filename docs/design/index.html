@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>FitNote · 训练记录模块 · 设计稿 v1</title>
+<style>
+  :root{
+    --canvas:#101013; --panel:#18181C; --line:rgba(255,255,255,.10);
+    --t1:#FFFFFF; --t2:rgba(255,255,255,.60); --t3:rgba(255,255,255,.34);
+    --accent:#3ED17F;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:46px 48px 70px;width:1512px;background:var(--canvas);color:var(--t1);
+    font-family:'HarmonyOS Sans SC','MiSans','PingFang SC','OPPO Sans','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .hd{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:38px}
+  .hd h1{margin:0;font-size:34px;font-weight:800;letter-spacing:-.8px}
+  .hd h1 em{font-style:normal;color:var(--accent)}
+  .hd p{margin:10px 0 0;font-size:15px;color:var(--t2);line-height:1.7;max-width:1000px}
+  .meta{display:flex;gap:34px;margin-top:20px;flex-wrap:wrap}
+  .meta div{font-size:13px;color:var(--t2)}
+  .meta b{display:block;font-size:19px;font-weight:700;color:var(--t1);letter-spacing:-.3px;margin-bottom:3px}
+  .sec{margin-top:44px}
+  .sec>h2{margin:0 0 20px;font-size:17px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:10px}
+  .sec>h2::before{content:'';width:4px;height:17px;border-radius:2px;background:var(--accent)}
+  .sec>h2 span{font-weight:500;color:var(--t3);font-size:13.5px;letter-spacing:0}
+  .grid{display:grid;grid-template-columns:repeat(4,300px);gap:44px 40px}
+  .shot{margin:0}
+  .shot img{width:300px;display:block;border-radius:16px;border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 20px 48px rgba(0,0,0,.55)}
+  .shot figcaption{margin-top:13px}
+  .shot figcaption b{display:block;font-size:14.5px;font-weight:600;letter-spacing:-.1px}
+  .shot figcaption span{display:block;font-size:12px;color:var(--t3);margin-top:2px}
+  /* 设计规范 */
+  .spec{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .pane{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .pane h3{margin:0 0 14px;font-size:13px;font-weight:600;color:var(--t2);letter-spacing:.3px}
+  .sws{display:flex;flex-wrap:wrap;gap:10px}
+  .sw{width:112px;border-radius:10px;overflow:hidden;border:1px solid var(--line);font-size:10.5px;line-height:1.4}
+  .sw i{display:block;height:52px}
+  .sw u{display:block;text-decoration:none;padding:6px 8px;background:#0C0C0E;color:var(--t2)}
+  .sw u b{display:block;color:var(--t1);font-weight:600;font-size:11px}
+  .tl{font-size:13px;color:var(--t2);display:flex;flex-direction:column;gap:11px}
+  .tl div{display:flex;align-items:baseline;gap:10px;border-bottom:.5px solid var(--line);padding-bottom:9px}
+  .tl code{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--t3);margin-left:auto}
+  .note{margin-top:40px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 26px}
+  .note h3{margin:0 0 12px;font-size:15px;font-weight:700}
+  .note ul{margin:0;padding-left:19px;font-size:13.5px;color:var(--t2);line-height:1.85}
+  .note ul b{color:var(--t1);font-weight:600}
+  .pill{display:inline-block;padding:2px 9px;border-radius:99px;background:rgba(62,209,127,.15);color:var(--accent);
+    font-size:11.5px;font-weight:600;margin-left:8px;vertical-align:2px}
+</style></head><body>
+
+<div class="hd">
+  <h1>FitNote <em>·</em> 训练记录模块 · 设计稿 <em>v1</em></h1>
+  <p>按 <b>FitNote 产品 brief v2</b> 的交互框架绘制：底部四 Tab（今日 / 记录 / 计划 / 我的）+ 中间凸起主动作。
+     视觉遵守 Apple 设计规范纪律——统一表面、0.5px 发丝分隔线、层级靠字重与灰阶、<b>只有一个强调色</b>，
+     磨砂玻璃只出现在真正有图层重叠的位置（吸顶导航 / 底部 Tab 栏 / 弹层）。</p>
+  <div class="meta">
+    <div><b>390 × 844</b>iPhone 逻辑分辨率 · @3x 导出</div>
+    <div><b>8 个画板</b>深色为主，浅色同规格另附</div>
+    <div><b>#3ED17F</b>唯一强调色</div>
+    <div><b>8pt</b>间距栅格</div>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>核心流程 <span>打开 → 开始训练 → 记组 → 总结</span></h2>
+  <div class="grid">
+    <figure class="shot"><img src="dark-01-today.png"><figcaption><b>01 · 今日</b><span>当日训练任务 + 饮食进度 + 数据方块</span></figcaption></figure>
+    <figure class="shot"><img src="dark-02-training.png"><figcaption><b>02 · 训练进行中</b><span>大号重量/次数步进器 + 组间计时</span></figcaption></figure>
+    <figure class="shot"><img src="dark-07-summary.png"><figcaption><b>03 · 训练总结</b><span>总容量主数字 + 动作明细 + PR</span></figcaption></figure>
+    <figure class="shot"><img src="dark-03-log.png"><figcaption><b>04 · 记录</b><span>训练/饮食/体脂混排时间线</span></figcaption></figure>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>其余页面 <span>计划 · 我的 · 选动作 · 首次引导</span></h2>
+  <div class="grid">
+    <figure class="shot"><img src="dark-04-plan.png"><figcaption><b>05 · 计划</b><span>本周进度 + 调整建议（建议+确认）</span></figcaption></figure>
+    <figure class="shot"><img src="dark-05-me.png"><figcaption><b>06 · 我的</b><span>身体档案 + 容量趋势 + 肌群占比</span></figcaption></figure>
+    <figure class="shot"><img src="dark-06-picker.png"><figcaption><b>07 · 添加动作</b><span>中文动作库 + 分类 + 上次重量</span></figcaption></figure>
+    <figure class="shot"><img src="dark-08-onboard.png"><figcaption><b>08 · 首次引导</b><span>3 步、带默认值、可跳过</span></figcaption></figure>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>浅色外观 <span>跟随系统 · 同规格</span></h2>
+  <div class="grid">
+    <figure class="shot"><img src="light-01-today.png"><figcaption><b>今日</b><span>浅色</span></figcaption></figure>
+    <figure class="shot"><img src="light-02-training.png"><figcaption><b>训练进行中</b><span>浅色</span></figcaption></figure>
+    <figure class="shot"><img src="light-05-me.png"><figcaption><b>我的</b><span>浅色</span></figcaption></figure>
+    <figure class="shot"><img src="light-04-plan.png"><figcaption><b>计划</b><span>浅色</span></figcaption></figure>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>设计规范 <span>颜色 / 字号 / 圆角</span></h2>
+  <div class="spec">
+    <div class="pane">
+      <h3>颜色 · 深色</h3>
+      <div class="sws">
+        <div class="sw"><i style="background:#0A0C0B"></i><u><b>#0A0C0B</b>底 ground</u></div>
+        <div class="sw"><i style="background:#151917"></i><u><b>#151917</b>表面 surface</u></div>
+        <div class="sw"><i style="background:#1E2422"></i><u><b>#1E2422</b>次表面</u></div>
+        <div class="sw"><i style="background:#3ED17F"></i><u><b>#3ED17F</b>强调 accent</u></div>
+      </div>
+    </div>
+    <div class="pane">
+      <h3>颜色 · 浅色</h3>
+      <div class="sws">
+        <div class="sw"><i style="background:#F2F2F7"></i><u><b>#F2F2F7</b>底 ground</u></div>
+        <div class="sw"><i style="background:#FFFFFF"></i><u><b>#FFFFFF</b>表面 surface</u></div>
+        <div class="sw"><i style="background:#EFF0F2"></i><u><b>#EFF0F2</b>次表面</u></div>
+        <div class="sw"><i style="background:#0E9F5E"></i><u><b>#0E9F5E</b>强调 accent</u></div>
+      </div>
+    </div>
+    <div class="pane">
+      <h3>文字层级（只靠字重 + 灰阶）</h3>
+      <div class="tl">
+        <div style="font-size:26px;font-weight:800;letter-spacing:-.6px;color:#fff">大标题 32/800<code>-.8px</code></div>
+        <div style="font-size:17px;font-weight:600;color:#fff">区块标题 17/600<code>-0.2px</code></div>
+        <div style="font-size:15px;font-weight:400">正文 15/400<code>t1</code></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.60)">辅助 13/400<code>t2</code></div>
+        <div style="font-size:11.5px;color:rgba(255,255,255,.34)">标注 11.5/400<code>t3</code></div>
+      </div>
+    </div>
+    <div class="pane">
+      <h3>形状与数字</h3>
+      <div class="tl">
+        <div>卡片 18px · 内部控件 12px · 胶囊 999px<code>radius</code></div>
+        <div>间距栅格 4 / 8 / 12 / 16 / 22<code>8pt</code></div>
+        <div>分隔线 0.5px<code>hairline</code></div>
+        <div style="font-size:22px;font-weight:700;letter-spacing:-.5px;color:#fff">1,240 kg<span class="pill">tabular-nums</span></div>
+        <div style="border:0">所有数字等宽对齐（容量 / 重量 / 计时）</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <h3>本版设计稿的取舍说明（与 brief v2 一一对应）</h3>
+  <ul>
+    <li><b>记组是主干，不是视频识别。</b>训练中页把「重量 / 次数步进器 + 完成本组」放在拇指最舒服的位置，3 次点击能记完一组；视频识别留到 v1.1 做复盘与免手记，不占主干。</li>
+    <li><b>没有「识别重量」。</b>按 brief v2 的修正，重量走「记忆上次 + 一键步进（±2.5kg）」，页面里显示的是「上次 62.5kg × 8」而不是 AI 识别结果。</li>
+    <li><b>器械被占用有解。</b>训练中页给「切换动作」入口，动作库页提示长按看「同类替代」——正面对上原始痛点 1。</li>
+    <li><b>计划只给建议、不自动改。</b>计划页用「建议 + 采纳/忽略」，并说明原因与代价（约 +8 分钟），避免用户第二天发现计划变了却不知为何。</li>
+    <li><b>玻璃很克制。</b>整屏只有吸顶栏与底部 Tab 栏两处磨砂；内容全是实心表面 + 发丝线——这是上次 UI 被说「廉价 AI 感」的根因，这次从源头避开。</li>
+    <li><b>重复的界面元素只有一个强调色。</b>绿色只用于：主按钮、已完成勾、选中态、数据强调。分类信息（肌群占比）用同色不同透明度，不再上第二种色。</li>
+  </ul>
+</div>
+
+</body></html>

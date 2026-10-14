@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>08 首次引导</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .dots{display:flex;gap:6px;justify-content:center}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--surface-3)}
+  .dots i.on{width:20px;border-radius:99px;background:var(--accent)}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script>document.write(SB())</script>
+
+<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column">
+  <div style="padding:16px 16px 0;display:flex;justify-content:flex-end">
+    <span style="font-size:15px;color:var(--t2)">跳过</span>
+  </div>
+
+  <div class="hero" style="padding-top:22px">
+    <h1>你的身体数据</h1>
+    <p>用来算体脂率与热量目标，只存在这台手机上</p>
+  </div>
+
+  <div class="pad" style="margin-top:6px">
+    <div class="card" style="padding:20px 8px 16px">
+      <div style="display:flex;align-items:flex-start">
+        <script>document.write(WHEEL('身高','178','cm'))</script>
+        <script>document.write(WHEEL('体重','72.5','kg'))</script>
+        <script>document.write(WHEEL('腰围','82','cm'))</script>
+      </div>
+      <div style="height:1px;background:var(--hairline);margin:16px 16px 14px"></div>
+      <p style="margin:0 16px;font-size:12.5px;color:var(--t2);line-height:1.6">
+        已按常见值预填，直接「下一步」也行——之后在「我的 → 身体档案」随时改。</p>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="rows">
+        <div class="row"><span class="ic acc"><svg><use href="#i-check"/></svg></span>
+          <span class="mid"><b>全程离线</b><span>识别与计算都在本机，不联网、不上传</span></span></div>
+        <div class="row"><span class="ic acc"><svg><use href="#i-check"/></svg></span>
+          <span class="mid"><b>免注册</b><span>没有账号，打开就能用</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:auto;padding:0 16px 0">
+    <div class="dots" style="margin-bottom:20px"><i></i><i class="on"></i><i></i></div>
+    <button class="btn" style="height:52px;border-radius:16px;font-size:16.5px">下一步</button>
+    <p style="text-align:center;font-size:12px;color:var(--t3);margin:12px 0 26px">第 2 步 / 共 3 步</p>
+  </div>
+</div>
+</body></html>

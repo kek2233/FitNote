@@ -1,0 +1,150 @@
+/* =====================================================================
+   FitNote 设计系统 —— Apple 规范纪律落地
+   统一表面 > 碎片化卡片；玻璃只在图层重叠处（吸顶导航 / Tab 栏 / 弹层）
+   层级靠字重+字号+灰阶；只有一个强调色
+   ===================================================================== */
+:root{
+  --ground:#0A0C0B;
+  --surface:#151917;
+  --surface-2:#1E2422;
+  --surface-3:#272E2B;
+  --sep:rgba(255,255,255,.11);
+  --hairline:rgba(255,255,255,.075);
+  --t1:#FFFFFF;
+  --t2:rgba(236,241,239,.62);
+  --t3:rgba(236,241,239,.34);
+  --accent:#3ED17F;
+  --accent-ink:#06210F;
+  --accent-soft:rgba(62,209,127,.14);
+  --warn:#FF9F0A;
+  --danger:#FF453A;
+  --nav-bg:rgba(17,21,19,.72);
+  --r-card:18px; --r-in:12px; --r-pill:999px;
+  --sh:0 1px 2px rgba(0,0,0,.5);
+}
+[data-theme="light"]{
+  --ground:#F2F2F7; --surface:#FFFFFF; --surface-2:#EFF0F2; --surface-3:#E4E6E9;
+  --sep:rgba(60,60,67,.20); --hairline:rgba(60,60,67,.13);
+  --t1:#000000; --t2:rgba(60,60,67,.60); --t3:rgba(60,60,67,.32);
+  --accent:#0E9F5E; --accent-ink:#FFFFFF; --accent-soft:rgba(14,159,94,.12);
+  --nav-bg:rgba(249,249,251,.80);
+  --sh:0 1px 2px rgba(0,0,0,.05);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  width:390px;height:844px;overflow:hidden;position:relative;
+  display:flex;flex-direction:column;
+  background:var(--ground);color:var(--t1);
+  font-family:'HarmonyOS Sans SC','MiSans','PingFang SC','OPPO Sans','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+/* ---------- 状态栏 ---------- */
+.sb{height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 6px;font-size:14px;font-weight:600;position:relative;z-index:5}
+.sb .r{display:flex;align-items:center;gap:5px}
+.sb svg{width:17px;height:11px;display:block}
+
+/* ---------- 吸顶导航（玻璃层 1/4） ---------- */
+.nav{
+  flex:none;z-index:20;height:48px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 16px;
+  background:var(--nav-bg);backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:.5px solid var(--hairline);
+}
+.nav .ttl{font-size:17px;font-weight:600;letter-spacing:-.2px;opacity:0}
+.nav .ops{display:flex;gap:8px;align-items:center;margin-left:auto}
+.iconbtn{width:32px;height:32px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;
+  background:var(--surface-2);border:.5px solid var(--hairline);color:var(--t1)}
+.iconbtn svg{width:17px;height:17px}
+
+/* ---------- 主体 ---------- */
+.scroll{flex:1;overflow:hidden;padding-bottom:44px;position:relative}
+.scroll::after{content:'';position:absolute;left:0;right:0;bottom:0;height:150px;pointer-events:none;
+  background:linear-gradient(to top,var(--ground) 6%,rgba(0,0,0,0))}
+.pad{padding:0 16px}
+.hero{padding:10px 16px 18px}
+.hero h1{margin:0;font-size:32px;font-weight:800;letter-spacing:-.8px;line-height:1.16}
+.hero p{margin:6px 0 0;font-size:14px;color:var(--t2);letter-spacing:.1px}
+
+/* ---------- 表面 ---------- */
+.card{background:var(--surface);border:.5px solid var(--hairline);border-radius:var(--r-card);box-shadow:var(--sh);overflow:hidden}
+.card+.card{margin-top:12px}
+.card>.ttl{padding:14px 16px 10px;font-size:13px;font-weight:600;color:var(--t2);letter-spacing:.3px;text-transform:none}
+.sec{margin-top:22px}
+.sec>h2{margin:0 0 8px;padding:0 16px;font-size:13px;font-weight:600;color:var(--t2);letter-spacing:.3px}
+
+/* 行 + 发丝分隔线（同组信息统一表面） */
+.rows{padding:0 16px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:.5px solid var(--hairline)}
+.rows .row:first-child{border-top:0}
+.row .ic{width:30px;height:30px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex:none}
+.row .ic svg{width:16px;height:16px;color:var(--t1)}
+.row .ic.acc{background:var(--accent-soft)} .row .ic.acc svg{color:var(--accent)}
+.row .mid{flex:1;min-width:0}
+.row .mid b{display:block;font-weight:500;font-size:15px;letter-spacing:-.1px}
+.row .mid span{display:block;font-size:12.5px;color:var(--t2);margin-top:1px}
+.row .val{font-size:15px;color:var(--t2);font-weight:500}
+.row .chev{width:8px;height:8px;border-right:1.6px solid var(--t3);border-top:1.6px solid var(--t3);transform:rotate(45deg);flex:none;margin-left:2px}
+
+/* ---------- 数据方块 ---------- */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{background:var(--surface);border:.5px solid var(--hairline);border-radius:var(--r-in);padding:12px 12px 13px}
+.tile b{display:block;font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1.1}
+.tile b i{font-size:12px;font-weight:600;font-style:normal;color:var(--t2);margin-left:2px;letter-spacing:0}
+.tile span{display:block;font-size:11.5px;color:var(--t2);margin-top:4px;letter-spacing:.1px}
+.tile.on b{color:var(--accent)}
+
+/* ---------- 按钮 ---------- */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;height:48px;border-radius:14px;
+  font-size:16px;font-weight:600;letter-spacing:-.1px;border:0;width:100%;
+  background:var(--accent);color:var(--accent-ink);font-family:inherit}
+.btn.ghost{background:var(--surface-2);color:var(--t1);border:.5px solid var(--hairline)}
+.btn.sm{height:38px;border-radius:11px;font-size:14px;width:auto;padding:0 16px}
+.btn svg{width:18px;height:18px}
+
+/* ---------- 分段控件 ---------- */
+.seg{display:flex;background:var(--surface-2);border-radius:10px;padding:2px;gap:2px}
+.seg button{flex:1;height:32px;border:0;background:transparent;color:var(--t2);font-family:inherit;font-size:13.5px;font-weight:500;border-radius:8px}
+.seg button.on{background:var(--surface);color:var(--t1);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.22)}
+.seg.acc button.on{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+
+/* ---------- chips ---------- */
+.chips{display:flex;gap:8px;overflow:hidden;padding:0 16px}
+.chip{height:32px;padding:0 14px;border-radius:var(--r-pill);background:var(--surface-2);border:.5px solid var(--hairline);
+  color:var(--t2);font-size:13.5px;font-weight:500;display:flex;align-items:center;flex:none}
+.chip.on{background:var(--accent);border-color:transparent;color:var(--accent-ink);font-weight:600}
+
+/* ---------- 进度条 ---------- */
+.bar{height:6px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:var(--r-pill);background:var(--accent)}
+.bar.thin{height:4px}
+
+/* ---------- 步进器（记组核心控件） ---------- */
+.stepper{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:14px;padding:6px;border:.5px solid var(--hairline)}
+.stepper button{width:44px;height:44px;border-radius:11px;border:0;background:var(--surface-3);color:var(--t1);font-size:22px;font-weight:400;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.stepper .v{font-size:26px;font-weight:700;letter-spacing:-.6px;display:flex;align-items:baseline;gap:4px}
+.stepper .v u{font-size:13px;font-weight:600;color:var(--t2);text-decoration:none}
+
+/* ---------- 底部 Tab 栏（玻璃层 2/4） ---------- */
+.tabbar{
+  position:absolute;left:12px;right:12px;bottom:20px;height:62px;z-index:30;
+  display:flex;align-items:center;padding:0 6px;border-radius:26px;
+  background:var(--nav-bg);backdrop-filter:blur(28px) saturate(190%);
+  -webkit-backdrop-filter:blur(28px) saturate(190%);
+  border:.5px solid var(--sep);
+  box-shadow:0 12px 34px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--t3);position:relative}
+.tabbar .tb svg{width:23px;height:23px}
+.tabbar .tb span{font-size:10px;letter-spacing:.1px}
+.tabbar .tb.on{color:var(--accent)}
+.tabbar .tb.on span{font-weight:600}
+/* 液态滑动高光块 */
+.glider{position:absolute;top:6px;height:50px;border-radius:18px;background:var(--accent-soft);border:.5px solid rgba(62,209,127,.22)}
+.fab{width:46px;height:46px;border-radius:15px;background:var(--accent);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(62,209,127,.34), inset 0 1px 0 rgba(255,255,255,.34)}
+.fab svg{width:24px;height:24px;color:var(--accent-ink)}

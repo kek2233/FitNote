@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>04 计划</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .dot{width:30px;height:30px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--t3);flex:none}
+  .dot.done{background:var(--accent);color:var(--accent-ink);font-weight:700}
+  .dot.today{border:2px solid var(--accent);color:var(--accent);font-weight:700}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">第 3 周 · 10月13日–10月19日</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-more"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:12px">
+    <h1>计划</h1>
+    <p>增肌期 · 每周 4 练 · 目标 2,600 kcal</p>
+  </div>
+
+  <div class="pad">
+    <!-- 本周进度 -->
+    <div class="card" style="padding:15px 16px">
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span class="num" style="font-size:23px;font-weight:700;letter-spacing:-.5px">3</span>
+        <span style="font-size:13px;color:var(--t2)">/ 4 次训练完成</span>
+        <span style="margin-left:auto;font-size:12.5px;color:var(--t2)">还剩 1 次</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <span class="dot done num">1</span><span class="dot done num">2</span>
+        <span class="dot today num">3</span><span class="dot num">4</span>
+        <span class="dot num">5</span><span class="dot num">6</span><span class="dot num">7</span>
+      </div>
+    </div>
+
+    <!-- 调整建议（建议 + 一键确认，不自动改） -->
+    <div class="card" style="margin-top:12px;padding:14px 16px;border-color:rgba(62,209,127,.28);background:var(--accent-soft)">
+      <div style="display:flex;gap:10px">
+        <span style="width:28px;height:28px;border-radius:9px;background:rgba(62,209,127,.18);display:flex;align-items:center;justify-content:center;flex:none">
+          <svg width="16" height="16" style="color:var(--accent)"><use href="#i-bolt"/></svg></span>
+        <span style="flex:1">
+          <b style="display:block;font-size:14.5px;font-weight:600">昨天腿部训练未完成</b>
+          <span style="display:block;font-size:13px;color:var(--t2);margin-top:3px;line-height:1.45">建议今天补 2 组深蹲（约 +8 分钟），不改变本周其它安排。</span>
+        </span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;padding-left:38px">
+        <button class="btn sm" style="flex:1;height:36px;font-size:14px">采纳</button>
+        <button class="btn sm ghost" style="flex:1;height:36px;font-size:14px">忽略</button>
+      </div>
+    </div>
+
+    <!-- 周计划 -->
+    <div class="sec"><h2>本周安排</h2>
+      <div class="card">
+        <div class="rows">
+          <div class="row">
+            <span class="num" style="width:32px;font-size:13.5px;color:var(--t3)">周一</span>
+            <span class="mid"><b>推 · 胸 + 三头</b><span>3 个动作 · 45 分</span></span>
+            <svg width="17" height="17" style="color:var(--accent)"><use href="#i-check"/></svg>
+          </div>
+          <div class="row">
+            <span class="num" style="width:32px;font-size:13.5px;color:var(--t3)">周二</span>
+            <span class="mid"><b>拉 · 背 + 二头</b><span>4 个动作 · 50 分</span></span>
+            <svg width="17" height="17" style="color:var(--accent)"><use href="#i-check"/></svg>
+          </div>
+          <div class="row" style="background:var(--accent-soft);margin:0 -16px;padding:13px 16px;border-top:.5px solid var(--hairline)">
+            <span class="num" style="width:32px;font-size:13.5px;color:var(--accent);font-weight:600">周三</span>
+            <span class="mid"><b style="color:var(--accent);font-weight:600">腿 + 核心</b><span>今天 · 4 个动作 · 55 分</span></span>
+            <span style="font-size:12.5px;color:var(--accent);font-weight:600">今天</span>
+          </div>
+          <div class="row">
+            <span class="num" style="width:32px;font-size:13.5px;color:var(--t3)">周四</span>
+            <span class="mid"><b style="color:var(--t2)">休息</b><span>恢复日</span></span>
+          </div>
+          <div class="row">
+            <span class="num" style="width:32px;font-size:13.5px;color:var(--t3)">周五</span>
+            <span class="mid"><b style="color:var(--t2)">推 · 肩 + 手臂</b><span>3 个动作 · 40 分</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn ghost" style="height:44px;border-radius:13px;font-size:14.5px">调整计划</button>
+      <button class="btn ghost" style="height:44px;border-radius:13px;font-size:14.5px">更换模板</button>
+    </div>
+  </div>
+</div>
+
+<script>document.write(TABBAR('plan'))</script>
+</body></html>

@@ -153,6 +153,19 @@ $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
 
 > 注意：模型只认得 Food-101 收录的 101 类（偏西餐/日料）。对典型中餐会退化为「最接近的已知类 + 中文热量映射」，所以 UI 提供了候选切换与撤销来保证可用性。
 
+## 🧩 设计稿（FitNote 训练记录模块）
+
+训练记录模块的界面设计稿（v1）已先行产出，再据此开发：
+
+- **[查看设计稿总览](docs/design/index.html)**（画板 + 设计规范 + 取舍说明）
+- `docs/design/board.png` —— 总览长图
+- `docs/design/dark-*.png` / `light-*.png` —— 单个画板 @3x 高清导出（8 屏 × 深/浅两套）
+- `docs/design/src/` —— 画板源文件（`fitnote.css` 设计 token + `screens/*.html`），`node src/render.js` 可重新导出全部 PNG
+
+覆盖：今日（当日训练+饮食进度）· 训练进行中（重量/次数步进器 + 组间计时）· 训练总结（总容量 + PR）· 记录时间线 · 计划（建议+确认）· 我的（档案+容量趋势+肌群占比）· 添加动作 · 首次引导（3 步）。
+
+> 设计纪律与 `apple-design-skill` 一致：统一表面 > 碎片化卡片；玻璃只用于吸顶导航 / 底部 Tab 栏 / 弹层；层级靠字重+字号+灰阶；**只有一个强调色**。
+
 ## 🎨 界面
 
 深色运动风仪表盘：近黑绿底 + 单一亮绿强调色 + 实心表面 + 0.5px 发丝分隔线。
