@@ -245,17 +245,32 @@
 
   /* ---------- iOS 26 液态玻璃：多层折射 + 顶边高光 + 跟手光斑 ---------- */
   .card{position:relative;overflow:hidden;
-    background:linear-gradient(135deg,rgba(255,255,255,.20) 0%,rgba(255,255,255,.05) 32%,transparent 56%),
-               linear-gradient(150deg,rgba(255,255,255,.145),rgba(255,255,255,.055) 46%,rgba(255,255,255,.03));
-    border:1px solid rgba(255,255,255,.17);
-    box-shadow:0 16px 44px rgba(2,6,12,.46), 0 3px 10px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(0,0,0,.22), inset 0 0 46px rgba(255,255,255,.05)}
+    background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.045) 34%,transparent 58%),
+               linear-gradient(150deg,rgba(255,255,255,.115),rgba(255,255,255,.05) 46%,rgba(255,255,255,.028));
+    border:1px solid rgba(255,255,255,.16);
+    /* ① 顶边高光 ② 菲涅尔内光环（6px，四周） ③ 底边内阴影 ④ 外投影 —— 出"玻璃厚度" */
+    box-shadow:0 16px 44px rgba(2,6,12,.46), 0 3px 10px rgba(0,0,0,.26),
+      inset 0 1px 0 rgba(255,255,255,.42),
+      inset 0 0 0 6px rgba(255,255,255,.055),
+      inset 0 -1px 0 rgba(255,255,255,.10),
+      inset 0 0 46px rgba(255,255,255,.05)}
   /* 跟手的镜面高光：--gx/--gy/--gl 由 JS 实时写入，光斑随手指"流"过去 */
   .card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
     background:radial-gradient(260px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.26),rgba(255,255,255,.06) 42%,transparent 68%);
     opacity:var(--gl,0);transition:opacity .25s ease}
-  /* 顶边一道细高光（光打在玻璃棱上） */
-  .card::after{content:'';position:absolute;left:9%;right:9%;top:0;height:1px;border-radius:999px;pointer-events:none;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.68),transparent)}
+  /* 最外缘 ≤2px 的低强度彩虹色差（只贴边、不铺面）——参考开源液态玻璃实现 */
+  .card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+    padding:2px;
+    background:conic-gradient(from 0deg,
+      rgba(255,0,90,.20) 0deg,rgba(255,200,0,.20) 60deg,rgba(0,255,170,.20) 130deg,
+      rgba(0,140,255,.20) 200deg,rgba(170,0,255,.20) 280deg,rgba(255,0,90,.20) 360deg);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    mask-composite:exclude;
+    mix-blend-mode:screen;opacity:.8}
+  /* 按下时：模糊略减、高光增强（交互态才做缓动，避免进场时模糊"涨上来"的闪动） */
+  .card:active{backdrop-filter:blur(20px) saturate(210%) brightness(1.08);-webkit-backdrop-filter:blur(20px) saturate(210%) brightness(1.08)}
   .hint{background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.01) 40%,transparent 60%),
               linear-gradient(160deg,rgba(52,211,153,.10),rgba(255,255,255,.03))}
   .btn{position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(74,222,128,.34),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -2px 0 rgba(0,0,0,.14);transition:transform .16s cubic-bezier(.32,.72,0,1),box-shadow .16s}
@@ -415,6 +430,142 @@
   .pie-n{font-weight:600;flex:1;min-width:0}
   .pie-v{color:var(--text-dim);font-size:11.5px;font-variant-numeric:tabular-nums;flex:none}
 
+  /* =====================================================================
+     Apple Liquid Glass 设计系统 v2（按 naplesblue/apple-design-skill 规范）
+     原则：① 统一表面 > 碎片化卡片 ② 玻璃只在图层真正重叠处（吸顶导航/弹层/CTA）
+           ③ 层级靠字重+字号+灰阶，颜色只留一个强调色 ④ 克制即奢侈
+     ===================================================================== */
+  :root{
+    --ground:#000000; --surface:#1c1c1e; --surface-2:#2c2c2e; --surface-3:#3a3a3c;
+    --sep:rgba(255,255,255,.13); --hairline:rgba(255,255,255,.10);
+    --t1:#ffffff; --t2:rgba(235,235,245,.62); --t3:rgba(235,235,245,.34);
+    --accent:#0a84ff; --accent-soft:rgba(10,132,255,.16);
+    --green:#30d158; --orange:#ff9f0a; --red:#ff453a; --purple:#bf5af2;
+    --nav-bg:rgba(20,20,22,.62);
+    --r-card:16px; --r-in:12px; --r-nav:30px;
+    --shadow-card:0 1px 2px rgba(0,0,0,.35);
+    /* 旧变量 → 新语义色（在 :root 里只声明一次，随主题自动切换） */
+    --text:var(--t1); --text-dim:var(--t2); --text-mute:var(--t3);
+    --brand:var(--accent); --brand-bg:var(--accent-soft); --brand-l:var(--accent-soft); --brand-d:var(--accent);
+    --ok:var(--accent); --warn:var(--orange); --bad:var(--red); --great:var(--green);
+    --line:var(--sep); --line-d:var(--sep);
+    --glass:var(--surface); --glass-bd:0; --shadow:var(--shadow-card); --radius:var(--r-card); --bg:var(--ground);
+  }
+  [data-theme="light"]{
+    --ground:#f2f2f7; --surface:#ffffff; --surface-2:#efeff4; --surface-3:#e5e5ea;
+    --sep:rgba(60,60,67,.22); --hairline:rgba(60,60,67,.18);
+    --t1:#000000; --t2:rgba(60,60,67,.62); --t3:rgba(60,60,67,.34);
+    --accent:#0071e3; --accent-soft:rgba(0,113,227,.12);
+    --green:#34c759; --orange:#ff9500; --red:#ff3b30; --purple:#af52de;
+    --nav-bg:rgba(249,249,251,.78);
+    --shadow-card:0 1px 2px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme]){
+      --ground:#f2f2f7; --surface:#ffffff; --surface-2:#efeff4; --surface-3:#e5e5ea;
+      --sep:rgba(60,60,67,.22); --hairline:rgba(60,60,67,.18);
+      --t1:#000000; --t2:rgba(60,60,67,.62); --t3:rgba(60,60,67,.34);
+      --accent:#0071e3; --accent-soft:rgba(0,113,227,.12);
+      --green:#34c759; --orange:#ff9500; --red:#ff3b30; --purple:#af52de;
+      --nav-bg:rgba(249,249,251,.78);
+      --shadow-card:0 1px 2px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.05);
+    }
+  }
+  /* ---- 底板：不再用彩虹壁纸，回到克制的纯色地面 ---- */
+  body{background:var(--ground)}
+  .app{background:var(--ground);background-attachment:scroll}
+  /* ---- 内容表面：实心 + 柔和阴影，不再磨砂、不再彩虹色差 ---- */
+  .card{background:var(--surface);border:0;border-radius:var(--r-card);box-shadow:var(--shadow-card);
+    backdrop-filter:none;-webkit-backdrop-filter:none;padding:16px;overflow:visible}
+  .card::before,.card::after{content:none;display:none}
+  .card:active{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .hint{background:var(--surface);border:0}
+  .hero{background:var(--surface);border:0;box-shadow:var(--shadow-card)}
+  .hero::before{content:none;display:none}
+  .hero-ring-in{background:var(--surface)}
+  /* ---- 顶部导航：玻璃（图层重叠，允许） ---- */
+  .hd{background:var(--nav-bg);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+    border-bottom:.5px solid var(--hairline);box-shadow:none;color:var(--t1)}
+  .hd-t{font-size:17px;font-weight:600;letter-spacing:-.2px;color:var(--t1)}
+  .hd-t::before{display:none}
+  .hd-s{color:var(--t2);font-size:12px}
+  .hd-b{background:var(--surface-2);border:0;color:var(--t1);font-weight:500;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+  /* ---- 大标题：Apple 大标题规格（负字距 + 紧凑行高） ---- */
+  .art{font-size:33px;font-weight:700;letter-spacing:-.7px;line-height:1.12;color:var(--t1)}
+  .ph{padding:10px 2px 2px;margin-bottom:10px}
+  .ph-s{color:var(--t2);font-size:13px;margin-top:4px}
+  .card-t{font-size:17px;font-weight:600;letter-spacing:-.2px;color:var(--t1);margin-bottom:10px}
+  .card-t .sub{font-size:13px;font-weight:400;color:var(--t2)}
+  .card-t .link{color:var(--accent);font-weight:500}
+  /* ---- 底部导航：玻璃胶囊（二级导航层，允许） ---- */
+  .tabs{background:var(--nav-bg);border:.5px solid var(--hairline);box-shadow:0 8px 34px rgba(0,0,0,.28);
+    backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-radius:var(--r-nav)}
+  .tabs::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent)}
+  .tab{color:var(--t3);border-radius:24px}
+  .tab .t{color:inherit;font-size:10.5px;letter-spacing:.2px}
+  .tab.on{color:var(--accent)}
+  .tab.on .i{transform:translateY(-1px)}
+  .tab.on::after{content:none;display:none}
+  /* 图标恢复单色线框：不再是彩色圆角块（消除"廉价 AI 感"的关键一步） */
+  .gi{width:auto;height:auto;border-radius:0;background:none!important;border:0;box-shadow:none!important;padding:0}
+  .gi svg{width:24px;height:24px;color:inherit!important;filter:none!important;text-shadow:none}
+  .gi.sm svg{width:20px;height:20px}
+  .gi.lg{width:auto;height:auto;border-radius:0}
+  .gi.lg svg{width:34px;height:34px;opacity:.9}
+  /* 选中态只用强调色区分，不加任何块/光晕 */
+  .tab.on .gi{box-shadow:none!important;transform:none!important;background:none!important}
+  .tab:not(.on) .gi{filter:none!important}
+  .tab:not(.on):active .gi{transform:scale(.92)}
+  .tab .gi svg{width:25px;height:25px}
+  /* ---- iOS 大标题折叠：顶部导航标题默认隐藏，滚动后才浮现 ---- */
+  .hd-t,.hd-s{opacity:0;transition:opacity .22s ease}
+  .hd.scrolled .hd-t{opacity:1}
+  .hd.scrolled .hd-s{opacity:0}
+  /* ---- 弹层 / 提示：玻璃（悬浮层，允许） ---- */
+  .sheet{background:var(--nav-bg);border:.5px solid var(--hairline);border-bottom:0;
+    backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
+    box-shadow:0 -10px 44px rgba(0,0,0,.34);border-radius:20px 20px 0 0;color:var(--t1)}
+  .sh-h{background:var(--t3)}
+  .sh-t{font-size:17px;font-weight:600;letter-spacing:-.2px}
+  .toast{background:var(--surface-2);color:var(--t1);box-shadow:0 10px 34px rgba(0,0,0,.35);border:.5px solid var(--hairline);font-weight:500}
+  .mask{background:rgba(0,0,0,.42)}
+  /* ---- 控件：Apple 规格（主按钮=强调色胶囊；次按钮=灰面） ---- */
+  .btn{background:var(--accent);color:#fff;border:0;border-radius:980px;font-weight:600;letter-spacing:-.1px;
+    box-shadow:none;padding:14px 22px;transition:transform .16s cubic-bezier(.32,.72,0,1),filter .16s}
+  .btn::after{content:none;display:none}
+  .btn:active{transform:scale(.97);filter:brightness(1.06)}
+  .btn.ghost,.btn.gray,.btn.sm.gray{background:var(--surface-2);color:var(--t1);box-shadow:none;border:0}
+  .btn.sm{padding:9px 16px;font-size:13.5px;border-radius:980px}
+  .mini-btn{background:var(--surface-2);color:var(--accent);border:0;border-radius:980px;font-weight:600}
+  .chip,.qk button{background:var(--surface-2);border:0;color:var(--t2);border-radius:980px;font-weight:500}
+  .chip.on,.qk button.on{background:var(--accent);color:#fff;border:0}
+  .inp,.srch{background:var(--surface-2);border:0;color:var(--t1);border-radius:var(--r-in)}
+  .inp::placeholder,.srch::placeholder{color:var(--t3)}
+  /* ---- 行/列表：统一表面 + 发丝分隔线（不再一堆独立卡片） ---- */
+  .frow,.log,.fd,.ck-row,.goal,.mst .m{border-bottom:.5px solid var(--hairline);border-radius:0;background:none}
+  .frow:last-child,.log:last-child,.fd:last-child{border-bottom:0}
+  .goal{border:.5px solid var(--hairline);border-radius:var(--r-in);background:var(--surface-2)}
+  .goal.on{background:var(--accent-soft);border-color:var(--accent);box-shadow:none}
+  .mst .m{background:var(--surface-2);border:.5px solid var(--hairline);border-radius:var(--r-in)}
+  .mst .m.eaten{background:rgba(48,209,88,.14);border-color:rgba(48,209,88,.42)}
+  .mst .m.missed{background:rgba(255,69,58,.12);border-color:rgba(255,69,58,.36)}
+  /* ---- 文字灰阶层级（正文黑白灰，颜色只留给强调） ---- */
+  body{color:var(--t1)}
+  .mini,.ph-s,.frow-m,.log-s,.card-t .sub{color:var(--t2)}
+  .empty,.hint{color:var(--t2)}
+  .hero-num,.ring-n,.macro-n,.st-n,.rec-n,.fd-k,.log-k,.tab .t{font-variant-numeric:tabular-nums}
+  /* ---- 圆环 / 数值：回归灰阶层级（颜色只留给强调与操作） ---- */
+  .cal-ring-in,.hero-ring-in{background:var(--surface-2);color:var(--t1)}
+  .hero-ring-in b,.cal-ring-in b{color:var(--t1)}
+  .fd-k,.log-k{color:var(--t1);font-weight:600}
+  .meal-c,.fd-u,.hero-sub{color:var(--t2)}
+  /* 主题切换行 */
+  .seg{display:flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:3px}
+  .seg button{flex:1;border:0;background:none;color:var(--t1);font-family:inherit;font-size:13px;font-weight:500;padding:7px 0;border-radius:8px;cursor:pointer}
+  .seg button.on{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.18);font-weight:600}
+  /* 弹层内的分组：扁平、无阴影（Apple 设置面板形态） */
+  .sheet .card{background:var(--surface-2);border:0!important;box-shadow:none!important;margin-bottom:10px}
+  .sheet .card-t{font-size:15px;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -491,6 +642,20 @@
    体脂率测算 —— 单文件离线应用（WebView 壳内运行）
    数据全部保存在本机 localStorage；拍照识餐需在“设置”里配置 AI 密钥。
    ===================================================================== */
+
+/* ------------------------------ 外观主题 ------------------------------
+   按 Apple 设计规范：层级靠灰阶，颜色只作强调；浅/深色跟随系统或手动指定 */
+function applyTheme(m){
+  try {
+    if (m) localStorage.setItem('bf_theme', m)
+    else m = localStorage.getItem('bf_theme') || 'auto'
+    var el = document.documentElement
+    if (m === 'auto') el.removeAttribute('data-theme'); else el.setAttribute('data-theme', m)
+    return m
+  } catch (e) { return 'auto' }
+}
+function currentTheme(){ try { return localStorage.getItem('bf_theme') || 'auto' } catch (e) { return 'auto' } }
+applyTheme()
 
 /* ------------------------------ 工具 ------------------------------ */
 function $(s){ return document.querySelector(s) }
@@ -1128,7 +1293,7 @@ var App = {
     $('#hdTitle').textContent = t.title
     $('#hdSub').textContent = t.sub
     $('#tabs').innerHTML = this.TABS.map(function (x){
-      return '<button class="tab' + (x.key === App.state.tab ? ' on' : '') + '" onclick="App.go(\'' + x.key + '\')"><span class="gi" style="background:' + x.c + '">' + ic(x.icon, 23) + '</span><span class="t">' + x.label + '</span></button>'
+      return '<button class="tab' + (x.key === App.state.tab ? ' on' : '') + '" onclick="App.go(\'' + x.key + '\')"><span class="gi">' + ic(x.icon, 24) + '</span><span class="t">' + x.label + '</span></button>'
     }).join('')
     var page = $('#page')
     var head = '<div class="ph"><div class="art">' + t.title + '</div><div class="ph-s">' + t.sub + '</div></div>'
@@ -1916,6 +2081,11 @@ var App = {
     var ai = Store.aiCfg() || {}
     var meals = AppCfg.meals()
     var html = '<div class="sh-t">设置</div>'
+    var cur = currentTheme()
+    html += '<div class="card"><div class="card-t">外观</div><div class="seg">' +
+      [['auto', '自动'], ['light', '浅色'], ['dark', '深色']].map(function (x){
+        return '<button class="' + (cur === x[0] ? 'on' : '') + '" onclick="App.setTheme(\'' + x[0] + '\')">' + x[1] + '</button>'
+      }).join('') + '</div><div class="mini" style="margin-top:8px">「自动」跟随系统浅色 / 深色外观。</div></div>'
     html += '<div class="card" style="box-shadow:none;border:1px solid var(--line);margin-bottom:12px"><div class="card-t"><span>' + ic('zap',15) + ' AI 识餐</span> <span class="sub">' + (AI.configured() ? '<span style="color:var(--great)">已配置</span>' : '<span style="color:var(--warn)">未配置</span>') + '</span></div>' +
       '<div class="qk">' + AI.PRESETS.map(function (p){ return '<button onclick="App.aiPreset(\'' + p.name + '\')">' + p.name + '</button>' }).join('') + '</div>' +
       '<div class="flds">' +
@@ -1955,7 +2125,12 @@ var App = {
     this._mealCfg = { breakfast:{ s:meals.breakfast.start, e:meals.breakfast.end }, lunch:{ s:meals.lunch.start, e:meals.lunch.end }, dinner:{ s:meals.dinner.start, e:meals.dinner.end } }
     this._ai_base = ai.baseUrl || ''; this._ai_model = ai.model || ''; this._ai_key = ai.apiKey || ''
   },
-  /* 液态玻璃特效开关：开 = 硬件加速 + 位移滤镜；关 = 软件渲染 + 无滤镜（安全模式） */
+  /* 外观：自动 / 浅色 / 深色 */
+  setTheme: function (m) {
+    applyTheme(m)
+    this.settings()
+  },
+  /* 液态玻璃特效开关：开 = 硬件加速 + 导航层折射；关 = 软件渲染 + 无滤镜（安全模式） */
   toggleGlass: function () {
     var on = !LiquidGlass.active()
     LiquidGlass.setOverride(on)
@@ -2116,17 +2291,9 @@ var LiquidGlass = (function () {
     if (!dock || !glassActive()) return
     setTimeout(function (){ attach(dock, { key:'dock', radius: 34, bezel: 24, maxDisp: 13 }) }, 80)
   }
-  function attachHero(){
-    var el = document.querySelector('.hero')
-    if (!el || !glassActive()) return
-    setTimeout(function (){ attach(el, { key:'hero', radius: 24, bezel: 20, maxDisp: 10, res: 0.5 }) }, 140)
-  }
-  /* 顶部栏也上真折射（窄条，开销很小） */
-  function attachHeader(){
-    var el = document.querySelector('.hd')
-    if (!el || !glassActive()) return
-    setTimeout(function (){ attach(el, { key:'hd', radius: 6, bezel: 14, maxDisp: 7, res: 0.5 }) }, 120)
-  }
+  /* 内容层不用玻璃（Apple 规范：玻璃仅在图层真正重叠处）——保留函数以兼容既有调用点 */
+  function attachHero(){ return }
+  function attachHeader(){ return }
   /* 关闭特效时把内联的 backdrop-filter 撤掉，交还给样式表里的普通模糊 */
   function detachAll(){
     var els = [document.getElementById('tabs'), document.querySelector('.hero'), document.querySelector('.hd')]
@@ -2217,6 +2384,17 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!LiquidGlass.active()) showSafeChip()
   LiquidGlass.attachDock()
   LiquidGlass.attachHeader()
+  /* iOS 大标题折叠：滚动后顶部导航才浮现标题 */
+  ;(function (){
+    var hd = document.querySelector('.hd')
+    if (!hd) return
+    function onScroll(){
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0
+      if (y > 26) hd.classList.add('scrolled'); else hd.classList.remove('scrolled')
+    }
+    window.addEventListener('scroll', onScroll, { passive:true })
+    onScroll()
+  })()
   window.addEventListener('resize', LiquidGlass.onResize)
   /* 告诉外壳：页面已就绪（用于崩溃循环检测，见 MainActivity） */
   try { if (window.Android && window.Android.onReady) window.Android.onReady() } catch (e) {}
