@@ -21,5 +21,6 @@ var SPRITE = '<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;w
 + '<symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V3.2M8.2 7l3.8-3.8L15.8 7"/><path d="M5 13.4v6.1a1 1 0 001 1h12a1 1 0 001-1v-6.1"/></g></symbol>'
 + '<symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/></g></symbol>'
 + '<symbol id="i-water" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2s6 6.4 6 10.4a6 6 0 11-12 0c0-4 6-10.4 6-10.4z"/></g></symbol>'
++ '<symbol id="i-utensils" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v6.2c0 1.45 1.12 2.6 2.5 2.6s2.5-1.15 2.5-2.6V3"/><path d="M9.5 11.8V21"/><path d="M7.5 6.6h4"/><path d="M17.6 3v18"/><path d="M17.6 3c-1.4 1.9-2.4 3.8-2.4 5.6 0 1.6 1 2.7 2.4 2.9"/></g></symbol>'
 + '</svg>';
 document.write(SPRITE);

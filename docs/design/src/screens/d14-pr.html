@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>14 PR 详情</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .seg{display:flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
+  .seg button{flex:1;border:0;background:transparent;color:var(--t2);font-family:inherit;
+    font-size:12.5px;padding:7px 0;border-radius:8px;cursor:pointer}
+  .seg button.on{background:var(--surface);color:var(--t1);font-weight:600;box-shadow:var(--sh)}
+  .prrow{display:flex;align-items:center;gap:10px;padding:12px 0}
+  .prrow .rk{width:22px;height:22px;border-radius:50%;background:var(--surface-3);color:var(--t2);
+    font-size:11.5px;display:flex;align-items:center;justify-content:center;flex:none}
+  .prrow.top .rk{background:var(--accent);color:var(--accent-ink);font-weight:700}
+  .spark{display:flex;align-items:flex-end;gap:3px;height:34px}
+  .spark i{width:5px;border-radius:2px;background:var(--surface-3)}
+  .spark i.hi{background:var(--accent)}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">个人记录</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-share"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:10px">
+    <h1>PR · 平板卧推</h1>
+    <p>三种口径并存：1RM / 单次最大重量 / 单组最大容量</p>
+  </div>
+
+  <div class="pad">
+    <div class="seg" style="margin-bottom:12px">
+      <button class="on">1RM（Epley）</button><button>最大重量</button><button>最大容量</button>
+    </div>
+
+    <!-- 主数字 -->
+    <div class="card" style="padding:18px 16px">
+      <div style="font-size:12.5px;color:var(--t2);letter-spacing:.01em">估算 1RM</div>
+      <div style="display:flex;align-items:baseline;gap:5px;margin-top:4px">
+        <span class="num" style="font-size:44px;font-weight:800;letter-spacing:-1.6px;line-height:1.05">76.0</span>
+        <span style="font-size:14px;color:var(--t2)">kg</span>
+        <span class="pill" style="margin-left:auto;background:var(--accent-soft);color:var(--accent)">↑ 2.5 上月</span>
+      </div>
+      <div style="font-size:12px;color:var(--t3);margin-top:8px">由 62.5 kg × 8 次换算（Epley）</div>
+      <div class="spark" style="margin-top:14px">
+        <i style="height:14px"></i><i style="height:18px"></i><i style="height:16px"></i>
+        <i style="height:22px"></i><i style="height:24px"></i><i style="height:28px"></i>
+        <i style="height:26px"></i><i class="hi" style="height:34px"></i>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-top:6px">
+        <span>3月</span><span>10月</span>
+      </div>
+    </div>
+
+    <!-- 三种口径 -->
+    <div class="card" style="margin-top:12px;padding:6px 16px">
+      <div class="prrow top">
+        <span class="rk num">1</span>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600">62.5 kg × 8</div>
+          <div style="font-size:12px;color:var(--t3)">10月14日 · 容量 500 kg</div>
+        </div>
+        <span class="num" style="font-size:13px;color:var(--accent);font-weight:600">76.0</span>
+      </div>
+      <div class="sep"></div>
+      <div class="prrow">
+        <span class="rk num">2</span>
+        <div style="flex:1">
+          <div style="font-size:14px">65 kg × 5</div>
+          <div style="font-size:12px;color:var(--t3)">9月28日 · 容量 325 kg</div>
+        </div>
+        <span class="num" style="font-size:13px;color:var(--t2)">75.2</span>
+      </div>
+      <div class="sep"></div>
+      <div class="prrow">
+        <span class="rk num">3</span>
+        <div style="flex:1">
+          <div style="font-size:14px">60 kg × 10</div>
+          <div style="font-size:12px;color:var(--t3)">9月12日 · 容量 600 kg</div>
+        </div>
+        <span class="num" style="font-size:13px;color:var(--t2)">80.0</span>
+      </div>
+    </div>
+
+    <p style="font-size:11.5px;color:var(--t3);margin:14px 2px 0;letter-spacing:.01em">
+      1RM = 重量 × (1 + 次数/30)，仅统计正式组；热身组不参与。</p>
+  </div>
+</div>
+
+<script>document.write(TABBAR('me'))</script>
+</body></html>

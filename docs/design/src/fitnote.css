@@ -4,30 +4,39 @@
    层级靠字重+字号+灰阶；只有一个强调色
    ===================================================================== */
 :root{
-  --ground:#0A0C0B;
-  --surface:#151917;
-  --surface-2:#1E2422;
-  --surface-3:#272E2B;
-  --sep:rgba(255,255,255,.11);
-  --hairline:rgba(255,255,255,.075);
-  --t1:#FFFFFF;
-  --t2:rgba(236,241,239,.62);
-  --t3:rgba(236,241,239,.34);
-  --accent:#3ED17F;
-  --accent-ink:#06210F;
-  --accent-soft:rgba(62,209,127,.14);
-  --warn:#FF9F0A;
-  --danger:#FF453A;
-  --nav-bg:rgba(17,21,19,.72);
+  /* v2：中性色带品牌绿偏移（OKLCH H=150），去纯黑纯白 */
+  --ground:#070A08;      /* oklch(14.0% 0.008 150) */
+  --surface:#111511;      /* oklch(19.0% 0.010 150) */
+  --surface-2:#1D221E;
+  --surface-3:#2A302B;
+  --sep:#2A302B; --hairline:#1D221E;
+  --t1:#F3F6F4;               /* 对卡 16.94:1 ✓ */
+  --t2:#A9B0AA;               /* 对卡  8.32:1 ✓ */
+  --t3:#7B837C;               /* 对卡  4.72:1 ✓ */
+  --accent:#56D57B;          /* 对卡  9.83:1 ✓ */
+  --accent-ink:#06210F;      /* 绿底深字 9.09:1 ✓（白字仅 1.88:1，不可用） */
+  --accent-fill:#56D57B;
+  --accent-soft:#142A1A;
+  --warn:#FFB020; --danger:#FF5A4E;
+  --nav-bg:rgba(7,10,8,.72);
   --r-card:18px; --r-in:12px; --r-pill:999px;
   --sh:0 1px 2px rgba(0,0,0,.5);
 }
 [data-theme="light"]{
-  --ground:#F2F2F7; --surface:#FFFFFF; --surface-2:#EFF0F2; --surface-3:#E4E6E9;
-  --sep:rgba(60,60,67,.20); --hairline:rgba(60,60,67,.13);
-  --t1:#000000; --t2:rgba(60,60,67,.60); --t3:rgba(60,60,67,.32);
-  --accent:#0E9F5E; --accent-ink:#FFFFFF; --accent-soft:rgba(14,159,94,.12);
-  --nav-bg:rgba(249,249,251,.80);
+  --ground:#F1F5F1;      /* oklch(96.5% 0.006 150) 灰底带绿 */
+  --surface:#FBFEFC;      /* oklch(99.4% 0.004 150) 近白非纯白 */
+  --surface-2:#E8ECE9;
+  --surface-3:#DADFDB;
+  --sep:#DADFDB; --hairline:#E8ECE9;
+  --t1:#141A15;               /* 对卡 17.41:1 ✓ */
+  --t2:#535A54;               /* 对卡  6.99:1 ✓ */
+  --t3:#6F7770;               /* 对卡  4.55:1 ✓（v1 为 3.02:1 不达标） */
+  --accent:#00682A;          /* 文字/图标用，对卡 6.86:1 ✓ */
+  --accent-fill:#008130;     /* 填充按钮用，白字 5.02:1 ✓ */
+  --accent-ink:#FFFFFF;      /* 按钮字（白） */
+  --accent-soft:#DDECE3;
+  --warn:#A35A00; --danger:#C62A2F;
+  --nav-bg:rgba(251,254,252,.80);
   --sh:0 1px 2px rgba(0,0,0,.05);
 }
 
@@ -101,7 +110,7 @@ body{
 /* ---------- 按钮 ---------- */
 .btn{display:flex;align-items:center;justify-content:center;gap:7px;height:48px;border-radius:14px;
   font-size:16px;font-weight:600;letter-spacing:-.1px;border:0;width:100%;
-  background:var(--accent);color:var(--accent-ink);font-family:inherit}
+  background:var(--accent-fill);color:var(--accent-ink);font-family:inherit}
 .btn.ghost{background:var(--surface-2);color:var(--t1);border:.5px solid var(--hairline)}
 .btn.sm{height:38px;border-radius:11px;font-size:14px;width:auto;padding:0 16px}
 .btn svg{width:18px;height:18px}
@@ -110,7 +119,7 @@ body{
 .seg{display:flex;background:var(--surface-2);border-radius:10px;padding:2px;gap:2px}
 .seg button{flex:1;height:32px;border:0;background:transparent;color:var(--t2);font-family:inherit;font-size:13.5px;font-weight:500;border-radius:8px}
 .seg button.on{background:var(--surface);color:var(--t1);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.22)}
-.seg.acc button.on{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.seg.acc button.on{background:var(--accent-fill);color:var(--accent-ink);box-shadow:none}
 
 /* ---------- chips ---------- */
 .chips{display:flex;gap:8px;overflow:hidden;padding:0 16px}
@@ -148,3 +157,72 @@ body{
 .fab{width:46px;height:46px;border-radius:15px;background:var(--accent);display:flex;align-items:center;justify-content:center;
   box-shadow:0 6px 18px rgba(62,209,127,.34), inset 0 1px 0 rgba(255,255,255,.34)}
 .fab svg{width:24px;height:24px;color:var(--accent-ink)}
+
+/* 引导步骤点 */
+.dots{display:flex;gap:6px;justify-content:center}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--surface-3)}
+.dots i.on{width:20px;border-radius:99px;background:var(--accent)}
+
+/* 固定底栏（引导页主按钮等）——独立于滚动内容，不被 .scroll 的渐隐遮罩冲淡 */
+.dock{flex:none;position:relative;z-index:35;padding:14px 20px calc(24px + env(safe-area-inset-bottom,0px));
+  background:var(--ground)}
+
+/* =====================================================================
+   玻璃增强（与 App 同款，纯 CSS 视觉等效）
+   注：Chromium 的 backdrop-filter 不支持 url(#svgFilter)，故不用位移滤镜
+   ===================================================================== */
+.tabbar{
+  background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.055) 58%,rgba(255,255,255,.085));
+  backdrop-filter:blur(30px) saturate(215%) brightness(1.07);
+  -webkit-backdrop-filter:blur(30px) saturate(215%) brightness(1.07);
+  box-shadow:
+    0 22px 52px rgba(0,0,0,.5),
+    0 3px 10px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.58),
+    inset 0 -1.5px 0 rgba(0,0,0,.32),
+    inset 0 0 0 1px rgba(255,255,255,.14);
+}
+.tabbar::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;padding:1px;z-index:2;
+  background:linear-gradient(150deg,
+    rgba(190,255,220,.5),rgba(160,215,255,.32) 34%,
+    rgba(255,190,235,.24) 58%,rgba(180,255,225,.38) 82%,rgba(255,255,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+  mix-blend-mode:screen;opacity:.28;
+}
+.tabbar::after{
+  content:'';position:absolute;left:4%;right:4%;top:1px;height:30%;border-radius:inherit;pointer-events:none;z-index:2;
+  background:linear-gradient(180deg,rgba(255,255,255,.25),rgba(255,255,255,.05) 58%,transparent);
+  mix-blend-mode:screen;opacity:.7;
+}
+.nav{
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
+  backdrop-filter:blur(26px) saturate(200%) brightness(1.06);
+  -webkit-backdrop-filter:blur(26px) saturate(200%) brightness(1.06);
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.14), 0 6px 20px rgba(0,0,0,.24);
+}
+
+/* =====================================================================
+   人体肌群图
+   ===================================================================== */
+.bodysvg{width:100%;height:auto;display:block}
+.bodysvg .mu{stroke:var(--ground);stroke-width:.8;transition:fill .28s ease}
+/* 静默态：身体轮廓 */
+.bodysvg .k-rest{fill:var(--surface-3)}
+/* 选动作时：主肌群 / 协同肌群 */
+.bodysvg .k-p{fill:var(--accent)}
+.bodysvg .k-s{fill:var(--accent-soft);opacity:.85}
+[data-theme="light"] .bodysvg .k-s{fill:rgba(0,129,48,.30)}
+/* 热力图：按训练量递增（越高越深） */
+.bodysvg .k-load-none{fill:var(--surface-3)}
+.bodysvg .k-load-light{fill:rgba(86,213,123,.26)}
+.bodysvg .k-load-mid{fill:rgba(86,213,123,.55)}
+.bodysvg .k-load-full{fill:var(--accent)}
+.bodysvg .k-load-over{fill:var(--warn)}       /* 超过推荐区间 → 警示色 */
+[data-theme="light"] .bodysvg .k-load-light{fill:rgba(0,129,48,.18)}
+[data-theme="light"] .bodysvg .k-load-mid{fill:rgba(0,129,48,.44)}
+[data-theme="light"] .bodysvg .k-load-full{fill:#008130}
+[data-theme="light"] .bodysvg .k-load-over{fill:#A35A00}
+/* 图例色块 */
+.lg-sq{width:11px;height:11px;border-radius:3px;display:inline-block;vertical-align:-1px;margin-right:5px}

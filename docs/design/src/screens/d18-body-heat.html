@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>18 肌肉热力图</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .bodywrap{display:flex;gap:0;align-items:flex-start;justify-content:center}
+  .bodywrap figure{margin:0;flex:1;max-width:128px}
+  .bodywrap figcaption{text-align:center;font-size:11px;color:var(--t3);margin-top:6px}
+  .legend{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:14px;font-size:10.5px;color:var(--t3);text-align:center}
+  .mrw{display:flex;align-items:center;gap:10px;padding:10px 0}
+  .mrw .nm{flex:1;font-size:14px}
+  .bar{height:5px;border-radius:99px;background:var(--surface-3);overflow:hidden;position:relative;width:64px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--accent)}
+  .bar i.over{background:var(--warn)}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script src="../body.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">肌肉分布</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-share"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:8px">
+    <h1>训练分布</h1>
+    <p>按本周组数着色 · 越深练得越多</p>
+  </div>
+
+  <div class="pad">
+    <!-- 时间切换 -->
+    <div class="seg" style="margin-bottom:12px">
+      <button class="on">本周</button><button>本月</button><button>本年</button>
+    </div>
+
+    <div class="card" style="padding:16px 14px 14px">
+      <div class="bodywrap">
+        <figure id="fig-a"><figcaption>正面</figcaption></figure>
+        <figure id="fig-p"><figcaption>背面</figcaption></figure>
+      </div>
+      <div class="legend">
+        <div><span class="lg-sq" style="background:var(--surface-3)"></span>未练</div>
+        <div><span class="lg-sq" style="background:rgba(86,213,123,.26)"></span>偏低</div>
+        <div><span class="lg-sq" style="background:rgba(86,213,123,.55)"></span>中等</div>
+        <div><span class="lg-sq" style="background:var(--accent)"></span>达标</div>
+        <div><span class="lg-sq" style="background:var(--warn)"></span>过量</div>
+      </div>
+    </div>
+
+    <!-- 弱项提示（数据价值所在） -->
+    <div class="card" style="margin-top:12px;padding:13px 16px;background:var(--warn-soft);border-color:transparent">
+      <div style="display:flex;gap:9px;align-items:flex-start">
+        <span style="flex:none;margin-top:1px;font-size:14px">⚖️</span>
+        <div>
+          <div style="font-size:13.5px;font-weight:600;margin-bottom:3px">推拉不平衡</div>
+          <div style="font-size:12.5px;color:var(--t2);line-height:1.6;letter-spacing:.01em">
+            胸部 20 组 / 背部 6 组。长期这样容易圆肩，建议本周背部再加 6–10 组。</div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn sm" style="flex:1">加进今日计划</button>
+            <button class="btn sm gray" style="flex:1">本周不再提示</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 部位明细 -->
+    <div class="card" style="margin-top:12px;padding:6px 16px">
+      <div style="padding:10px 0 6px;font-size:14.5px;font-weight:600">部位明细</div>
+      <div class="sep"></div>
+
+      <div class="mrw">
+        <span class="nm">胸部</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">20 组</span>
+        <span class="bar"><i class="over" style="width:100%"></i></span>
+      </div>
+      <div class="sep"></div>
+      <div class="mrw">
+        <span class="nm">背部</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">6 组</span>
+        <span class="bar"><i style="width:30%"></i></span>
+      </div>
+      <div class="sep"></div>
+      <div class="mrw">
+        <span class="nm">腿部</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">14 组</span>
+        <span class="bar"><i style="width:78%"></i></span>
+      </div>
+      <div class="sep"></div>
+      <div class="mrw">
+        <span class="nm">肩部</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">8 组</span>
+        <span class="bar"><i style="width:50%"></i></span>
+      </div>
+      <div class="sep"></div>
+      <div class="mrw">
+        <span class="nm">手臂</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">10 组</span>
+        <span class="bar"><i style="width:62%"></i></span>
+      </div>
+      <div class="sep"></div>
+      <div class="mrw">
+        <span class="nm">核心</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">0 组</span>
+        <span class="bar"></span>
+      </div>
+    </div>
+
+    <p style="font-size:11.5px;color:var(--t3);margin:14px 2px 0;line-height:1.6;letter-spacing:.01em">
+      色阶按「该部位本周组数 ÷ 推荐区间」分档：<br>
+      大肌群（胸/背/腿）10–20 组 · 小肌群（肩/手臂/核心）6–14 组；超过上限 130% 记为过量。</p>
+  </div>
+</div>
+
+<script>
+  document.getElementById('fig-a').insertAdjacentHTML('afterbegin', bodySVG('a', { load:{
+    'chest':'over','front-deltoids':'mid','abs':'none','obliques':'none',
+    'quadriceps':'full','biceps':'mid','forearm':'light','neck':'none','calves':'mid','adductor':'none','abductors':'none','triceps':'light','knees':'none','head':'none'
+  }}));
+  document.getElementById('fig-p').insertAdjacentHTML('afterbegin', bodySVG('p', { load:{
+    'upper-back':'light','trapezius':'mid','lower-back':'light','back-deltoids':'mid',
+    'triceps':'light','forearm':'light','gluteal':'full','hamstring':'full',
+    'calves':'mid','left-soleus':'light','right-soleus':'light','adductor':'light','knees':'none','head':'none'
+  }}));
+</script>
+<script>document.write(TABBAR('me'))</script>
+</body></html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>FitNote · 设计系统与组件规范</title>
+<style>
+  :root{
+    /* ── 深色 token（与 App 一致）── */
+    --d-ground:#070A08; --d-surface:#111511; --d-surface2:#1D221E; --d-surface3:#272E2B;
+    --d-t1:#FBFEFC; --d-t2:#A9B0AA; --d-t3:#7B837C;
+    --d-accent:#56D57B; --d-ink:#06210F; --d-soft:#142A1A;
+    /* ── 浅色 token ── */
+    --l-ground:#F1F5F1; --l-surface:#FBFEFC; --l-surface2:#E8ECE9; --l-surface3:#E4E6E9;
+    --l-t1:#000000; --l-t2:#535A54; --l-t3:#6F7770;
+    --l-accent:#00682A; --l-ink:#FBFEFC; --l-soft:#DDECE3;
+    --danger:#FF453A;
+    /* 画板底色 */
+    --canvas:#101013; --panel:#18181C; --line:rgba(255,255,255,.10);
+    --ct1:#fff; --ct2:rgba(255,255,255,.60); --ct3:rgba(255,255,255,.34);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:46px 48px 70px;width:1320px;background:var(--canvas);color:var(--ct1);
+    font-family:'HarmonyOS Sans SC','MiSans','PingFang SC','OPPO Sans','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .num{font-variant-numeric:tabular-nums}
+  .hd{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:34px}
+  .hd h1{margin:0;font-size:34px;font-weight:800;letter-spacing:-.8px}
+  .hd h1 em{font-style:normal;color:#56D57B}
+  .hd p{margin:10px 0 0;font-size:15px;color:var(--ct2);line-height:1.7;max-width:1040px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px 26px;align-items:start}
+  .pane{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px 22px}
+  .pane>h2{margin:0 0 16px;font-size:15px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:9px}
+  .pane>h2::before{content:'';width:3px;height:15px;border-radius:2px;background:#56D57B}
+  .pane>h2 span{font-weight:400;font-size:12.5px;color:var(--ct3);letter-spacing:0}
+  .note{margin-top:14px;font-size:12.5px;color:var(--ct2);line-height:1.65}
+  .tag{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;font-weight:600;margin-right:6px}
+  .tag.ok{background:rgba(62,209,127,.16);color:#56D57B}
+  .tag.no{background:rgba(255,69,58,.16);color:#FF6B62}
+  .tag.q{background:rgba(255,159,10,.16);color:#FFB340}
+
+  /* ── 色板 ── */
+  .sws{display:flex;flex-wrap:wrap;gap:9px}
+  .sw{width:calc(33.333% - 6px);border-radius:10px;overflow:hidden;border:1px solid var(--line);font-size:10.5px}
+  .sw i{display:block;height:46px}
+  .sw u{display:block;text-decoration:none;padding:5px 8px 6px;background:#0C0C0E;color:var(--ct2);line-height:1.35}
+  .sw u b{display:block;color:var(--ct1);font-weight:600;font-size:11px}
+  .sw u em{font-style:normal;color:#56D57B;font-size:10px}
+
+  /* ── 字号 ── */
+  .tl{display:flex;flex-direction:column;gap:12px}
+  .tl>div{display:flex;align-items:baseline;gap:12px;padding-bottom:11px;border-bottom:.5px solid var(--line)}
+  .tl>div:last-child{border-bottom:0;padding-bottom:0}
+  .tl code{margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--ct3);white-space:nowrap}
+
+  /* ── 间距/形状 ── */
+  .ruler{display:flex;align-items:flex-end;gap:8px;margin-bottom:16px}
+  .ruler div{background:rgba(62,209,127,.22);border:1px solid rgba(62,209,127,.42);border-radius:3px 3px 0 0;
+    font-size:10px;color:#56D57B;text-align:center;padding-top:3px}
+  .radii{display:flex;gap:14px;flex-wrap:wrap}
+  .radii div{width:70px;height:58px;background:#1D221E;border:1px solid var(--line);display:flex;align-items:flex-end;
+    justify-content:center;padding-bottom:5px;font-size:10.5px;color:var(--ct3)}
+  .glass-rule{display:flex;flex-direction:column;gap:9px;font-size:12.5px;color:var(--ct2)}
+
+  /* ── 组件预览容器（深/浅）── */
+  .demo{border-radius:12px;padding:16px;margin-bottom:12px}
+  .demo.d{background:var(--d-ground)}
+  .demo.l{background:var(--l-ground)}
+  .demo-t{font-size:11px;color:var(--ct3);margin-bottom:10px}
+  .demo.l .demo-t{color:#6F7770}
+
+  /* 按钮 */
+  .b{display:flex;align-items:center;justify-content:center;gap:7px;height:46px;border-radius:14px;
+    font-size:15px;font-weight:600;border:0;font-family:inherit;width:100%;margin-bottom:9px;letter-spacing:-.1px}
+  .b.pri{background:var(--d-accent);color:var(--d-ink)}
+  .l .b.pri{background:var(--l-accent);color:var(--l-ink)}
+  .b.sec{background:var(--d-surface2);color:var(--d-t1);border:.5px solid rgba(255,255,255,.11)}
+  .l .b.sec{background:var(--l-surface2);color:var(--l-t1);border:.5px solid rgba(60,60,67,.13)}
+  .b.dis{background:var(--d-surface2);color:var(--d-t3)}
+  .l .b.dis{background:var(--l-surface2);color:var(--l-t3)}
+  .b.txt{background:none;color:var(--d-accent);height:auto;font-size:14px;margin:0}
+  .l .b.txt{color:#00682A}
+  .b.press{transform:scale(.96);opacity:.9}
+  .brow{display:flex;gap:9px}
+  .brow .b{margin-bottom:0}
+
+  /* 卡片 */
+  .card-d{background:var(--d-surface);border:.5px solid rgba(255,255,255,.075);border-radius:18px;padding:15px 16px}
+  .card-d.on{border-color:var(--d-accent);background:rgba(62,209,127,.10)}
+  .card-l{background:var(--l-surface);border:.5px solid rgba(60,60,67,.13);border-radius:18px;padding:15px 16px}
+  .card-l.on{border-color:var(--l-accent);background:#DDECE3}
+  .row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:.5px solid rgba(255,255,255,.075)}
+  .row:first-child{border-top:0}
+  .l .row{border-top-color:rgba(60,60,67,.13)}
+  .ic{width:30px;height:30px;border-radius:9px;background:var(--d-surface2);display:flex;align-items:center;justify-content:center;flex:none}
+  .ic svg{width:16px;height:16px;color:var(--d-t1)}
+  .ic.acc{background:var(--d-soft)} .ic.acc svg{color:var(--d-accent)}
+  .l .ic{background:var(--l-surface2)} .l .ic svg{color:var(--l-t1)}
+  .l .ic.acc{background:var(--l-soft)} .l .ic.acc svg{color:var(--l-accent)}
+  .mid{flex:1;min-width:0}
+  .mid b{display:block;font-size:14.5px;font-weight:500;color:var(--d-t1)}
+  .l .mid b{color:var(--l-t1)}
+  .mid span{display:block;font-size:12px;color:var(--d-t2);margin-top:1px}
+  .l .mid span{color:var(--l-t2)}
+  .val{font-size:14.5px;color:var(--d-t2);font-weight:500}
+  .l .val{color:var(--l-t2)}
+
+  /* 步进器 */
+  .stp{display:flex;align-items:center;justify-content:space-between;background:var(--d-surface2);
+    border-radius:14px;padding:5px;border:.5px solid rgba(255,255,255,.075)}
+  .l .stp{background:var(--l-surface2);border-color:rgba(60,60,67,.13)}
+  .stp button{width:42px;height:42px;border-radius:11px;border:0;background:var(--d-surface3);color:var(--d-t1);
+    font-size:21px;display:flex;align-items:center;justify-content:center;font-family:inherit}
+  .l .stp button{background:var(--l-surface3);color:var(--l-t1)}
+  .stp .v{font-size:25px;font-weight:700;letter-spacing:-.6px;display:flex;align-items:baseline;gap:4px;color:var(--d-t1)}
+  .l .stp .v{color:var(--l-t1)}
+  .stp .v u{font-size:12px;font-weight:600;color:var(--d-t2);text-decoration:none}
+  .l .stp .v u{color:var(--l-t2)}
+
+  /* 分段 / 胶囊 / 开关 */
+  .seg{display:flex;background:var(--d-surface2);border-radius:10px;padding:2px;gap:2px}
+  .l .seg{background:var(--l-surface2)}
+  .seg button{flex:1;height:31px;border:0;background:transparent;color:var(--d-t2);font-family:inherit;font-size:13px;border-radius:8px}
+  .l .seg button{color:var(--l-t2)}
+  .seg button.on{background:var(--d-surface);color:var(--d-t1);font-weight:600}
+  .l .seg button.on{background:var(--l-surface);color:var(--l-t1)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{height:31px;padding:0 13px;border-radius:99px;background:var(--d-surface2);border:.5px solid rgba(255,255,255,.075);
+    color:var(--d-t2);font-size:13px;display:flex;align-items:center}
+  .l .chip{background:var(--l-surface2);border-color:rgba(60,60,67,.13);color:var(--l-t2)}
+  .chip.on{background:var(--d-accent);border-color:transparent;color:var(--d-ink);font-weight:600}
+  .l .chip.on{background:var(--l-accent);color:var(--l-ink)}
+  .sw2{width:50px;height:30px;border-radius:99px;background:var(--d-surface3);position:relative;flex:none}
+  .l .sw2{background:var(--l-surface3)}
+  .sw2 i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.2s}
+  .sw2.on{background:var(--d-accent)} .l .sw2.on{background:var(--l-accent)}
+  .sw2.on i{left:23px}
+  .inp{height:38px;padding:0 12px;background:var(--d-surface2);border-radius:11px;border:.5px solid rgba(255,255,255,.075);
+    display:flex;align-items:center;font-size:14px;color:var(--d-t3);border-bottom:2px solid var(--d-accent)}
+  .l .inp{background:var(--l-surface2);border-color:rgba(60,60,67,.13);border-bottom-color:var(--l-accent);color:var(--l-t3)}
+
+  /* 数据方块 / 进度 */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .tile{background:var(--d-surface);border:.5px solid rgba(255,255,255,.075);border-radius:12px;padding:11px 11px 12px}
+  .l .tile{background:var(--l-surface);border-color:rgba(60,60,67,.13)}
+  .tile b{display:block;font-size:21px;font-weight:700;letter-spacing:-.5px;line-height:1.1;color:var(--d-t1)}
+  .l .tile b{color:var(--l-t1)}
+  .tile b i{font-size:11px;font-style:normal;font-weight:600;color:var(--d-t2);margin-left:1px}
+  .l .tile b i{color:var(--l-t2)}
+  .tile span{display:block;font-size:11px;color:var(--d-t2);margin-top:3px}
+  .l .tile span{color:var(--l-t2)}
+  .bar{height:7px;border-radius:99px;background:var(--d-surface3);overflow:hidden}
+  .l .bar{background:var(--l-surface3)}
+  .bar i{display:block;height:100%;border-radius:99px;background:var(--d-accent)}
+  .l .bar i{background:var(--l-accent)}
+
+  /* Tab 栏 */
+  .tabbar{position:relative;height:62px;display:flex;align-items:center;padding:0 6px;border-radius:26px;
+    background:rgba(17,21,19,.86);border:.5px solid rgba(255,255,255,.12);
+    box-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.14)}
+  .l .tabbar{background:rgba(249,249,251,.92);border-color:rgba(60,60,67,.16);box-shadow:0 10px 30px rgba(0,0,0,.1)}
+  .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--d-t3);position:relative}
+  .l .tb{color:var(--l-t3)}
+  .tb svg{width:22px;height:22px}
+  .tb span{font-size:9.5px}
+  .tb.on{color:var(--d-accent)} .l .tb.on{color:var(--l-accent)}
+  .glide{position:absolute;top:5px;left:9px;width:66px;height:52px;border-radius:18px;
+    background:var(--d-soft);border:.5px solid rgba(62,209,127,.24)}
+  .l .glide{background:var(--l-soft);border-color:rgba(30,122,52,.22)}
+  .fab{width:46px;height:46px;border-radius:15px;background:var(--d-accent);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 18px rgba(62,209,127,.3), inset 0 1px 0 rgba(255,255,255,.32)}
+  .l .fab{background:var(--l-accent);box-shadow:0 6px 18px rgba(30,122,52,.3)}
+  .fab svg{width:23px;height:23px;color:var(--d-ink)} .l .fab svg{color:var(--l-ink)}
+
+  /* Toast / 弹层 */
+  .toast{display:inline-flex;align-items:center;padding:9px 16px;border-radius:99px;background:rgba(236,245,241,.96);
+    color:#05261a;font-size:12.5px;font-weight:600}
+  .sheet{background:var(--d-surface);border-radius:20px 20px 0 0;padding:10px 16px 16px;border-top:.5px solid rgba(255,255,255,.1)}
+  .l .sheet{background:var(--l-surface);border-top-color:rgba(60,60,67,.13)}
+  .handle{width:36px;height:4px;border-radius:99px;background:var(--d-surface3);margin:0 auto 12px}
+  .l .handle{background:var(--l-surface3)}
+</style></head><body>
+<script src="src/sprite.js"></script>
+
+<div class="hd">
+  <h1>FitNote <em>·</em> 设计系统与组件规范</h1>
+  <p>对应《FitNote 系统设计规范》§4。所有色值均已按 WCAG 实算校验，组件按此实现即可保证全局一致。
+     画板分「深色 / 浅色」两套并列对照——左侧为深色（主），标 <span class="tag ok">深</span> 者为深色专属值。</p>
+</div>
+
+<div class="cols">
+
+  <!-- ══ 颜色 ══ -->
+  <div class="pane">
+    <h2>颜色 · 深色 <span>实测对比度</span></h2>
+    <div class="sws">
+      <div class="sw"><i style="background:#070A08"></i><u><b>#070A08</b>底 ground</u></div>
+      <div class="sw"><i style="background:#111511"></i><u><b>#111511</b>表面 surface</u></div>
+      <div class="sw"><i style="background:#1D221E"></i><u><b>#1D221E</b>次表面</u></div>
+      <div class="sw"><i style="background:#FBFEFC"></i><u><b>#FBFEFC</b>一级文本 <em>17.4:1</em></u></div>
+      <div class="sw"><i style="background:#969B99"></i><u><b>.62 白</b>二级文本 <em>6.89:1</em></u></div>
+      <div class="sw"><i style="background:#666A68"></i><u><b>.40 白</b>三级文本 <em>3.47:1</em></u></div>
+      <div class="sw"><i style="background:#56D57B"></i><u><b>#56D57B</b>强调 accent <em>9.94:1</em></u></div>
+      <div class="sw"><i style="background:#06210F"></i><u><b>#06210F</b>强调上的文字</u></div>
+      <div class="sw"><i style="background:#FF453A"></i><u><b>#FF453A</b>警示（仅错误态）</u></div>
+    </div>
+    <div class="note"><span class="tag ok">深</span>深色为<b>默认外观</b>。强调色 <b>#56D57B</b> 在近黑底上对比度 9.94:1，其上必须用深色文字 <b>#06210F</b>（而非白字）。</div>
+  </div>
+
+  <div class="pane">
+    <h2>颜色 · 浅色 <span>实测对比度</span></h2>
+    <div class="sws">
+      <div class="sw"><i style="background:#F1F5F1"></i><u><b>#F1F5F1</b>底 ground</u></div>
+      <div class="sw"><i style="background:#FBFEFC"></i><u><b>#FBFEFC</b>表面 surface</u></div>
+      <div class="sw"><i style="background:#E8ECE9"></i><u><b>#E8ECE9</b>次表面</u></div>
+      <div class="sw"><i style="background:#000000"></i><u><b>#000000</b>一级文本 <em>21:1</em></u></div>
+      <div class="sw"><i style="background:#6D6D72"></i><u><b>.75 黑</b>二级文本 <em>5.15:1</em></u></div>
+      <div class="sw"><i style="background:#949498"></i><u><b>.55 黑</b>三级文本 <em>3.02:1</em></u></div>
+      <div class="sw"><i style="background:#00682A"></i><u><b>#00682A</b>强调 accent <em>5.40:1</em></u></div>
+      <div class="sw"><i style="background:#FBFEFC;border:.5px solid #ccc"></i><u><b>#FBFEFC</b>强调上的白字</u></div>
+      <div class="sw"><i style="background:#FF3B30"></i><u><b>#FF3B30</b>警示（仅错误态）</u></div>
+    </div>
+    <div class="note"><b>层级是「灰底 + 白卡」</b>（iOS 分组列表），不是白底灰卡。强调色必须用<b>深绿 #00682A</b>——原方案的 #34C759 做文字只有 2.22:1，且「绿底白字」同样不达标。</div>
+  </div>
+
+  <!-- ══ 字体 ══ -->
+  <div class="pane">
+    <h2>字体层级 <span>只靠字号 + 字重 + 灰阶，不靠颜色</span></h2>
+    <div class="tl">
+      <div><span style="font-size:30px;font-weight:800;letter-spacing:-.8px">大标题</span><code>32 / 800 / −0.8px</code></div>
+      <div><span style="font-size:22px;font-weight:700;letter-spacing:-.3px">页面标题</span><code>22 / 700 / −0.3px</code></div>
+      <div><span style="font-size:17px;font-weight:600;letter-spacing:-.2px">区块标题</span><code>17 / 600 / −0.2px</code></div>
+      <div><span style="font-size:15px">正文内容</span><code>15 / 400</code></div>
+      <div><span style="font-size:13px;color:var(--ct2)">辅助说明</span><code>13 / 400 / t2</code></div>
+      <div><span style="font-size:11.5px;color:var(--ct3)">标注占位</span><code>11.5 / 400 / t3</code></div>
+    </div>
+    <div class="note">所有数字（容量 / 重量 / 计时 / 热量）统一 <code style="font-family:ui-monospace,monospace;font-size:11.5px;color:#56D57B">font-variant-numeric: tabular-nums</code>，避免跳动：<span class="num" style="font-weight:700">4,820</span> · <span class="num" style="font-weight:700">1,240</span> · <span class="num" style="font-weight:700">62.5</span></div>
+  </div>
+
+  <!-- ══ 间距 / 形状 ══ -->
+  <div class="pane">
+    <h2>间距 · 圆角 · 描边 <span>8pt 栅格</span></h2>
+    <div class="ruler">
+      <div style="width:34px;height:4px">4</div>
+      <div style="width:34px;height:8px">8</div>
+      <div style="width:34px;height:12px">12</div>
+      <div style="width:34px;height:16px">16</div>
+      <div style="width:34px;height:22px">22</div>
+      <div style="width:60px;height:60px;background:rgba(255,255,255,.06);border-style:dashed;border-color:var(--line);color:var(--ct3)">页面边距 16</div>
+    </div>
+    <div class="radii">
+      <div style="border-radius:18px">卡片 18</div>
+      <div style="border-radius:12px">控件 12</div>
+      <div style="border-radius:99px">胶囊 999</div>
+      <div style="border-radius:8px;border-width:.5px">描边 0.5px</div>
+    </div>
+    <div class="note">分隔线一律 <b>0.5px</b>（发丝线）——同组信息放同一张实心卡片内用发丝线分隔，<b>不拆成多张小卡</b>（碎片化是头号敌人）。</div>
+  </div>
+
+  <!-- ══ 按钮 ══ -->
+  <div class="pane">
+    <h2>按钮 <span>主 / 次 / 文字 / 禁用 / 按压</span></h2>
+    <div class="demo d">
+      <div class="demo-t">深色</div>
+      <button class="b pri"><svg style="width:17px;height:17px"><use href="#i-bolt"/></svg>开始训练</button>
+      <button class="b sec">切换动作</button>
+      <div class="brow" style="margin-bottom:9px">
+        <button class="b sec" style="flex:1">次要</button>
+        <button class="b pri" style="flex:1;margin:0">主要</button>
+      </div>
+      <button class="b dis">不可用</button>
+      <div style="display:flex;align-items:center;gap:16px;margin-top:4px">
+        <button class="b txt">文字按钮</button>
+        <span style="font-size:12.5px;color:var(--ct3)">按压缩放 0.96 ↓</span>
+        <button class="b pri press" style="width:96px;margin:0;height:38px;font-size:13.5px">按压中</button>
+      </div>
+    </div>
+    <div class="demo l">
+      <div class="demo-t">浅色</div>
+      <button class="b pri">开始训练</button>
+      <button class="b sec" style="margin-bottom:0">切换动作</button>
+    </div>
+    <div class="note">主按钮高 48px（关键操作 52–54px）、圆角 14px、全宽。按压反馈 = <b>缩放 0.96 + 透明度微变</b>，时长 0.16s，无其它动效。</div>
+  </div>
+
+  <!-- ══ 卡片与列表 ══ -->
+  <div class="pane">
+    <h2>卡片与列表行 <span>默认 / 选中</span></h2>
+    <div class="demo d" style="padding:14px">
+      <div class="demo-t">深色 · 默认卡片</div>
+      <div class="card-d">
+        <div class="row"><span class="ic acc"><svg><use href="#i-check"/></svg></span>
+          <span class="mid"><b>早餐</b><span>燕麦牛奶 · 280 kcal</span></span><span class="val num">280</span></div>
+        <div class="row"><span class="ic"><svg><use href="#i-camera"/></svg></span>
+          <span class="mid"><b>晚餐</b><span>拍照识餐 / 选食物</span></span></div>
+      </div>
+      <div class="demo-t" style="margin-top:14px">选中态（描边转强调色 + 10% 填充）</div>
+      <div class="card-d on">
+        <div class="row" style="border:0"><span class="rd" style="width:20px;height:20px;border-radius:50%;background:#56D57B;display:flex;align-items:center;justify-content:center">
+          <svg style="width:12px;height:12px;color:#06210F"><use href="#i-check"/></svg></span>
+          <span class="mid"><b style="color:#56D57B">均衡进阶</b><span>每周 4 练 · 推 / 拉 / 腿分化</span></span></div>
+      </div>
+    </div>
+    <div class="note">卡片 = 实心表面 + 18px 圆角 + 0.5px 描边 + 16px 内边距。列表行高 ≥48px，行间发丝线，首行无上边线。</div>
+  </div>
+
+  <!-- ══ 记组控件 ══ -->
+  <div class="pane">
+    <h2>记组控件 <span>产品最高频操作 · 3 次点击记完一组</span></h2>
+    <div class="demo d">
+      <div class="demo-t">重量步进器（±2.5kg）</div>
+      <div class="stp" style="margin-bottom:10px">
+        <button>−</button><span class="v num">62.5<u>kg</u></span><button>+</button>
+      </div>
+      <div class="demo-t">次数步进器（±1）</div>
+      <div class="stp">
+        <button>−</button><span class="v num">8<u>次</u></span><button>+</button>
+      </div>
+      <div class="chips" style="margin-top:11px">
+        <span class="chip on">沿用上一组</span><span class="chip">热身组</span><span class="chip">力竭</span>
+      </div>
+    </div>
+    <div class="note">左右按钮 44×44（拇指热区），中央数字 26/700。训练中<b>必须常驻显示「上次 62.5kg × 8」</b>，避免记错。</div>
+  </div>
+
+  <!-- ══ 其它控件 ══ -->
+  <div class="pane">
+    <h2>输入 · 分段 · 胶囊 · 开关</h2>
+    <div class="demo d">
+      <div class="demo-t">输入框（聚焦态：底边强调色细线）</div>
+      <div class="inp" style="margin-bottom:12px">搜索食物（中文 / 拼音）</div>
+      <div class="demo-t">分段控件</div>
+      <div class="seg" style="margin-bottom:12px"><button class="on">全部</button><button>训练</button><button>饮食</button><button>体脂</button></div>
+      <div class="demo-t">单选胶囊</div>
+      <div class="chips" style="margin-bottom:12px"><span class="chip on">胸</span><span class="chip">背</span><span class="chip">腿</span><span class="chip">肩</span></div>
+      <div class="demo-t">开关</div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span class="sw2 on"><i></i></span><span class="sw2"><i></i></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 数据展示 ══ -->
+  <div class="pane">
+    <h2>数据方块 · 进度条</h2>
+    <div class="demo d">
+      <div class="demo-t">数据方块（3 列）</div>
+      <div class="tiles" style="margin-bottom:12px">
+        <div class="tile"><b class="num">1,240<i>kcal</i></b><span>今日已摄入</span></div>
+        <div class="tile"><b class="num">4,820<i>kg</i></b><span>训练容量</span></div>
+        <div class="tile"><b class="num">12<i>天</i></b><span>连续记录</span></div>
+      </div>
+      <div class="demo-t">进度条</div>
+      <div class="bar" style="margin-bottom:9px"><i style="width:48%"></i></div>
+      <div class="bar" style="margin-bottom:0"><i style="width:76%"></i></div>
+    </div>
+    <div class="note">数字 22/700 + 单位 11px；标注 11.5px。进度条填充为线性动画 0.4s，数值变化平滑过渡不跳变。</div>
+  </div>
+
+  <!-- ══ 导航 ══ -->
+  <div class="pane">
+    <h2>底部导航 <span>悬浮胶囊 + 中央凸起主动作</span></h2>
+    <div class="demo d" style="padding:16px 10px">
+      <div class="tabbar">
+        <span class="glide"></span>
+        <div class="tb on"><svg><use href="#i-today"/></svg><span>今日</span></div>
+        <div class="tb"><svg><use href="#i-list"/></svg><span>记录</span></div>
+        <div class="tb" style="flex:0 0 62px"><div class="fab"><svg><use href="#i-plus"/></svg></div></div>
+        <div class="tb"><svg><use href="#i-target"/></svg><span>计划</span></div>
+        <div class="tb"><svg><use href="#i-user"/></svg><span>我的</span></div>
+      </div>
+    </div>
+    <div class="note">高 62px · 左右各 12px · 距底 20px · 圆角 26px。选中项有<b>液态滑动高光块</b>（在标签间流动，带拉伸与回弹）。
+      这是<b>唯一</b>使用「液态玻璃」的四处之一。<br>
+      <span class="tag q">待审批</span>中央凸起按钮的职责（训练 / 记餐 / 按时间智能）。</div>
+  </div>
+
+  <!-- ══ 反馈 ══ -->
+  <div class="pane">
+    <h2>反馈 · Toast · 底部弹层</h2>
+    <div class="demo d">
+      <div class="demo-t">Toast（2 秒自动消失，不阻断操作）</div>
+      <div style="text-align:center;margin-bottom:14px"><span class="toast">已记入 · 早餐 +280 kcal</span></div>
+      <div class="demo-t">底部弹层（顶部小横条 · 遮罩可点击关闭）</div>
+      <div class="sheet">
+        <div class="handle"></div>
+        <div style="font-size:16px;font-weight:600;margin-bottom:10px">奶皮子</div>
+        <div style="font-size:12px;color:var(--d-t2);margin-bottom:10px">每 100g：蛋白 12.2g · 脂肪 42.9g · 碳水 6.3g</div>
+        <button class="b pri" style="margin:0;height:44px;font-size:14.5px">确认记入</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 玻璃规则 ══ -->
+  <div class="pane">
+    <h2>「液态玻璃」使用规则 <span>只允许 4 个位置</span></h2>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:13px">
+      <div style="display:flex;align-items:center;gap:10px"><span class="tag ok">允许</span><span style="color:var(--ct2)">吸顶导航栏</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tag ok">允许</span><span style="color:var(--ct2)">底部 Tab 栏（含液态滑动高光）</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tag ok">允许</span><span style="color:var(--ct2)">模态弹层 / 底部弹层</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tag ok">允许</span><span style="color:var(--ct2)">Toast</span></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px"><span class="tag no">禁止</span><span style="color:var(--ct2)">内容卡片（用实心表面 + 发丝线）</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tag no">禁止</span><span style="color:var(--ct2)">装饰性渐变背景 / 彩虹光斑</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="tag no">禁止</span><span style="color:var(--ct2)">堆叠投影制造层级</span></div>
+    </div>
+    <div class="note">唯一例外：卡片可保留<b>极轻</b>阴影（<code style="font-family:ui-monospace,monospace;font-size:11.5px">0 1px 2px rgba(0,0,0,.04)</code>）。它不是装饰，而是承担「卡片浮于页面之上」的语义——浅色下若完全禁用会导致卡片边界不清。</div>
+  </div>
+
+  <!-- ══ 五态 ══ -->
+  <div class="pane">
+    <h2>页面五态 <span>不允许只做成功路径</span></h2>
+    <div style="display:flex;flex-direction:column;gap:11px;font-size:12.5px;color:var(--ct2)">
+      <div><b style="color:var(--ct1)">① 首次空</b> —— 引导式提示 + 一个明确主操作入口（<b>不显示 0% 空环、不显示空表格</b>）</div>
+      <div><b style="color:var(--ct1)">② 加载中</b> —— 小圆环居中，<b>无文字</b>；不得出现「网络加载中」（与离线定位冲突）</div>
+      <div><b style="color:var(--ct1)">③ 成功</b> —— 正常内容</div>
+      <div><b style="color:var(--ct1)">④ 错误</b> —— 说原因 + 给下一步（重试 / 改手动 / 去设置）</div>
+      <div><b style="color:var(--ct1)">⑤ 权限被拒</b> —— 相机/相册被拒时<b>不阻塞</b>，直接提供「手动选食物」</div>
+    </div>
+    <div class="note">三个必做场景：模型加载失败 → 直接展示手动搜索界面；识别结果不对 → 可改分类/克数/撤销；零数据的今日页 → 「开始训练」+「拍照记餐」两个入口。</div>
+  </div>
+
+</div>
+
+</body></html>

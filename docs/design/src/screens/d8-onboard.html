@@ -1,10 +1,5 @@
 <!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>08 首次引导</title>
-<link rel="stylesheet" href="../fitnote.css">
-<style>
-  .dots{display:flex;gap:6px;justify-content:center}
-  .dots i{width:7px;height:7px;border-radius:50%;background:var(--surface-3)}
-  .dots i.on{width:20px;border-radius:99px;background:var(--accent)}
-</style></head><body>
+<link rel="stylesheet" href="../fitnote.css"></head><body>
 <script src="../sprite.js"></script>
 <script src="../chrome.js"></script>
 <script>document.write(SB())</script>
@@ -41,10 +36,11 @@
     </div>
   </div>
 
-  <div style="margin-top:auto;padding:0 16px 0">
-    <div class="dots" style="margin-bottom:20px"><i></i><i class="on"></i><i></i></div>
-    <button class="btn" style="height:52px;border-radius:16px;font-size:16.5px">下一步</button>
-    <p style="text-align:center;font-size:12px;color:var(--t3);margin:12px 0 26px">第 2 步 / 共 3 步</p>
   </div>
-</div>
+
+  <div class="dock">
+    <div class="dots" style="margin-bottom:18px"><i></i><i class="on"></i><i></i></div>
+    <button class="btn" style="height:52px;border-radius:16px;font-size:16.5px">下一步</button>
+    <p style="text-align:center;font-size:12px;color:var(--t3);margin:11px 0 0">第 2 步 / 共 3 步</p>
+  </div>
 </body></html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>13 训练日历</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .wd{font-size:11px;color:var(--t3);text-align:center;padding-bottom:4px;letter-spacing:.01em}
+  .cd{aspect-ratio:1;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;font-size:12.5px;color:var(--t2);position:relative}
+  .cd.blank{background:transparent}
+  .cd.done{background:var(--accent-soft);color:var(--t1)}
+  .cd.done::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent)}
+  .cd.today{outline:2px solid var(--accent);outline-offset:-2px;color:var(--t1);font-weight:700}
+  .cd.rest{color:var(--t3)}
+  .lg{display:flex;gap:14px;font-size:11.5px;color:var(--t3);letter-spacing:.01em}
+  .lg i{width:8px;height:8px;border-radius:50%;display:inline-block;vertical-align:-1px;margin-right:4px}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">2026年10月</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-more"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:10px">
+    <h1>训练日历</h1>
+    <p>本月 14 练 · 连续 3 周</p>
+  </div>
+
+  <div class="pad">
+    <div class="card" style="padding:14px 14px 12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:14.5px;font-weight:600">10 月</span>
+        <span style="font-size:12px;color:var(--t3)">总容量 48,270 kg</span>
+      </div>
+      <div class="cal">
+        <div class="wd">一</div><div class="wd">二</div><div class="wd">三</div><div class="wd">四</div>
+        <div class="wd">五</div><div class="wd">六</div><div class="wd">日</div>
+        <div class="cd blank"></div><div class="cd blank"></div><div class="cd blank"></div>
+        <div class="cd num">1</div>
+        <div class="cd done num">2</div><div class="cd rest num">3</div>
+        <div class="cd done num">4</div><div class="cd done num">5</div><div class="cd rest num">6</div>
+        <div class="cd done num">7</div><div class="cd done num">8</div><div class="cd rest num">9</div>
+        <div class="cd done num">10</div><div class="cd done num">11</div><div class="cd rest num">12</div>
+        <div class="cd done num">13</div><div class="cd today num">14</div><div class="cd num">15</div>
+        <div class="cd num">16</div><div class="cd num">17</div><div class="cd num">18</div>
+        <div class="cd num">19</div><div class="cd num">20</div><div class="cd num">21</div>
+        <div class="cd num">22</div><div class="cd num">23</div><div class="cd num">24</div>
+        <div class="cd num">25</div><div class="cd num">26</div><div class="cd num">27</div>
+        <div class="cd num">28</div><div class="cd num">29</div><div class="cd num">30</div>
+        <div class="cd num">31</div>
+      </div>
+      <div class="lg" style="margin-top:12px">
+        <span><i style="background:var(--accent)"></i>已练</span>
+        <span><i style="background:var(--surface-3)"></i>未练</span>
+        <span><i style="background:transparent;outline:2px solid var(--accent)"></i>今天</span>
+      </div>
+    </div>
+
+    <!-- 点选当日明细 -->
+    <div class="card" style="margin-top:12px;padding:14px 16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="font-size:14.5px;font-weight:600">10月14日 · 今天</span>
+        <span class="pill" style="margin-left:auto">推 · 胸肩三头</span>
+      </div>
+      <div class="sep"></div>
+      <div style="display:flex;gap:8px;align-items:center;padding:11px 0">
+        <span style="flex:1;font-size:14px">平板卧推</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">62.5 kg × 8 · 4 组</span>
+      </div>
+      <div class="sep"></div>
+      <div style="display:flex;gap:8px;align-items:center;padding:11px 0">
+        <span style="flex:1;font-size:14px">上斜哑铃卧推</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">24 kg × 10 · 3 组</span>
+      </div>
+      <div class="sep"></div>
+      <div style="display:flex;gap:8px;align-items:center;padding:11px 0">
+        <span style="flex:1;font-size:14px">绳索下压</span>
+        <span class="num" style="font-size:12.5px;color:var(--t2)">25 kg × 12 · 3 组</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>document.write(TABBAR('log'))</script>
+</body></html>

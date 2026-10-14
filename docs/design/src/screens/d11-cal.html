@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>11 热量记账</title>
+<link rel="stylesheet" href="../fitnote.css"></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">10月14日 · 周三</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-more"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:14px">
+    <h1>热量</h1>
+    <p>拍照识餐 · 三餐时间窗记账 · 数据只在本机</p>
+  </div>
+
+  <div class="pad">
+    <!-- 当日汇总 -->
+    <div class="card" style="padding:15px 16px">
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span class="num" style="font-size:30px;font-weight:800;letter-spacing:-1.1px;line-height:1">1,240</span>
+        <span style="font-size:13px;color:var(--t2)">/ 2,600 kcal</span>
+        <span style="margin-left:auto;font-size:12.5px;color:var(--t2)">还差 1,360</span>
+      </div>
+      <div class="bar" style="margin-top:13px"><i style="width:48%"></i></div>
+      <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--t2)">
+        <span>蛋白 <b class="num" style="color:var(--t1);font-weight:600">78</b>g</span>
+        <span>碳水 <b class="num" style="color:var(--t1);font-weight:600">142</b>g</span>
+        <span>脂肪 <b class="num" style="color:var(--t1);font-weight:600">36</b>g</span>
+      </div>
+    </div>
+
+    <!-- 拍照识别 -->
+    <div class="card" style="margin-top:12px;padding:16px;display:flex;align-items:center;gap:13px">
+      <span style="width:46px;height:46px;border-radius:15px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="23" height="23" style="color:var(--accent)"><use href="#i-camera"/></svg></span>
+      <span style="flex:1;min-width:0">
+        <b style="display:block;font-size:16px;font-weight:600;letter-spacing:-.2px">拍照识别食物</b>
+        <span style="display:block;font-size:12.5px;color:var(--t2);margin-top:2px">离线识别 · 照片处理完即丢，不保留原图</span>
+      </span>
+      <span class="chev"></span>
+    </div>
+
+    <!-- 动态推荐 -->
+    <div class="sec"><h2>为你推荐</h2>
+      <div class="card">
+        <div class="ttl" style="padding-bottom:6px">午餐 · 已记 620 / 780 kcal</div>
+        <div class="rows" style="padding-bottom:6px">
+          <div class="row"><span class="ic acc"><svg><use href="#i-utensils"/></svg></span>
+            <span class="mid"><b>鸡胸肉</b><span>肉蛋 · 建议 150g</span></span>
+            <span class="val num">210<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kcal</i></span></div>
+          <div class="row"><span class="ic"><svg><use href="#i-utensils"/></svg></span>
+            <span class="mid"><b>糙米饭</b><span>主食 · 建议 150g</span></span>
+            <span class="val num">167<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kcal</i></span></div>
+          <div class="row"><span class="ic"><svg><use href="#i-utensils"/></svg></span>
+            <span class="mid"><b>西兰花</b><span>蔬菜 · 建议 200g</span></span>
+            <span class="val num">72<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kcal</i></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 三餐时间窗 -->
+    <div class="sec"><h2>今日三餐</h2>
+      <div class="card">
+        <div class="rows">
+          <div class="row"><span class="ic acc"><svg><use href="#i-check"/></svg></span>
+            <span class="mid"><b>早餐</b><span>燕麦牛奶 · 07:40</span></span>
+            <span class="val num">280</span><span class="chev"></span></div>
+          <div class="row"><span class="ic acc"><svg><use href="#i-check"/></svg></span>
+            <span class="mid"><b>午餐</b><span>鸡胸糙米饭 · 12:20</span></span>
+            <span class="val num">620</span><span class="chev"></span></div>
+          <div class="row"><span class="ic"><svg><use href="#i-camera"/></svg></span>
+            <span class="mid"><b style="color:var(--t2)">晚餐</b><span>18:00–20:00 记餐</span></span>
+            <span class="chev"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>document.write(TABBAR('today'))</script>
+</body></html>

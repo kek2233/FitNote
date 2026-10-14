@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>15 空状态</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 30px 30px}
+  .empty .ico{width:60px;height:60px;border-radius:18px;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .empty .ico svg{width:28px;height:28px;color:var(--t3)}
+  .empty h2{font-size:17px;font-weight:600;margin:0 0 6px;letter-spacing:-.2px}
+  .empty p{font-size:13px;color:var(--t2);margin:0;line-height:1.55;letter-spacing:.01em}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">10月14日 周二</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-more"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:10px">
+    <h1>今天</h1>
+    <p>还没有任何记录，先从下面任意一步开始</p>
+  </div>
+
+  <div class="pad">
+    <!-- 空状态本体：极简图标 + 说明 + 直接给入口 -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="empty">
+        <div class="ico"><svg><use href="#i-dumbbell"/></svg></div>
+        <h2>今天还没有训练</h2>
+        <p>记一组只需要 3 次点击。<br>也可以先录一次体脂，拿到基线再看计划。</p>
+      </div>
+      <div class="sep"></div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:9px">
+        <button class="btn" style="height:46px">开始训练</button>
+        <button class="btn ghost" style="height:46px">手动记一组</button>
+      </div>
+    </div>
+
+    <!-- 第二步卡片：次级引导，不喧宾夺主 -->
+    <div class="card" style="margin-top:12px;padding:14px 16px">
+      <div style="font-size:14.5px;font-weight:600;margin-bottom:4px">先建立基线</div>
+      <div style="font-size:12.5px;color:var(--t2);line-height:1.55;letter-spacing:.01em">
+        录入身高体重腰围，得到体脂率与每日热量目标，计划会自动按它生成。</div>
+      <div class="sep" style="margin:12px 0"></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="iconbtn" style="background:var(--surface-2)"><svg><use href="#i-bolt"/></svg></span>
+        <span style="flex:1;font-size:14px">录入身体数据</span>
+        <span style="font-size:12.5px;color:var(--t3)">约 30 秒</span>
+      </div>
+    </div>
+
+    <p style="font-size:11.5px;color:var(--t3);text-align:center;margin:16px 0 0;letter-spacing:.01em">
+      数据仅存本机，不会上传 · 全程无需联网</p>
+  </div>
+</div>
+
+<script>document.write(TABBAR('today'))</script>
+</body></html>

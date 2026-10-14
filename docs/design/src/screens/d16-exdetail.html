@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>16 动作详情与同类替代</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .alt{display:flex;align-items:center;gap:10px;padding:11px 0}
+  .alt .ico{width:34px;height:34px;border-radius:10px;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;flex:none}
+  .alt .ico svg{width:17px;height:17px;color:var(--t2)}
+  .tag{font-size:11px;color:var(--t3);border:1px solid var(--sep);border-radius:6px;padding:2px 6px;letter-spacing:.01em}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">动作库</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-x"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:10px">
+    <h1>平板卧推</h1>
+    <p>胸 · 杠铃 · 复合动作</p>
+  </div>
+
+  <div class="pad">
+    <!-- 上次表现：常驻可见（不做视觉识别重量，靠记忆+步进） -->
+    <div class="card" style="padding:14px 16px">
+      <div style="font-size:12.5px;color:var(--t2);letter-spacing:.01em">上次（10月11日）</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px">
+        <span class="num" style="font-size:28px;font-weight:700;letter-spacing:-.8px">62.5</span>
+        <span style="font-size:13px;color:var(--t2)">kg × 8</span>
+        <span class="pill" style="margin-left:auto">4 组</span>
+      </div>
+      <div class="sep" style="margin:12px 0"></div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">1RM</div>
+          <div class="num" style="font-size:15px;font-weight:600">76.0 kg</div></div>
+        <div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">总容量</div>
+          <div class="num" style="font-size:15px;font-weight:600">2,000 kg</div></div>
+        <div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">练过</div>
+          <div class="num" style="font-size:15px;font-weight:600">23 次</div></div>
+      </div>
+    </div>
+
+    <!-- 同类替代：器械被占用时的解法 -->
+    <div class="card" style="margin-top:12px;padding:6px 16px">
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 0 6px">
+        <span style="font-size:14.5px;font-weight:600">同类替代</span>
+        <span style="font-size:11.5px;color:var(--t3)">同肌群 · 同动作模式</span>
+      </div>
+      <div class="sep"></div>
+      <div class="alt">
+        <span class="ico"><svg><use href="#i-dumbbell"/></svg></span>
+        <div style="flex:1"><div style="font-size:14px">哑铃卧推</div>
+          <div style="font-size:11.5px;color:var(--t3)">哑铃 · 上次 24 kg × 10</div></div>
+        <span class="tag">胸</span>
+      </div>
+      <div class="sep"></div>
+      <div class="alt">
+        <span class="ico"><svg><use href="#i-dumbbell"/></svg></span>
+        <div style="flex:1"><div style="font-size:14px">器械推胸</div>
+          <div style="font-size:11.5px;color:var(--t3)">器械 · 上次 45 kg × 12</div></div>
+        <span class="tag">胸</span>
+      </div>
+      <div class="sep"></div>
+      <div class="alt">
+        <span class="ico"><svg><use href="#i-dumbbell"/></svg></span>
+        <div style="flex:1"><div style="font-size:14px">史密斯卧推</div>
+          <div style="font-size:11.5px;color:var(--t3)">史密斯 · 上次 60 kg × 8</div></div>
+        <span class="tag">胸</span>
+      </div>
+      <div class="sep"></div>
+      <div class="alt">
+        <span class="ico"><svg><use href="#i-dumbbell"/></svg></span>
+        <div style="flex:1"><div style="font-size:14px">地板卧推</div>
+          <div style="font-size:11.5px;color:var(--t3)">杠铃 · 无凳也能练</div></div>
+        <span class="tag">胸</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:9px;margin-top:12px">
+      <button class="btn ghost" style="flex:1;height:46px">编辑动作</button>
+      <button class="btn" style="flex:1;height:46px">用它替换</button>
+    </div>
+  </div>
+</div>
+
+<script>document.write(TABBAR('log'))</script>
+</body></html>

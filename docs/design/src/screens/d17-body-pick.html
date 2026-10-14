@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="utf-8"><title>17 选动作 · 部位高亮</title>
+<link rel="stylesheet" href="../fitnote.css">
+<style>
+  .bodywrap{display:flex;gap:0;align-items:flex-start;justify-content:center}
+  .bodywrap figure{margin:0;flex:1;max-width:132px}
+  .bodywrap figcaption{text-align:center;font-size:11px;color:var(--t3);margin-top:6px;letter-spacing:.02em}
+  .src{display:flex;gap:14px;margin-top:12px;font-size:11.5px;color:var(--t3);letter-spacing:.01em}
+  .src span{display:flex;align-items:center}
+</style></head><body>
+<script src="../sprite.js"></script>
+<script src="../chrome.js"></script>
+<script src="../body.js"></script>
+<script>document.write(SB())</script>
+
+<div class="nav">
+  <span style="font-size:13px;color:var(--t2)">选择动作</span>
+  <span class="ops"><span class="iconbtn" style="background:transparent;border:0"><svg><use href="#i-x"/></svg></span></span>
+</div>
+
+<div class="scroll">
+  <div class="hero" style="padding-bottom:8px">
+    <h1>平板卧推</h1>
+    <p>已选中 · 长按可看同类替代</p>
+  </div>
+
+  <div class="pad">
+    <!-- 目标部位高亮：主肌群实色 · 协同肌群淡色 -->
+    <div class="card" style="padding:16px 14px 12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="microlab" style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--t3)">目标肌群</span>
+        <span style="margin-left:auto;font-size:11.5px;color:var(--t3)">正面 / 背面</span>
+      </div>
+      <div class="bodywrap">
+        <figure id="fig-a"><figcaption>正面</figcaption></figure>
+        <figure id="fig-p"><figcaption>背面</figcaption></figure>
+      </div>
+      <div class="src">
+        <span><span class="lg-sq" style="background:var(--accent)"></span>主发力 · 胸</span>
+        <span><span class="lg-sq" style="background:var(--accent-soft)"></span>协同 · 三头 / 前束</span>
+      </div>
+    </div>
+
+    <!-- 动作信息 -->
+    <div class="card" style="margin-top:12px;padding:14px 16px">
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="pill">杠铃</span><span class="pill">复合</span>
+        <span style="margin-left:auto;font-size:12.5px;color:var(--t2)">上次 62.5 kg × 8</span>
+      </div>
+      <div class="sep" style="margin:12px 0"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><div style="font-size:11px;color:var(--t3);letter-spacing:.02em">1RM</div>
+          <div class="num" style="font-size:15px;font-weight:700">76.0</div></div>
+        <div><div style="font-size:11px;color:var(--t3);letter-spacing:.02em">本周组数</div>
+          <div class="num" style="font-size:15px;font-weight:700">12 组</div></div>
+        <div><div style="font-size:11px;color:var(--t3);letter-spacing:.02em">同类替代</div>
+          <div class="num" style="font-size:15px;font-weight:700;color:var(--accent)">4 个</div></div>
+      </div>
+    </div>
+
+    <!-- 动作列表（点选即高亮） -->
+    <div class="card" style="margin-top:12px;padding:6px 16px">
+      <div style="padding:10px 0 6px;font-size:14.5px;font-weight:600">胸 · 同类动作</div>
+      <div class="sep"></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 0">
+        <span class="iconbtn" style="background:var(--accent-soft)"><svg><use href="#i-dumbbell"/></svg></span>
+        <span style="flex:1;font-size:14px">哑铃卧推</span>
+        <span class="num" style="font-size:12.5px;color:var(--t3)">24 kg × 10</span>
+      </div>
+      <div class="sep"></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 0">
+        <span class="iconbtn" style="background:var(--surface-2)"><svg><use href="#i-dumbbell"/></svg></span>
+        <span style="flex:1;font-size:14px">器械推胸</span>
+        <span class="num" style="font-size:12.5px;color:var(--t3)">45 kg × 12</span>
+      </div>
+      <div class="sep"></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 0">
+        <span class="iconbtn" style="background:var(--surface-2)"><svg><use href="#i-dumbbell"/></svg></span>
+        <span style="flex:1;font-size:14px">上斜哑铃卧推</span>
+        <span class="num" style="font-size:12.5px;color:var(--t3)">22 kg × 10</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('fig-a').insertAdjacentHTML('afterbegin',
+    bodySVG('a', { primary:['chest'], secondary:['triceps','front-deltoids'] }));
+  document.getElementById('fig-p').insertAdjacentHTML('afterbegin',
+    bodySVG('p', { primary:[], secondary:['triceps'] }));
+</script>
+<script>document.write(TABBAR('log'))</script>
+</body></html>
