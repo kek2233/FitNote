@@ -24,7 +24,7 @@
 ```
 .
 ├── 体脂率测算.html          # 网页版（单文件，双击即可用；也是 APK 内的页面）
-├── 体脂率测算-1.4.2.apk      # 已签名的安卓安装包（内含离线识别模型）
+├── 体脂率测算-1.4.3.apk      # 已签名的安卓安装包（内含离线识别模型）
 ├── 体脂率测算-诊断3.apk      # 诊断包：原生 UI 二分定位（旧界面 vs 新界面），失败点直接显示在屏幕上
 ├── gradle-app/              # 安卓工程（WebView 壳 + 本地 aapt2/d8 构建）
 │   ├── settings.gradle
@@ -50,14 +50,16 @@
 **网页版**：把 `体脂率测算.html` 用浏览器打开即可（手机浏览器同样可用）。
 离线形态识别需要同目录放置 `ort.min.js` / `ort-wasm-simd.wasm` / `mobilenet_v2_food101.onnx`；缺失时会优雅降级为本地颜色识别算法。
 
-**安卓版**：安装 `体脂率测算-1.4.2.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
+**安卓版**：安装 `体脂率测算-1.4.3.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
 
-> **v1.4.2 关键修复（针对真机「装上打不开/一闪就退」，v1.1.0 可用后的回归定位）**：
+> **v1.4.3 关键修复（真机「装上打不开/一闪就退」的真正根因）**：
+> 0. **【根因】d8 漏传内部类**：改用本地 aapt2/d8 构建后，d8 只接收到 `MainActivity.class`/`FileProvider.class` 两个文件，dex 里 `class_defs_size` 只有 2，所有内部类与匿名类（`MainActivity$1`、`$AIBridge`、`$HostBridge`……）全部缺失。`onCreate` 里第一句 `new WebViewClient(){…}` 就抛 `NoClassDefFoundError`，而且崩溃记录器本身也是匿名类、来不及安装，所以表现就是「一点就闪退、毫无反应、连日志都没有」。修复后 `class_defs_size=15`（javac 产出多少类就进多少类）。此前 v1.2.x~v1.4.2 的 APK 全部受此影响，v1.1.0（Gradle/AGP 构建）不受影响，与用户反馈「最开始的版本都可以」完全吻合。
+> 1. **推理引擎按需加载**：v1.2.0 起页面启动时同步解析 540KB 的 `ort.min.js`，是启动期最大的额外负担；现改为首次使用拍照识餐时才动态注入。
 > 1. **推理引擎按需加载**：v1.2.0 起页面启动时同步解析 540KB 的 `ort.min.js`，这是 v1.1.0（纯界面、无模型）之后最大的启动期新增负担，也是低端机/个别机型 WebView 渲染进程崩溃的高危因素。现在改为首次使用拍照识餐时才动态注入，启动零模型脚本解析。
 > 2. **安全模式**：首次启动（或检测到上次启动未完成就绪）自动进入安全模式——WebView 软件渲染 + 关闭 iOS 26 位移玻璃特效（`feDisplacementMap` 是部分 GPU 驱动崩溃的高危项），功能不受影响。
 > 3. **崩溃自愈**：渲染进程崩溃（`onRenderProcessGone`）时自行重建 WebView 切回安全模式，不再整个进程被杀。
 > 4. **file:// 离线识别**：fetch 垫片把 file:// 页面下的相对/绝对 file 请求（ort 的 `wasmPaths='./'` 与模型文件名）统一改走 XHR，纯 file:// 外壳内实测模型加载 0.5s、推理 60ms，无需本地 HTTP 服务器。
-> 5. **诊断3 APK**：原生 UI 外壳不依赖 WebView，自动加载 v1.1.0 旧界面（已知可用）做对照，一键切换到新界面，每一步成败直接显示在屏幕并落盘——用于逐层定位「打不开」究竟在外壳、渲染器、旧界面还是新界面。
+> 5. **诊断3 APK**（同样已修好 dex，其外壳用原生 UI，不依赖 WebView）：原生 UI 外壳不依赖 WebView，自动加载 v1.1.0 旧界面（已知可用）做对照，一键切换到新界面，每一步成败直接显示在屏幕并落盘——用于逐层定位「打不开」究竟在外壳、渲染器、旧界面还是新界面。
 
 ## 🔨 自行构建 APK
 
@@ -80,16 +82,20 @@ $BT/aapt2 link -o $WORK/base.apk -I $PLATFORM \
 javac --release 8 -classpath $PLATFORM -d $WORK/classes \
   $ROOT/java/com/bodyfat/app/MainActivity.java \
   $ROOT/java/com/bodyfat/app/FileProvider.java
-$BT/d8 --release --lib $PLATFORM --output $WORK \
-  $WORK/classes/com/bodyfat/app/MainActivity.class \
-  $WORK/classes/com/bodyfat/app/FileProvider.class
+# ⚠️ 必须把「全部」.class 交给 d8（用 find 递归）。
+# 若只传 MainActivity.class 和 FileProvider.class，dex 里就一个内部类/匿名类都没有
+# （MainActivity$1/$AIBridge/$HostBridge…），App 一启动 new WebViewClient(){} 即抛
+# NoClassDefFoundError 秒退——这是历史上「装上打不开」的真正原因，务必别踩。
+mkdir -p $WORK/dex
+$BT/d8 --release --min-api 23 --lib $PLATFORM --output $WORK/dex \
+  $(find $WORK/classes -name '*.class')
 # 3) 合并 dex + 对齐 + 签名
 cp $WORK/base.apk $WORK/app-dex.apk
-zip -q -j $WORK/app-dex.apk $WORK/classes.dex
+zip -q -j $WORK/app-dex.apk $WORK/dex/classes.dex
 $BT/zipalign -f -p 4 $WORK/app-dex.apk $WORK/app-aligned.apk
 $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
   --ks-pass pass:android --key-pass pass:android \
-  --out 体脂率测算-1.4.2.apk $WORK/app-aligned.apk
+  --out 体脂率测算-1.4.3.apk $WORK/app-aligned.apk
 ```
 
 ### 离线食物识别所需资源
