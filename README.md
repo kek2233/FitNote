@@ -32,6 +32,7 @@
 - **App 内品牌**：欢迎页与关于页使用设计稿同款绿色 F 图标（内联 SVG 矢量，离线）
 - **图标**：桌面图标（方形/圆形/自适应）全部按设计稿 F 图标重新生成
 - **引导**：3 步引导（欢迎 → 身体数据 → 选起点），完成后首页一键进入身体档案修改，表单自动预填上次数据
+- **排版纪律**：按 `ui-skills`（baseline-ui / typeset / layout）建立三条令牌系统——排印角色尺度（display/data/title/body/label/meta/micro，数据统一 `tabular-nums`）、4 单位间距尺度（4/8/12/16/24/32，紧松交替形成节奏）、固定 z-index 层级（`--z-base/sticky/tabbar/fab/sheet/modal/toast/debug`）；标题 `text-wrap:balance`、正文 `pretty`，空状态一律带一个明确行动
 
 ## 🧭 应用结构
 
