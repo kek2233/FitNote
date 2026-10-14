@@ -2,11 +2,14 @@ package com.bodyfat.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.webkit.JavascriptInterface;
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -76,6 +80,7 @@ public class MainActivity extends Activity {
             }
         });
         web.addJavascriptInterface(new AIBridge(), "AndroidAI");
+        web.addJavascriptInterface(new HostBridge(), "Android");
         setContentView(web);
         web.loadUrl("file:///android_asset/index.html");
     }
@@ -172,6 +177,60 @@ public class MainActivity extends Activity {
                 return j.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
             } catch (Exception e) {
                 return "__ERR__" + e.getMessage();
+            }
+        }
+    }
+
+    /**
+     * 原生能力桥：把文本（备份 JSON）写入下载目录。
+     * - Android 10+ (API 29)：走 MediaStore.Downloads，写入公共「下载」，无需任何权限
+     * - 更低版本：写应用私有 Download 目录（同样不需要 WRITE_EXTERNAL_STORAGE）
+     */
+    private class HostBridge {
+        @JavascriptInterface
+        public void saveText(String name, String text) {
+            String safeName = (name == null || name.trim().isEmpty()) ? "bodyfat-backup.json" : name;
+            byte[] bytes = (text == null ? "" : text).getBytes(java.nio.charset.Charset.forName("UTF-8"));
+            String resultPath = null;
+            OutputStream os = null;
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ContentValues cv = new ContentValues();
+                    cv.put(MediaStore.Downloads.DISPLAY_NAME, safeName);
+                    cv.put(MediaStore.Downloads.MIME_TYPE, "application/json");
+                    cv.put(MediaStore.Downloads.IS_PENDING, 1);
+                    Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
+                    if (uri == null) throw new Exception("无法创建下载文件");
+                    os = getContentResolver().openOutputStream(uri);
+                    if (os == null) throw new Exception("无法打开输出流");
+                    os.write(bytes);
+                    os.flush();
+                    try { os.close(); os = null; } catch (Exception ignored) {}
+                    ContentValues done = new ContentValues();
+                    done.put(MediaStore.Downloads.IS_PENDING, 0);
+                    getContentResolver().update(uri, done, null, null);
+                    resultPath = safeName;
+                } else {
+                    File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                    if (dir == null) throw new Exception("存储不可用");
+                    if (!dir.exists()) dir.mkdirs();
+                    File f = new File(dir, safeName);
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(bytes);
+                    fos.flush();
+                    fos.close();
+                    resultPath = f.getAbsolutePath();
+                }
+                final String msg = "已保存到「下载」：" + safeName;
+                runOnUiThread(new Runnable() { @Override public void run() {
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+                }});
+            } catch (Exception e) {
+                if (os != null) { try { os.close(); } catch (Exception ignored) {} }
+                final String msg = "保存失败：" + e.getMessage();
+                runOnUiThread(new Runnable() { @Override public void run() {
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+                }});
             }
         }
     }

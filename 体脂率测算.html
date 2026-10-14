@@ -23,7 +23,7 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{background:#070b0a;color:var(--text);font-family:'HarmonyOS Sans SC','MiSans','PingFang SC','HONOR Sans CN','OPPO Sans','SF Pro Text',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-  .app{max-width:520px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:calc(104px + var(--safe-b));
+  .app{max-width:520px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:calc(120px + var(--safe-b));
     background:
       radial-gradient(620px 620px at 8% -6%,rgba(96,165,250,.24),transparent 60%),
       radial-gradient(660px 660px at 96% 8%,rgba(52,211,153,.26),transparent 62%),
@@ -261,9 +261,9 @@
     background:rgba(22,30,28,.72);backdrop-filter:blur(32px) saturate(185%);-webkit-backdrop-filter:blur(32px) saturate(185%);
     border:1px solid rgba(255,255,255,.13);border-radius:40px;
     box-shadow:0 22px 52px rgba(0,0,0,.58), 0 2px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.28);
-    display:flex;padding:10px 12px;z-index:30}
+    display:flex;padding:9px 12px;z-index:30}
   .tab{flex:1;border:0;background:transparent;font-family:inherit;padding:5px 0 3px;cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--text-mute);position:relative;border-radius:26px;transition:color .18s}
+    display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-mute);position:relative;border-radius:26px;transition:color .18s}
   .tab .t{font-size:11px;letter-spacing:.4px;position:relative;z-index:1}
   .tab.on{color:var(--brand)}
   .tab.on .t{font-weight:700}
@@ -331,6 +331,67 @@
     border:1px solid rgba(255,255,255,.12)}
   .hero{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03));backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%)}
 
+  /* ---------- iOS 26 图标与排版精修 ---------- */
+  /* squircle：圆角按尺寸比例缩放（iOS 图标圆角约边长的 22%~28%），而非固定 px */
+  .gi{width:48px;height:48px;border-radius:28%;
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.30), inset 0 -1px 1px rgba(0,0,0,.24), 0 4px 14px rgba(0,0,0,.42)}
+  .gi svg{width:24px;height:24px}
+  .gi.sm{width:42px;height:42px}
+  .gi.sm svg{width:21px;height:21px}
+  .gi.lg{width:64px;height:64px}
+  .gi.lg svg{width:31px;height:31px}
+  .tab.on .gi{transform:translateY(-2px) scale(1.02)}
+  .tab:not(.on):active .gi{transform:scale(.9);filter:brightness(1.15)}
+  /* SF Pro 式排版：大字号负字距、小字号正字距，层级更克制 */
+  .art{font-size:32px;font-weight:800;letter-spacing:-.8px}
+  .ph-s{font-size:13px;letter-spacing:.1px}
+  .card-t{font-size:16px;font-weight:700;letter-spacing:-.2px}
+  .card-t .sub{font-size:13px}
+  .ckr-t{font-size:15px}
+  .ckr-d{font-size:13px}
+  .fd-n{font-size:15px}
+  .fd-u{font-size:12px}
+  .mini{font-size:12px}
+  .st-n{font-size:18px}
+  .macro-n{font-size:20px}
+  .row-l{font-size:15px}
+  .row-r .inp{font-size:17px}
+
+  /* ---------- 首页聚合仪表盘 ---------- */
+  .dash{padding:18px 16px}
+  .dash-bf{display:flex;align-items:center;gap:16px}
+  .dash-num{font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1;font-variant-numeric:tabular-nums}
+  .dash-num small{font-size:17px;font-weight:600;color:var(--text-dim)}
+  .dash-lv{font-size:16px;font-weight:700}
+  .dash-meta{font-size:12px;color:var(--text-dim);margin-top:3px}
+  .dash-row{display:flex;text-align:center;gap:6px;padding:13px 8px 6px}
+  .dash-row .di{flex:1;min-width:0}
+  .di-n{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15}
+  .di-l{font-size:11px;color:var(--text-dim);margin-top:3px}
+
+  /* ---- 食物库：分类 chips / 清单行 / 环形图 ---- */
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text-dim);
+    font-family:inherit;font-size:12px;padding:5px 11px;border-radius:999px;cursor:pointer;transition:.18s}
+  .chip.on{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.45);color:var(--brand);font-weight:700}
+  .chip:active{transform:scale(.94)}
+  .tot-bar{display:flex;flex-direction:column;gap:2px}
+  .frow{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .frow:last-child{border-bottom:0}
+  .frow-l{flex:1;min-width:0}
+  .frow-n{font-size:14.5px;font-weight:600;letter-spacing:-.2px}
+  .frow-m{font-size:11.5px;color:var(--text-dim);margin-top:2px}
+  .frow-r{display:flex;gap:6px;flex:none}
+  .mini-btn{border:1px solid rgba(52,211,153,.35);background:rgba(52,211,153,.13);color:var(--brand);
+    font-family:inherit;font-size:12px;font-weight:600;padding:6px 11px;border-radius:9px;cursor:pointer;transition:.16s}
+  .mini-btn:active{transform:scale(.92)}
+  .mini-btn.danger{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.12);color:#fb7185}
+  .pie-row{display:flex;align-items:center;gap:14px;padding:6px 2px 2px}
+  .pie-lg{display:flex;align-items:center;gap:7px;padding:4px 0;font-size:12.5px}
+  .pie-dot{width:9px;height:9px;border-radius:3px;flex:none}
+  .pie-n{font-weight:600;flex:1;min-width:0}
+  .pie-v{color:var(--text-dim);font-size:11.5px;font-variant-numeric:tabular-nums;flex:none}
+
 </style>
 </head>
 <body>
@@ -350,7 +411,11 @@
 <div class="toast" id="toast"></div>
 <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" />
 <input type="file" id="importInput" accept="application/json,.json" style="display:none" />
+<!-- SVG 滤镜容器：不能用 display:none（会导致 filter 失效），用 0 尺寸 + absolute -->
+<svg id="lgDefs" width="0" height="0" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
 
+<!-- 本地离线推理引擎（onnxruntime-web 1.17.1 classic，必须从 assets 加载，file:// 下零网络） -->
+<script src="ort.min.js"></script>
 <script>
 'use strict';
 /* =====================================================================
@@ -363,6 +428,16 @@ function $(s){ return document.querySelector(s) }
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c] }) }
 function fmt(n, d){ if (!isFinite(n)) return '--'; d = (d == null) ? 1 : d; var p = Math.pow(10, d); return String(Math.round(n * p) / p) }
 function pad(n){ return n < 10 ? '0' + n : '' + n }
+function fmtTime(ts){
+  if (!ts) return ''
+  var d = new Date(ts)
+  var now = new Date()
+  var today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  var hh = pad(d.getHours()) + ':' + pad(d.getMinutes())
+  if (ts >= today0) return '今天 ' + hh
+  if (ts >= today0 - 86400000) return '昨天 ' + hh
+  return mdLabel(isoDate(d)) + ' ' + hh
+}
 function isoDate(d){ return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) }
 function todayISO(){ return isoDate(new Date()) }
 function dateShift(iso, delta){ var p = iso.split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2]); d.setDate(d.getDate() + delta); return isoDate(d) }
@@ -410,8 +485,8 @@ function toast(msg){ var el = $('#toast'); el.textContent = msg; el.classList.ad
 var Store = (function () {
   var RK = 'bf_records_v1', PK = 'bf_plan_v1', CK = 'bf_checkin_v1', LK = 'bf_cal_v1', UF = 'bf_user_foods_v1', CFG = 'bf_cfg_v1', AIK = 'bf_ai_cfg_v1'
   function read(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d } catch (e) { return d } }
-  function write(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true } catch (e) { toast('存储失败，空间可能不足'); return false } }
-  function remove(k){ try { localStorage.removeItem(k) } catch (e) {} }
+  function write(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); autoBackup(); return true } catch (e) { toast('存储失败，空间可能不足'); return false } }
+  function remove(k){ try { localStorage.removeItem(k); autoBackup() } catch (e) {} }
 
   function records(){ return read(RK, []) }
   function addRecord(r){ var a = records(); a.push(r); write(RK, a); return r }
@@ -453,13 +528,21 @@ var Store = (function () {
   }
   function clearAll(){ [RK, PK, CK, LK].forEach(remove) }
 
+  /* 本地自动备份：每次写入后把全量快照落到独立键（绕过 write 防止递归） */
+  var BK = 'bf_backup_auto_v1'
+  function autoBackup(){
+    try { var snap = exportAll(); snap._ts = Date.now(); localStorage.setItem(BK, JSON.stringify(snap)) } catch (e) {}
+  }
+  function latestBackup(){ try { var v = localStorage.getItem(BK); return v ? JSON.parse(v) : null } catch (e) { return null } }
+
   return { records:records, addRecord:addRecord, delRecord:delRecord, clearRecords:clearRecords,
     plan:plan, savePlan:savePlan, clearPlan:clearPlan,
     checkin:checkin, setCheckin:setCheckin,
     logs:logs, addLog:addLog, delLog:delLog,
     userFoods:userFoods, saveUserFoods:saveUserFoods,
     cfg:cfg, saveCfg:saveCfg, aiCfg:aiCfg, saveAiCfg:saveAiCfg,
-    exportAll:exportAll, importAll:importAll, clearAll:clearAll }
+    exportAll:exportAll, importAll:importAll, clearAll:clearAll,
+    autoBackup:autoBackup, latestBackup:latestBackup }
 })()
 
 /* ------------------------------ 配置（三餐时间窗） ------------------------------ */
@@ -664,7 +747,19 @@ var FoodDB = (function () {
     /* 该餐已超量：推荐低卡轻食 */
     return FOODS.filter(function (f){ return f.kcal > 0 && f.kcal <= 60 }).sort(function (a, b){ return a.kcal - b.kcal }).slice(0, 6)
   }
-  return { all:all, categories:categories, byName:byName, search:search, calc:calc, ensure:ensure, recommend:recommend, mealRecommend:mealRecommend }
+  /* 删除用户自定义食物（内置食物不可删，返回 false 交由上层提示） */
+  function removeUser(id){
+    var idx = -1
+    for (var i = 0; i < FOODS.length; i++){ if (FOODS[i].id === id) { idx = i; break } }
+    if (idx < 0) return false
+    var target = FOODS[idx]
+    var isUser = Store.userFoods().some(function (u){ return u.id === id })
+    if (!isUser) return false
+    FOODS.splice(idx, 1)
+    Store.saveUserFoods(Store.userFoods().filter(function (u){ return u.id !== id }))
+    return !!target
+  }
+  return { all:all, categories:categories, byName:byName, search:search, calc:calc, ensure:ensure, recommend:recommend, mealRecommend:mealRecommend, removeUser:removeUser }
 })()
 
 /* ------------------------------ 计划引擎 ------------------------------ */
@@ -845,6 +940,70 @@ var LocalVision = (function () {
   return { analyze:analyze }
 })()
 
+/* ---------------- 本地离线识别：Food-101 MobileNetV2 + onnxruntime-web ----------------
+   模型 9.4MB / 输入 224×224 / 输出 101 类 logits（需 softmax）
+   完全离线；WebView 已开启 allowFileAccessFromFileURLs，可从 assets fetch 模型。 */
+var FoodAI = (function () {
+  var session = null, loading = null
+  var CLASSES = ['apple_pie','baby_back_ribs','baklava','beef_carpaccio','beef_tartare','beet_salad','beignets','bibimbap','bread_pudding','breakfast_burrito','bruschetta','caesar_salad','cannoli','caprese_salad','carrot_cake','ceviche','cheesecake','cheese_plate','chicken_curry','chicken_quesadilla','chicken_wings','chocolate_cake','chocolate_mousse','churros','clam_chowder','club_sandwich','crab_cakes','creme_brulee','croque_madame','cup_cakes','deviled_eggs','donuts','dumplings','edamame','eggs_benedict','escargots','falafel','filet_mignon','fish_and_chips','foie_gras','french_fries','french_onion_soup','french_toast','fried_calamari','fried_rice','frozen_yogurt','garlic_bread','gnocchi','greek_salad','grilled_cheese_sandwich','grilled_salmon','guacamole','gyoza','hamburger','hot_and_sour_soup','hot_dog','huevos_rancheros','hummus','ice_cream','lasagna','lobster_bisque','lobster_roll_sandwich','macaroni_and_cheese','macarons','miso_soup','mussels','nachos','omelette','onion_rings','oysters','pad_thai','paella','pancakes','panna_cotta','peking_duck','pho','pizza','pork_chop','poutine','prime_rib','pulled_pork_sandwich','ramen','ravioli','red_velvet_cake','risotto','samosa','sashimi','scallops','seaweed_salad','shrimp_and_grits','spaghetti_bolognese','spaghetti_carbonara','spring_rolls','steak','strawberry_shortcake','sushi','tacos','takoyaki','tiramisu','tuna_tartare','waffles']
+  /* 101 类 → [中文名, kcal/100g]；命中后 ensure 自动入库 */
+  var ZH = { apple_pie:['苹果派',265], baby_back_ribs:['烤猪肋排',302], baklava:['果仁蜜饼',428], beef_carpaccio:['生牛肉薄片',217], beef_tartare:['鞑靼牛肉',217], beet_salad:['甜菜沙拉',90], beignets:['法式糖糕',380], bibimbap:['韩式拌饭',130], bread_pudding:['面包布丁',220], breakfast_burrito:['早餐卷',206], bruschetta:['意式烤面包',190], caesar_salad:['凯撒沙拉',190], cannoli:['意式奶油卷',300], caprese_salad:['卡布里沙拉',160], carrot_cake:['胡萝卜蛋糕',410], ceviche:['酸橘汁腌鱼',110], cheesecake:['芝士蛋糕',321], cheese_plate:['奶酪拼盘',328], chicken_curry:['咖喱鸡',140], chicken_quesadilla:['墨西哥鸡肉饼',250], chicken_wings:['炸鸡翅',290], chocolate_cake:['巧克力蛋糕',370], chocolate_mousse:['巧克力慕斯',340], churros:['西班牙油条',280], clam_chowder:['蛤蜊浓汤',90], club_sandwich:['总汇三明治',240], crab_cakes:['蟹肉饼',230], creme_brulee:['焦糖布丁',300], croque_madame:['法式火腿蛋三明治',300], cup_cakes:['纸杯蛋糕',360], deviled_eggs:['魔鬼蛋',190], donuts:['甜甜圈',420], dumplings:['饺子(猪肉)',240], edamame:['毛豆',121], eggs_benedict:['班尼迪克蛋',300], escargots:['法式蜗牛',90], falafel:['炸鹰嘴豆丸',333], filet_mignon:['菲力牛排',220], fish_and_chips:['炸鱼薯条',232], foie_gras:['鹅肝',460], french_fries:['炸薯条',312], french_onion_soup:['法式洋葱汤',60], french_toast:['法式吐司',229], fried_calamari:['炸鱿鱼圈',175], fried_rice:['炒饭',163], frozen_yogurt:['冻酸奶',90], garlic_bread:['蒜香面包',350], gnocchi:['意式土豆团子',170], greek_salad:['希腊沙拉',110], grilled_cheese_sandwich:['烤芝士三明治',350], grilled_salmon:['烤三文鱼',200], guacamole:['牛油果酱',150], gyoza:['煎饺',220], hamburger:['汉堡',295], hot_and_sour_soup:['酸辣汤',45], hot_dog:['热狗',247], huevos_rancheros:['墨西哥农民蛋',220], hummus:['鹰嘴豆泥',166], ice_cream:['冰淇淋',127], lasagna:['千层面',135], lobster_bisque:['龙虾浓汤',110], lobster_roll_sandwich:['龙虾卷',260], macaroni_and_cheese:['芝士通心粉',164], macarons:['马卡龙',400], miso_soup:['味噌汤',40], mussels:['青口贝',86], nachos:['玉米片',306], omelette:['煎蛋卷',154], onion_rings:['洋葱圈',411], oysters:['生蚝',73], pad_thai:['泰式炒河粉',190], paella:['西班牙海鲜饭',160], pancakes:['煎饼',227], panna_cotta:['意式奶冻',260], peking_duck:['烤鸭',436], pho:['越南河粉',85], pizza:['披萨',266], pork_chop:['猪排',231], poutine:['肉汁奶酪薯条',350], prime_rib:['上等肋排',280], pulled_pork_sandwich:['手撕猪肉三明治',250], ramen:['日式拉面',130], ravioli:['意式饺子',200], red_velvet_cake:['红丝绒蛋糕',380], risotto:['意式烩饭',145], samosa:['咖喱角',300], sashimi:['生鱼片',130], scallops:['干贝',88], seaweed_salad:['海藻沙拉',65], shrimp_and_grits:['鲜虾玉米粥',160], spaghetti_bolognese:['肉酱意面',160], spaghetti_carbonara:['培根蛋面',190], spring_rolls:['春卷',240], steak:['牛排',271], strawberry_shortcake:['草莓奶油蛋糕',290], sushi:['寿司',130], tacos:['墨西哥塔可',220], takoyaki:['章鱼小丸子',180], tiramisu:['提拉米苏',300], tuna_tartare:['金枪鱼鞑靼',144], waffles:['华夫饼',291] }
+  function ready(){ return !!session }
+  function load(){
+    if (session) return Promise.resolve(session)
+    if (loading) return loading
+    /* 防御性：确保 wasm 与脚本同目录（file:// 与 http 均按页面目录回退） */
+    try { if (ort.env && ort.env.wasm && !ort.env.wasm.wasmPaths) ort.env.wasm.wasmPaths = './' } catch (e) {}
+    loading = ort.InferenceSession.create('mobilenet_v2_food101.onnx', { executionProviders: ['wasm'] })
+      .then(function (s){ session = s; return s })
+      .catch(function (e){ loading = null; throw e })
+    return loading
+  }
+  /* cover 裁剪居中 + torchvision 归一化（mean/std） */
+  function preprocess(dataUrl, cb, err){
+    var img = new Image()
+    img.onload = function () {
+      var S = 224
+      var cv = document.createElement('canvas'); cv.width = S; cv.height = S
+      var ctx = cv.getContext('2d')
+      var sc = Math.max(S / img.width, S / img.height)
+      var dw = img.width * sc, dh = img.height * sc
+      ctx.drawImage(img, (S - dw) / 2, (S - dh) / 2, dw, dh)
+      var d = ctx.getImageData(0, 0, S, S).data
+      var mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225]
+      var out = new Float32Array(3 * S * S), area = S * S
+      for (var i = 0; i < area; i++){
+        out[i]             = (d[i*4]     / 255 - mean[0]) / std[0]
+        out[i + area]      = (d[i*4 + 1] / 255 - mean[1]) / std[1]
+        out[i + area * 2]  = (d[i*4 + 2] / 255 - mean[2]) / std[2]
+      }
+      cb(out)
+    }
+    img.onerror = function(){ err('图片加载失败') }
+    img.src = dataUrl
+  }
+  function softmaxTop(logits, k){
+    var mx = Math.max.apply(null, logits)
+    var sum = 0
+    for (var i = 0; i < logits.length; i++) sum += Math.exp(logits[i] - mx)
+    var idx = logits.map(function (v, i){ return i }).sort(function (a, b){ return logits[b] - logits[a] }).slice(0, k)
+    return idx.map(function (i){ return { idx:i, cls:CLASSES[i], p: Math.round(Math.exp(logits[i]-mx) / sum * 1000) / 10 } })
+  }
+  function recognize(dataUrl, cb, err){
+    if (typeof ort === 'undefined'){ err('推理引擎未加载'); return }
+    load().then(function (s) {
+      preprocess(dataUrl, function (input) {
+        var t0 = performance.now()
+        s.run({ input: new ort.Tensor('float32', input, [1, 3, 224, 224]) }).then(function (out) {
+          var logits = Array.from(out.output1.data)
+          cb({ top5: softmaxTop(logits, 5), ms: Math.round(performance.now() - t0) })
+        }, function (e){ err(String(e)) })
+      }, err)
+    }).catch(function (e){ err(String(e)) })
+  }
+  return { ready:ready, load:load, recognize:recognize, zh:function(cls){ return ZH[cls] || null } }
+})()
+
 /* ------------------------------ 应用状态与渲染 ------------------------------ */
 var App = {
   state: {
@@ -852,14 +1011,16 @@ var App = {
     form:{ gender:'m', age:28, heightCm:172, weightKg:70, waistCm:80, neckCm:38, hipCm:95, method:'navy' },
     preview:null,
     goal:null,
-    cal:{ cat:'', q:'', meal:'breakfast' }
+    cal:{ cat:'', q:'', meal:'breakfast' },
+    food:{ q:'', cat:'' }
   },
 
   TABS: [
     { key:'home', icon:'scale', c:'linear-gradient(160deg,#34d399,#0ea5e9)', label:'测算', title:'体脂率测算', sub:'填写身体数据，算出体脂率' },
-    { key:'history', icon:'trend', c:'linear-gradient(160deg,#60a5fa,#2563eb)', label:'记录', title:'历史记录', sub:'体脂率变化趋势' },
+    { key:'history', icon:'trend', c:'linear-gradient(160deg,#60a5fa,#2563eb)', label:'记录', title:'历史记录', sub:'体脂率 / 体重 / 热量趋势' },
     { key:'plan', icon:'target', c:'linear-gradient(160deg,#a78bfa,#7c3aed)', label:'计划', title:'饮食锻炼计划', sub:'选目标 → 每日签到' },
-    { key:'cal', icon:'utensils', c:'linear-gradient(160deg,#fb923c,#f43f5e)', label:'热量', title:'热量记账', sub:'拍照识餐 / 手动记餐' }
+    { key:'cal', icon:'utensils', c:'linear-gradient(160deg,#fb923c,#f43f5e)', label:'热量', title:'热量记账', sub:'拍照识餐 / 手动记餐' },
+    { key:'food', icon:'database', c:'linear-gradient(160deg,#f59e0b,#d97706)', label:'食物库', title:'食物库', sub:'搜索 / 扩充 / 一键记餐' }
   ],
 
   go: function (tab){ this.state.tab = tab; this.render() },
@@ -877,6 +1038,9 @@ var App = {
     else if (this.state.tab === 'history') page.innerHTML = head + this.renderHistory()
     else if (this.state.tab === 'plan') page.innerHTML = head + this.renderPlan()
     else if (this.state.tab === 'cal') page.innerHTML = head + this.renderCal()
+    else if (this.state.tab === 'food') page.innerHTML = head + this.renderFoods()
+    /* hero 真折射：等布局稳定后附加 */
+    if (this.state.tab === 'home' && this.state.preview) requestAnimationFrame(function (){ LiquidGlass.attachHero() })
   },
 
   /* ---------------- 首页：测算（行式布局 + 围度可展开） ---------------- */
@@ -884,10 +1048,51 @@ var App = {
     var s = this.state
     if (s.preview) return this.renderResult(s.preview)
     var f = s.form
-    var open = !!f.girthOpen
+    var rec = Store.records().slice(-1)[0]
+    var hasRec = !!rec
+    var today = todayISO()
     var html = ''
-    if (!Store.records().length) html += '<div class="card hint">继续填写下方数据，立刻算出体脂率与身体成分</div>'
-    html += '<div class="card"><div class="card-t">基本信息</div>' +
+    /* —— 聚合仪表盘：一屏看全体脂 / 三餐 / 热量 / 签到 —— */
+    if (hasRec){
+      var lv = Engine.level(rec.gender, rec.bf)
+      var tone = Engine.toneColor(lv.tone)
+      var plan = Store.plan()
+      var target = plan ? plan.kcal : Math.round(PlanEngine.targetKcal(Engine.profileFromRecord(rec), 'maintain'))
+      var logs = Store.logs(today)
+      var total = logs.reduce(function (s2, x){ return s2 + x.kcal }, 0)
+      var keys = AppCfg.mealKeys()
+      var ck = Store.checkin(today)
+      var mealsDone = keys.filter(function (k){ return AppCfg.mealStatus(today, k).state === 'eaten' }).length
+      var doneCount = (ck.train ? 1 : 0) + (ck.water ? 1 : 0) + mealsDone
+      html += '<div class="card dash"><div class="dash-bf"><span class="dash-num">' + fmt(rec.bf, 1) + '<small>%</small></span>' +
+        '<div><div class="dash-lv" style="color:' + tone + '">' + lv.label + '</div>' +
+        '<div class="dash-meta">' + mdLabel(isoDate(new Date(rec.ts))) + ' · ' + rec.weightKg + 'kg · BMI ' + fmt(rec.bmi, 1) + '</div></div></div></div>'
+      html += '<div class="mst">' + keys.map(function (k){
+        var st = AppCfg.mealStatus(today, k)
+        var txt = st.state === 'eaten' ? st.kcal + ' kcal' : AppCfg.STATUS_TEXT[st.state]
+        return '<div class="m ' + st.state + '"><div class="t">' + ic(MEAL_ICON[k], 14) + ' ' + st.label + '</div><div class="s">' + txt + '</div></div>'
+      }).join('') + '</div>'
+      html += '<div class="card dash-row">' +
+        '<div class="di"><div class="di-n">' + total + '</div><div class="di-l">今日 kcal / ' + target + '</div></div>' +
+        '<div class="di"><div class="di-n">' + doneCount + '<span style="font-size:12px;color:var(--text-mute)">/5</span></div><div class="di-l">今日签到</div></div>' +
+        '<div class="di"><div class="di-n">' + this.streak() + '</div><div class="di-l">连续天数</div></div></div>'
+    } else {
+      html += '<div class="card hint">先完成一次体脂测算，开启你的身体数据管理</div>'
+    }
+    /* —— 测算表单：折叠进首页 —— */
+    var open = s.form.open != null ? !!s.form.open : !hasRec
+    if (open){
+      html += this.formHtml()
+    } else {
+      html += '<div class="card"><div class="card-t">测算身体数据<span class="link" onclick="App.toggleForm()">展开</span></div>' +
+        '<div class="mini">填写身体数据，算出体脂率与身体构成</div></div>'
+    }
+    return html
+  },
+  formHtml: function () {
+    var f = this.state.form
+    var open = !!f.girthOpen
+    var html = '<div class="card"><div class="card-t">基本信息</div>' +
       '<div class="row"><div class="row-l">性别</div><div class="seg">' +
       '<button class="' + (f.gender === 'm' ? 'on' : '') + '" onclick="App.setGender(\'m\')">男</button>' +
       '<button class="' + (f.gender === 'f' ? 'on' : '') + '" onclick="App.setGender(\'f\')">女</button></div></div>' +
@@ -910,6 +1115,7 @@ var App = {
       '<div class="mini" style="margin-top:10px;text-align:center">数据只保存在本机，不上传</div>'
     return html
   },
+  toggleForm: function (){ var s = this.state.form; s.open = !(s.open != null ? !!s.open : Store.records().length === 0); this.render() },
   toggleGirth: function (){ this.state.form.girthOpen = !this.state.form.girthOpen; this.render() },
   setGender: function (g){ this.state.form.gender = g; this.render() },
   calc: function () {
@@ -958,8 +1164,11 @@ var App = {
   renderHistory: function () {
     var list = Store.records().slice().reverse()
     if (!list.length) return '<div class="empty"><div class="eic">' + gic('info', 'lg', 30) + '</div>还没有记录。<br>去「测算」页完成第一次体脂测算吧。</div>'
-    var chart = this.trendChart(list)
-    var html = '<div class="card"><div class="card-t">体脂率趋势 <span class="sub">最近 ' + Math.min(list.length, 20) + ' 次</span></div>' + chart + '</div>'
+    var html = '<div class="card"><div class="card-t">体脂率趋势 <span class="sub">最近 ' + Math.min(list.length, 20) + ' 次</span></div>' + this.trendChart(list) + '</div>'
+    html += '<div class="card"><div class="card-t">体重趋势 <span class="sub">最近 ' + Math.min(list.length, 20) + ' 次 · kg</span></div>' + this.lineChart(list, 'weightKg', '#60a5fa', 'kg') + '</div>'
+    html += '<div class="card"><div class="card-t">近 7 天热量 <span class="sub">实际 vs 目标</span></div>' + this.kcalBars() + '</div>'
+    html += '<div class="card"><div class="card-t">近 7 天签到完成率 <span class="sub">三餐 + 训练 + 饮水</span></div>' + this.checkinBars() + '</div>'
+    html += '<div class="card"><div class="card-t">今日热量来源 <span class="sub">三餐占比</span></div>' + this.mealPie() + '</div>'
     html += '<div class="card"><div class="card-t">历史记录 <span class="sub">' + list.length + ' 条</span></div>'
     list.forEach(function (r){
       var lv = Engine.level(r.gender, r.bf)
@@ -992,12 +1201,143 @@ var App = {
       '<text x="' + pts[pts.length - 1][0].toFixed(1) + '" y="' + (H + 2) + '" font-size="9" fill="#64748b" text-anchor="end">' + fmt(max, 0) + '</text>'
     return '<svg viewBox="0 -4 ' + W + ' ' + (H + 12) + '" style="width:100%;height:auto"><path d="' + line + '" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>' + dots + labels + '</svg>'
   },
+  /* 通用折线图（体重等数值字段），带渐变面积 */
+  lineChart: function (list, field, color) {
+    var items = list.slice(0, 20).reverse()
+    if (items.length < 2) return '<div class="mini">至少两条记录后显示趋势线。</div>'
+    var W = 480, H = 120, P = 6
+    var vals = items.map(function (x){ return +x[field] })
+    var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals)
+    if (max - min < 1){ min -= 1; max += 1 }
+    var n = items.length
+    var pts = items.map(function (x, i){
+      var px = P + i * (W - P * 2) / (n - 1)
+      var py = P + (max - (+x[field])) / (max - min) * (H - P * 2)
+      return [px, py]
+    })
+    var line = pts.map(function (p, i){ return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1) }).join(' ')
+    var area = line + ' L' + pts[n - 1][0].toFixed(1) + ' ' + (H - P) + ' L' + pts[0][0].toFixed(1) + ' ' + (H - P) + ' Z'
+    var dots = pts.map(function (p){ return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3" fill="' + color + '"/>' }).join('')
+    var labels = '<text x="' + pts[0][0].toFixed(1) + '" y="' + (H + 2) + '" font-size="9" fill="#64748b">' + fmt(min, 1) + '</text>' +
+      '<text x="' + pts[n - 1][0].toFixed(1) + '" y="' + (H + 2) + '" font-size="9" fill="#64748b" text-anchor="end">' + fmt(max, 1) + '</text>'
+    return '<svg viewBox="0 -4 ' + W + ' ' + (H + 12) + '" style="width:100%;height:auto">' +
+      '<path d="' + area + '" fill="' + color + '" fill-opacity=".12"/>' +
+      '<path d="' + line + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round"/>' + dots + labels + '</svg>'
+  },
+  _last7: function () {
+    var out = [], d = new Date()
+    for (var i = 6; i >= 0; i--) out.push(isoDate(new Date(d.getTime() - i * 86400000)))
+    return out
+  },
+  _targetKcal: function () {
+    var p = Store.plan()
+    if (p && p.kcal) return p.kcal
+    var rec = Store.records().slice(-1)[0]
+    if (rec) { try { return Math.round(PlanEngine.targetKcal(Engine.profileFromRecord(rec), 'maintain')) } catch (e) {} }
+    return 1800
+  },
+  /* 近 7 天：实际热量柱状 + 目标参考线 */
+  kcalBars: function () {
+    var days = this._last7(), target = this._targetKcal()
+    var vals = days.map(function (d){ return Store.logs(d).reduce(function (s, x){ return s + x.kcal }, 0) })
+    var max = Math.max.apply(null, vals.concat([target])) || 1
+    var W = 340, H = 110, bw = 34, gap = (W - bw * 7) / 8
+    var ty = H - 16 - (target / max) * (H - 30)
+    var html = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto">'
+    days.forEach(function (d, i){
+      var v = vals[i]
+      var x = gap + i * (bw + gap)
+      var bh = (v / max) * (H - 30)
+      var y = H - 16 - bh
+      var over = target > 0 && v > target * 1.05
+      html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw + '" height="' + Math.max(bh, v > 0 ? 2 : 0).toFixed(1) + '" rx="5" fill="' + (over ? '#fb7185' : '#34d399') + '" fill-opacity=".85"/>'
+      if (v > 0) html += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 3).toFixed(1) + '" font-size="8" text-anchor="middle" fill="#94a3b8">' + v + '</text>'
+      html += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 3) + '" font-size="9" text-anchor="middle" fill="#64748b">' + mdLabel(d) + '</text>'
+    })
+    html += '<line x1="0" y1="' + ty.toFixed(1) + '" x2="' + W + '" y2="' + ty.toFixed(1) + '" stroke="#60a5fa" stroke-width="1.2" stroke-dasharray="4 3"/>' +
+      '<text x="' + (W - 2) + '" y="' + (ty - 3).toFixed(1) + '" font-size="8.5" text-anchor="end" fill="#60a5fa">目标 ' + target + '</text>'
+    html += '</svg>'
+    return html
+  },
+  /* 近 7 天签到完成率（3 餐 + 训练 + 饮水 = 5 项） */
+  checkinBars: function () {
+    var days = this._last7(), keys = AppCfg.mealKeys()
+    var rates = days.map(function (d){
+      var ck = Store.checkin(d) || {}
+      var mealsDone = keys.filter(function (k){ return AppCfg.mealStatus(d, k).state === 'eaten' }).length
+      var done = mealsDone + (ck.train ? 1 : 0) + (ck.water ? 1 : 0)
+      return Math.round(done / (keys.length + 2) * 100)
+    })
+    var W = 340, H = 90, bw = 34, gap = (W - bw * 7) / 8
+    var html = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto">'
+    days.forEach(function (d, i){
+      var r = rates[i]
+      var x = gap + i * (bw + gap)
+      var bh = (r / 100) * (H - 30)
+      var y = H - 16 - bh
+      html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw + '" height="' + Math.max(bh, r > 0 ? 2 : 0).toFixed(1) + '" rx="5" fill="' + (r >= 80 ? '#34d399' : (r >= 40 ? '#fbbf24' : '#94a3b8')) + '" fill-opacity=".85"/>'
+      html += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 3).toFixed(1) + '" font-size="8" text-anchor="middle" fill="#94a3b8">' + r + '%</text>'
+      html += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 3) + '" font-size="9" text-anchor="middle" fill="#64748b">' + mdLabel(d) + '</text>'
+    })
+    html += '</svg>'
+    var avg = Math.round(rates.reduce(function (a, b){ return a + b }, 0) / 7)
+    return html + '<div class="mini" style="margin-top:4px">7 天平均完成率 <b style="color:var(--brand)">' + avg + '%</b></div>'
+  },
+  /* 今日热量来源环形图（三餐占比） */
+  mealPie: function () {
+    var today = todayISO()
+    var logs = Store.logs(today)
+    if (!logs.length) return '<div class="mini">今天还没有记录任何食物。</div>'
+    var keys = AppCfg.mealKeys()
+    var parts = keys.map(function (k){
+      var v = logs.filter(function (x){ return x.meal === k }).reduce(function (s, x){ return s + x.kcal }, 0)
+      return { k:k, label:AppCfg.mealMeta(k).label, v:v }
+    }).filter(function (p){ return p.v > 0 })
+    var total = parts.reduce(function (s, p){ return s + p.v }, 0)
+    if (!total) return '<div class="mini">今天还没有记录任何食物。</div>'
+    var COLORS = { breakfast:'#fbbf24', lunch:'#34d399', dinner:'#60a5fa', snack:'#f472b6' }
+    var cx = 70, cy = 70, r = 54, ir = 32, acc = -Math.PI / 2
+    var html = '<div class="pie-row"><svg viewBox="0 0 140 140" style="width:140px;height:140px;flex:none">'
+    parts.forEach(function (p){
+      var a = p.v / total * Math.PI * 2
+      var x1 = cx + r * Math.cos(acc), y1 = cy + r * Math.sin(acc)
+      var x2 = cx + r * Math.cos(acc + a), y2 = cy + r * Math.sin(acc + a)
+      var ix1 = cx + ir * Math.cos(acc + a), iy1 = cy + ir * Math.sin(acc + a)
+      var ix2 = cx + ir * Math.cos(acc), iy2 = cy + ir * Math.sin(acc)
+      var laf = a > Math.PI ? 1 : 0
+      html += '<path d="M' + x1.toFixed(2) + ' ' + y1.toFixed(2) + ' A' + r + ' ' + r + ' 0 ' + laf + ' 1 ' + x2.toFixed(2) + ' ' + y2.toFixed(2) +
+        ' L' + ix1.toFixed(2) + ' ' + iy1.toFixed(2) + ' A' + ir + ' ' + ir + ' 0 ' + laf + ' 0 ' + ix2.toFixed(2) + ' ' + iy2.toFixed(2) + ' Z" fill="' +
+        (COLORS[p.k] || '#94a3b8') + '" fill-opacity=".9"/>'
+      acc += a
+    })
+    html += '<text x="70" y="66" text-anchor="middle" font-size="19" font-weight="800" fill="#e2e8f0">' + total + '</text>' +
+      '<text x="70" y="80" text-anchor="middle" font-size="9" fill="#94a3b8">kcal 今日</text></svg><div style="flex:1;min-width:0">'
+    parts.forEach(function (p){
+      html += '<div class="pie-lg"><span class="pie-dot" style="background:' + (COLORS[p.k] || '#94a3b8') + '"></span>' +
+        '<span class="pie-n">' + p.label + '</span><span class="pie-v">' + p.v + ' kcal · ' + Math.round(p.v / total * 100) + '%</span></div>'
+    })
+    html += '</div></div>'
+    return html
+  },
   delRecord: function (id){ if (confirm('删除这条记录？')){ Store.delRecord(id); this.render() } },
   exportData: function () {
-    var blob = new Blob([JSON.stringify(Store.exportAll(), null, 2)], { type:'application/json' })
-    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = '体脂率数据-' + todayISO() + '.json'; a.click()
+    var name = '体脂率数据-' + todayISO() + '.json'
+    var txt = JSON.stringify(Store.exportAll(), null, 2)
+    /* 1) 优先走原生桥写文件（Android WebView 里 a[download] 常常无效） */
+    if (window.Android && window.Android.saveText){ try { window.Android.saveText(name, txt); return } catch (e) {} }
+    /* 2) 退化为浏览器下载 */
+    var blob = new Blob([txt], { type:'application/json' })
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click()
+    toast('已生成备份 ' + name)
   },
   importData: function () { $('#importInput').click() },
+  restoreBackup: function () {
+    var bk = Store.latestBackup()
+    if (!bk){ toast('还没有自动备份'); return }
+    if (!confirm('用 ' + fmtTime(bk._ts) + ' 的自动备份覆盖当前数据？')) return
+    if (!Store.importAll(bk)){ toast('备份内容无法识别'); return }
+    this.closeSheet(); this.render(); toast('已从自动备份恢复')
+  },
   clearAll: function (){ if (confirm('清空全部本地数据（记录/计划/签到/热量）？此操作不可恢复。')){ Store.clearAll(); toast('已清空'); this.go('home') } },
 
   /* ---------------- 计划页（选定后变签到） ---------------- */
@@ -1242,12 +1582,53 @@ var App = {
     var self = this
     this.openSheet('<div class="sh-t">' + ic('camera',16) + ' 识别结果</div><img src="' + dataUrl + '" style="max-width:100%;border-radius:10px">' +
       '<div id="aiResult" style="margin-top:10px;text-align:center;color:var(--text-dim);font-size:13px">识别中…</div>')
-    if (AI.configured()){
-      AI.recognize(dataUrl, function (foods){ self.renderAiResult(foods) }, function (e){ self.renderAiError(e) })
-    } else {
-      /* 免费算法识别（离线、无需密钥） */
-      setTimeout(function () { LocalVision.analyze(dataUrl, function (cands){ self.renderCandidates(cands) }) }, 30)
-    }
+    /* 优先：本地 ONNX 离线推理（Food-101 + 中文映射），完全离线零成本 */
+    FoodAI.recognize(dataUrl, function (res){ self.renderAIResult(res) }, function (e){
+      /* 降级链：旧 AI 通道（若有 key）→ 本地颜色算法 */
+      if (AI.configured()){
+        AI.recognize(dataUrl, function (foods){ self.renderAiResult(foods) }, function (e2){ self.renderAiError(e2) })
+      } else {
+        setTimeout(function () { LocalVision.analyze(dataUrl, function (cands){ self.renderCandidates(cands) }) }, 30)
+      }
+    })
+  },
+  renderAIResult: function (res) {
+    var box = $('#aiResult')
+    var top = res.top5[0]
+    var meta = FoodAI.zh(top.cls)
+    var zhName = meta ? meta[0] : top.cls
+    var kcal100 = meta ? meta[1] : 150
+    var f = FoodDB.ensure(zhName, kcal100, '其他', 150)
+    var grams = f.def
+    var logId = uid()
+    var meal = AppCfg.currentMeal()
+    Store.addLog(todayISO(), { id: logId, name: f.name, grams: grams, kcal: FoodDB.calc(f, grams), meal: meal, ts: Date.now() })
+    this._lastAI = logId
+    var rows = res.top5.map(function (t){
+      var m2 = FoodAI.zh(t.cls)
+      var nm = m2 ? m2[0] : t.cls
+      return '<div class="fd" onclick="App.switchAI(\'' + t.cls + '\')"><div class="fd-n">' + esc(nm) + '<div class="fd-u">置信度 ' + t.p + '%</div></div><div class="fd-k">' + (m2 ? m2[1] : 150) + ' kcal/100g</div></div>'
+    }).join('')
+    box.innerHTML = '<div class="mini" style="margin-bottom:6px">已自动记入「' + AppCfg.mealMeta(meal).label + '」· 推理 ' + res.ms + 'ms' +
+      (top.p < 15 ? ' · <span style="color:var(--warn)">置信度较低，请确认</span>' : '') + '</div>' +
+      '<div class="fld"><div class="fld-l">' + esc(zhName) + ' <b style="color:var(--brand)">' + top.p + '%</b></div>' +
+      '<div class="fld-r" style="font-size:13px">' + grams + 'g · ' + FoodDB.calc(f, grams) + ' kcal</div></div>' +
+      '<div class="mini" style="margin:8px 0 4px">识别不对？点其他候选更换：</div>' + rows +
+      '<div class="row-btns"><button class="btn ghost" onclick="App.undoAI()">撤销本次记录</button><button class="btn" onclick="App.closeSheet()">完成</button></div>'
+  },
+  switchAI: function (cls) {
+    var meta = FoodAI.zh(cls)
+    if (!meta || !this._lastAI){ toast('当前无可更换记录'); return }
+    Store.delLog(todayISO(), this._lastAI)
+    var f = FoodDB.ensure(meta[0], meta[1], '其他', 150)
+    var logId = uid()
+    Store.addLog(todayISO(), { id: logId, name: f.name, grams: f.def, kcal: FoodDB.calc(f, f.def), meal: AppCfg.currentMeal(), ts: Date.now() })
+    this._lastAI = logId
+    toast('已改记「' + f.name + '」')
+  },
+  undoAI: function () {
+    if (this._lastAI){ Store.delLog(todayISO(), this._lastAI); this._lastAI = null }
+    this.closeSheet(); toast('已撤销'); this.render()
   },
   renderAiResult: function (foods) {
     var box = $('#aiResult')
@@ -1342,7 +1723,8 @@ var App = {
   },
   delLog: function (id){ Store.delLog(todayISO(), id); this.render() },
   openAddFood: function () {
-    var q = this.state.cal.q
+    /* 食物库页用食物库搜索词，热量页用热量页搜索词 */
+    var q = (this.state.tab === 'food') ? this.state.food.q : this.state.cal.q
     this.openSheet('<div class="sh-t">新增食物</div>' +
       '<div class="fld"><div class="fld-l">名称</div><input class="inp" value="' + esc(q) + '" oninput="App._nf_name=this.value"></div>' +
       '<div class="fld"><div class="fld-l">热量<span class="u">kcal/100g</span></div><input class="inp" type="number" inputmode="decimal" placeholder="150" oninput="App._nf_kcal=this.value"></div>' +
@@ -1365,6 +1747,73 @@ var App = {
   closeSheet: function (){ $('#sheet').classList.remove('on'); $('#mask').classList.remove('on') },
 
   /* ---------------- 设置 ---------------- */
+  /* ---------------- 食物库：搜索 / 自定义扩充 / 一键记餐 ---------------- */
+  renderFoods: function () {
+    var st = this.state.food
+    var q = st.q, cat = st.cat
+    var list = FoodDB.search(q, cat)
+    var userIds = {}
+    Store.userFoods().forEach(function (u){ userIds[u.id] = 1 })
+    var total = FoodDB.all().length
+    var custom = Object.keys(userIds).length
+    var mealKey = AppCfg.currentMeal()
+    var mealLabel = AppCfg.mealMeta(mealKey).label
+
+    var html = '<div class="card"><div class="card-t">🔍 查找食物 <span class="sub">' + total + ' 项 · 自定义 ' + custom + '</span></div>' +
+      '<input class="srch" placeholder="搜名称或分类，如 鸡胸 / 果 / 主食" value="' + esc(q) + '" oninput="App.foodSearch(this.value)">' +
+      '<div class="chips" style="margin-top:8px">' +
+      '<button class="chip' + (!cat ? ' on' : '') + '" onclick="App.foodCat(\'\')">全部</button>' +
+      FoodDB.categories().map(function (c){ return '<button class="chip' + (cat === c ? ' on' : '') + '" onclick="App.foodCat(\'' + c + '\')">' + esc(c) + '</button>' }).join('') +
+      '</div></div>'
+
+    html += '<div class="card"><div class="card-t">📋 食物清单 <span class="sub">' + list.length + ' 项 · 记入「' + mealLabel + '」</span></div>'
+    if (!list.length){
+      html += '<div class="empty"><div class="eic">' + gic('info', 'lg', 30) + '</div>没找到，换个关键词或<code>新增食物</code>。</div>'
+    } else {
+      html += '<div class="tot-bar">' + list.slice(0, 80).map(function (f){
+        var isUser = !!userIds[f.id]
+        return '<div class="frow">' +
+          '<div class="frow-l"><div class="frow-n">' + esc(f.name) + (isUser ? ' <span class="u" style="color:var(--warn)">自定义</span>' : '') + '</div>' +
+          '<div class="frow-m">' + esc(f.cat) + ' · 建议 ' + f.def + 'g · ' + FoodDB.calc(f, f.def) + ' kcal</div></div>' +
+          '<div class="frow-r">' +
+          '<button class="mini-btn" onclick="App.quickAddFood(\'' + f.id + '\')">记' + mealLabel.charAt(0) + '</button>' +
+          (isUser ? '<button class="mini-btn danger" onclick="App.delUserFood(\'' + f.id + '\')">删</button>' : '') +
+          '</div></div>'
+      }).join('') + '</div>'
+      if (list.length > 80) html += '<div class="mini" style="margin-top:8px">只显示前 80 项，用搜索缩小范围。</div>'
+    }
+    html += '<div class="row-btns"><button class="btn sm gray" onclick="App.openAddFood()">＋ 新增自定义食物</button>' +
+      '<button class="btn sm gray" onclick="App.go(\'cal\')">去热量记账</button></div>'
+    html += '</div>'
+    return html
+  },
+  foodSearch: function (v){ this.state.food.q = v; this.renderFoodsRefresh() },
+  foodCat: function (c){ this.state.food.cat = c; this.render() },
+  /* 重新渲染列表而不重置搜索框焦点/光标：复用 renderFoods 但保留输入框内容 */
+  renderFoodsRefresh: function () {
+    var page = $('#page'), input = $('#page .srch')
+    var pos = input ? input.selectionStart : null
+    if (page) { var t = this.TABS.filter(function (x){ return x.key === 'food' })[0]
+      var head = '<div class="ph"><div class="art">' + t.title + '</div><div class="ph-s">' + t.sub + '</div></div>'
+      page.innerHTML = head + this.renderFoods()
+      var el = $('#page .srch')
+      if (el){ el.focus(); if (pos != null) try { el.setSelectionRange(pos, pos) } catch (e) {} }
+    }
+  },
+  quickAddFood: function (id) {
+    var f = FoodDB.all().filter(function (x){ return x.id === id })[0]
+    if (!f) return
+    var mealKey = AppCfg.currentMeal()
+    Store.addLog(todayISO(), { id:uid(), name:f.name, grams:f.def, kcal:FoodDB.calc(f, f.def), meal:mealKey, ts:Date.now() })
+    toast('已记入「' + AppCfg.mealMeta(mealKey).label + '」' + f.def + 'g')
+    this.render()
+  },
+  delUserFood: function (id) {
+    if (!confirm('删除这条自定义食物？已在的记录不受影响。')) return
+    if (!FoodDB.removeUser(id)){ toast('内置食物不能删除'); return }
+    toast('已删除')
+    this.render()
+  },
   settings: function () {
     var ai = Store.aiCfg() || {}
     var meals = AppCfg.meals()
@@ -1388,10 +1837,15 @@ var App = {
       '<button class="btn sm gray" style="margin-top:10px" onclick="App.saveMeals()">保存时间</button>' +
       '<div class="mini" style="margin-top:8px">过了该餐结束时间还没记，签到页会显示「没吃」。</div></div>'
 
-    html += '<div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="card-t">💾 数据</div>' +
-      '<div class="row-btns"><button class="btn gray sm" onclick="App.closeSheet();App.exportData()">导出</button>' +
-      '<button class="btn gray sm" onclick="App.closeSheet();App.importData()">导入</button>' +
+    var bk = Store.latestBackup()
+    html += '<div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="card-t">💾 数据备份</div>' +
+      '<div class="fld"><div class="fld-l">本地自动备份</div><div class="fld-r" style="font-size:12px;color:var(--text-dim)">' +
+      (bk ? (fmtTime(bk._ts) + ' · ' + (bk.records || []).length + ' 条记录') : '暂无') + '</div></div>' +
+      '<div class="row-btns"><button class="btn gray sm" onclick="App.closeSheet();App.exportData()">导出文件</button>' +
+      '<button class="btn gray sm" onclick="App.closeSheet();App.importData()">导入文件</button>' +
+      '<button class="btn gray sm" onclick="App.restoreBackup()">恢复自动备份</button>' +
       '<button class="btn gray sm" onclick="App.closeSheet();App.clearAll()">清空</button></div>' +
+      '<div class="mini" style="margin-top:10px">每次改动都会自动在本机留一份快照；导出文件会存到「下载」目录。</div>' +
       '<div class="mini" style="margin-top:10px">使用说明：1) 在「测算」页录入身体数据得到体脂率；2) 在「计划」页选目标（减脂/维持/增肌）并采用，页面随即变为每日签到；3) 在「热量」页拍照或手动记三餐；4) 签到完成训练 + 三餐 + 饮水即算一天。数据全部保存在本机。</div></div>'
     this.openSheet(html)
     this._mealCfg = { breakfast:{ s:meals.breakfast.start, e:meals.breakfast.end }, lunch:{ s:meals.lunch.start, e:meals.lunch.end }, dinner:{ s:meals.dinner.start, e:meals.dinner.end } }
@@ -1423,6 +1877,109 @@ var App = {
 }
 
 /* ------------------------------ 事件绑定 & 启动 ------------------------------ */
+/* ---------------- iOS 26 真折射玻璃（SDF 位移图 + feDisplacementMap） ----------------
+   要点（均来自社区踩坑总结）：
+   1) 位移图必须用 Canvas 生成（SVG-in-SVG 会忽略 mix-blend-mode/blur 而失效）
+   2) Canvas 尺寸 = filter region（元素 2 倍），形状画在中心、四周填中性灰 —— 同时避开
+      "采样越界变透明"与"拉伸错位"两个陷阱
+   3) color-interpolation-filters="sRGB" 必设，否则 128 中性点漂移
+   4) filter id 唯一；SVG 容器不能 display:none
+   5) 仅 Chromium 可用，带自动降级
+---------------------------------------------------------------------------------- */
+var LiquidGlass = (function () {
+  var seq = 0
+  var SUPPORTED = !!(typeof window !== 'undefined' && window.CSS && CSS.supports && CSS.supports('backdrop-filter', 'url(#lg)'))
+  function key_safe(k){ return String(k).replace(/[^a-zA-Z0-9_-]/g, '') }
+  /* 圆角矩形 SDF：内部为负、边缘 0、外部为正 */
+  function rrSDF(x, y, hw, hh, r){
+    var qx = Math.abs(x) - hw + r, qy = Math.abs(y) - hh + r
+    var ox = Math.max(qx, 0), oy = Math.max(qy, 0)
+    return Math.sqrt(ox * ox + oy * oy) + Math.min(Math.max(qx, qy), 0) - r
+  }
+  function makeMap(w, h, radius, bezel, maxDisp, res){
+    res = res || 1
+    var CW = Math.max(2, Math.round(w * 2 * res)), CH = Math.max(2, Math.round(h * 2 * res))
+    var cv = document.createElement('canvas'); cv.width = CW; cv.height = CH
+    var ctx = cv.getContext('2d')
+    var img = ctx.createImageData(CW, CH), d = img.data
+    var cx = CW / 2, cy = CH / 2, hw = w / 2, hh = h / 2
+    var r = Math.min(radius, Math.min(hw, hh))
+    for (var y = 0; y < CH; y++){
+      for (var x = 0; x < CW; x++){
+        var i = (y * CW + x) * 4
+        var px = x + 0.5 - cx, py = y + 0.5 - cy
+        var sd = rrSDF(px, py, hw, hh, r)
+        var u = 0, v = 0
+        if (Math.abs(sd) < bezel){
+          var t = 1 - Math.abs(sd) / bezel
+          t = t * t * (3 - 2 * t)                       /* smoothstep 过渡 */
+          var e = 1
+          var gx = rrSDF(px + e, py, hw, hh, r) - rrSDF(px - e, py, hw, hh, r)
+          var gy = rrSDF(px, py + e, hw, hh, r) - rrSDF(px, py - e, hw, hh, r)
+          var len = Math.sqrt(gx * gx + gy * gy) || 1
+          u = (gx / len) * t                             /* 沿法线向外推 */
+          v = (gy / len) * t
+        }
+        d[i] = 128 + u * 127
+        d[i + 1] = 128 + v * 127
+        d[i + 2] = 128
+        d[i + 3] = 255
+      }
+    }
+    ctx.putImageData(img, 0, 0)
+    return { url: cv.toDataURL('image/png'), scale: maxDisp * 2, cw: CW, ch: CH }
+  }
+  function clear(){ var s = $('#lgDefs'); if (s) s.innerHTML = '' }
+  function attach(el, opt){
+    if (!el || !SUPPORTED) return null
+    var r = el.getBoundingClientRect()
+    var w = Math.round(r.width), h = Math.round(r.height)
+    if (w < 8 || h < 8) return null
+    opt = opt || {}
+    var radius = opt.radius != null ? opt.radius : Math.min(h / 2, 26)
+    var bezel = opt.bezel != null ? opt.bezel : Math.min(w, h) * 0.3
+    var maxDisp = opt.maxDisp != null ? opt.maxDisp : Math.max(6, Math.min(h, w) * 0.16)
+    var m = makeMap(w, h, radius, bezel, maxDisp, opt.res)
+    var id
+    var defs = $('#lgDefs')
+    if (!defs) return null
+    if (opt.key){
+      /* 固定 key：重复调用时替换旧滤镜，避免累积 */
+      var old = document.getElementById('lg-' + key_safe(opt.key))
+      if (old && old.parentNode) old.parentNode.removeChild(old)
+      id = 'lg-' + key_safe(opt.key)
+    } else {
+      id = 'lg' + (++seq)
+    }
+    defs.insertAdjacentHTML('beforeend',
+      '<filter id="' + id + '" x="-50%" y="-50%" width="200%" height="200%" ' +
+      'color-interpolation-filters="sRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse">' +
+      '<feImage href="' + m.url + '" x="' + (-w / 2) + '" y="' + (-h / 2) + '" width="' + m.cw + '" height="' + m.ch + '" ' +
+      'preserveAspectRatio="none" result="disp"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="disp" scale="' + m.scale + '" xChannelSelector="R" yChannelSelector="G"/>' +
+      '</filter>')
+    el.style.setProperty('-webkit-backdrop-filter', 'url(#' + id + ') blur(1px) saturate(180%)')
+    el.style.setProperty('backdrop-filter', 'url(#' + id + ') blur(1px) saturate(180%)')
+    return id
+  }
+  var dockTimer = null
+  function attachDock(){
+    var dock = $('#tabs')
+    if (!dock) return
+    setTimeout(function (){ attach(dock, { key:'dock', radius: 34, bezel: 24, maxDisp: 13 }) }, 80)
+  }
+  function attachHero(){
+    var el = document.querySelector('.hero')
+    if (!el) return
+    setTimeout(function (){ attach(el, { key:'hero', radius: 24, bezel: 20, maxDisp: 10, res: 0.5 }) }, 140)
+  }
+  function onResize(){
+    clearTimeout(dockTimer)
+    dockTimer = setTimeout(function (){ clear(); attachDock(); attachHero() }, 240)
+  }
+  return { supported:SUPPORTED, attach:attach, attachDock:attachDock, attachHero:attachHero, clear:clear, onResize:onResize }
+})()
+
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('photoInput').addEventListener('change', function (){ App.onPhoto(this) })
   document.getElementById('importInput').addEventListener('change', function () {
@@ -1488,6 +2045,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('pointercancel', function () { fade() }, { passive:true })
   })()
   App.render()
+  LiquidGlass.attachDock()
+  window.addEventListener('resize', LiquidGlass.onResize)
 })
 </script>
 </body>
