@@ -502,6 +502,25 @@
     backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
     border-radius:var(--r-nav);overflow:visible;padding:6px 7px calc(6px + var(--safe-b))}
   /* 中间凸起主动作（参考 rdev/liquid-glass-react 底部导航形态） */
+  /* ---- 液态滑动高光块：选中项之间"流"过去的玻璃块（iOS 26 底部导航） ---- */
+  .tabs .glider{position:absolute;top:5px;bottom:5px;left:0;width:0;border-radius:22px;z-index:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,.12) 55%,rgba(255,255,255,.18));
+    border:.5px solid rgba(255,255,255,.42);
+    box-shadow:0 6px 20px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.65), inset 0 -1px 0 rgba(0,0,0,.14);
+    backdrop-filter:blur(8px) saturate(190%);-webkit-backdrop-filter:blur(8px) saturate(190%);
+    will-change:transform,width;transform:translateX(0)}
+  /* 块内的高光/折射感 */
+  .tabs .glider::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:radial-gradient(60% 120% at 50% 0%,rgba(255,255,255,.55),transparent 62%)}
+  .tabs .glider::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    padding:1px;
+    background:conic-gradient(from 200deg,rgba(255,255,255,.55),rgba(255,255,255,0) 38%,rgba(255,255,255,.42) 72%,rgba(255,255,255,0));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    mask-composite:exclude;mix-blend-mode:screen}
+  .tab{position:relative;z-index:1}
+  .tab.mid .fab{position:relative;z-index:2}
   .tab.mid{padding-top:0;overflow:visible}
   .tab.mid .fab{width:54px;height:54px;border-radius:18px;margin-top:-26px;display:flex;align-items:center;justify-content:center;
     background:linear-gradient(160deg,#64d2ff,#0a84ff);color:#fff;
@@ -1279,6 +1298,51 @@ function showSafeChip(){
   b.onclick = function (){ App.settings() }
   hd.appendChild(b)
 }
+/* ---------------- 底部导航「液态玻璃」滑动高光（iOS 26） ----------------
+   选中项之间"流"过去的玻璃块：rAF 弹簧驱动位移与宽度，移动中按速度横向拉伸
+   （液态拉丝感），切换瞬间轻微膨胀回弹（press bloom）。
+   换页会重绘 #tabs，故重绘后先把块放回旧位置再续动，保证视觉连续。 */
+var Glider = (function () {
+  var el = null, ready = false, raf = null
+  var cur = 0, tgt = 0, v = 0, w = 0, tw = 0, wv = 0
+
+  function measure(i){
+    var box = document.getElementById('tabs'); if (!box) return null
+    var tabs = box.querySelectorAll('.tab'); if (!tabs[i]) return null
+    var r = tabs[i].getBoundingClientRect(), b = box.getBoundingClientRect()
+    return { l: r.left - b.left - (box.clientLeft || 0), w: r.width }
+  }
+  function apply(){
+    if (!el) return
+    var ex = Math.min(w * 0.26, Math.abs(v) * 0.055)      /* 速度越快拉伸越多 */
+    if (!(ex > 0)) ex = 0
+    el.style.width = (w + ex).toFixed(1) + 'px'
+    el.style.transform = 'translateX(' + (cur - ex / 2).toFixed(1) + 'px)'
+  }
+  function step(){
+    v += (tgt - cur) * 0.20; v *= 0.70; cur += v
+    wv += (tw - w) * 0.22; wv *= 0.68; w += wv
+    if (Math.abs(tgt - cur) < 0.4 && Math.abs(v) < 0.4 && Math.abs(tw - w) < 0.4 && Math.abs(wv) < 0.4){
+      cur = tgt; w = tw; v = 0; wv = 0; raf = null; apply(); return
+    }
+    apply()
+    raf = requestAnimationFrame(step)
+  }
+  function sync(animate){
+    el = document.getElementById('tabGlider')
+    if (!el) return
+    var keys = App.TABS.map(function (x){ return x.key })
+    var i = keys.indexOf(App.state.tab); if (i < 0) i = 0
+    var t = measure(i); if (!t) return
+    if (!ready || !animate){ ready = true; cur = tgt = t.l; w = tw = t.w; v = 0; wv = 0; apply(); return }
+    tgt = t.l; tw = t.w
+    apply()                                    /* 先回到旧位置，避免重绘后跳变 */
+    if (!raf) raf = requestAnimationFrame(step)
+  }
+  function bloom(){ wv += 9; if (!raf) raf = requestAnimationFrame(step) }   /* 点按膨胀回弹 */
+  return { sync: sync, bloom: bloom }
+})()
+
 var App = {
   state: {
     tab:'home',
@@ -1297,7 +1361,7 @@ var App = {
     { key:'food', icon:'database', c:'linear-gradient(160deg,#f59e0b,#d97706)', label:'食物库', title:'食物库', sub:'搜索 / 扩充 / 一键记餐' }
   ],
 
-  go: function (tab){ this.state.tab = tab; this.render() },
+  go: function (tab){ this.state.tab = tab; Glider.bloom(); this.render() },
 
   render: function () {
     var t = this.TABS.filter(function (x){ return x.key === App.state.tab })[0]
@@ -1311,7 +1375,8 @@ var App = {
           '<span class="fab">' + ic(x.icon, 26) + '</span><span class="t">' + x.label + '</span></button>'
       }
       return '<button class="tab' + (on ? ' on' : '') + '" onclick="App.go(\'' + x.key + '\')"><span class="gi">' + ic(x.icon, 24) + '</span><span class="t">' + x.label + '</span></button>'
-    }).join('')
+    }).join('') + '<span class="glider" id="tabGlider"></span>'
+    Glider.sync(true)
     var page = $('#page')
     var head = '<div class="ph"><div class="art">' + t.title + '</div><div class="ph-s">' + t.sub + '</div></div>'
     if (this.state.tab === 'home') page.innerHTML = head + this.renderHome()
@@ -2436,7 +2501,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll', onScroll, { passive:true })
     onScroll()
   })()
-  window.addEventListener('resize', LiquidGlass.onResize)
+  window.addEventListener('resize', function (){ LiquidGlass.onResize(); Glider.sync(false) })
   /* 告诉外壳：页面已就绪（用于崩溃循环检测，见 MainActivity） */
   try { if (window.Android && window.Android.onReady) window.Android.onReady() } catch (e) {}
 })
