@@ -153,6 +153,17 @@ $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
 
 > 注意：模型只认得 Food-101 收录的 101 类（偏西餐/日料）。对典型中餐会退化为「最接近的已知类 + 中文热量映射」，所以 UI 提供了候选切换与撤销来保证可用性。
 
+## 📚 文档
+
+| 文档 | 内容 |
+|---|---|
+| [FitNote 产品 brief v2](docs/FitNote-产品brief-v2.md) | 定位 / 用户 / 功能体系 / 分期 / 第三方许可（开源版） |
+| [FitNote 功能清单](docs/FitNote-功能清单.md) | 按模块 A–J 的 70+ 项功能，标注实现状态与分期，含一票否决项 |
+| [FitNote 设计规范评审](docs/FitNote-设计规范评审.md) | 对《全域设计方案》的 P0/P1/P2 评审，附实测对比度与修正色值 |
+| [FitNote 评审意见](docs/FitNote-评审意见.md) | 早期 brief 的六处 P0 硬伤 |
+| [训练记录模块 brief](docs/训练记录-产品brief.md) | 合并进现有 App 的训练模块设计 |
+| [体脂率 App brief](docs/product-brief.md) | 现有 App 的产品定位与路线图 |
+
 ## 🧩 设计稿（FitNote 训练记录模块）
 
 训练记录模块的界面设计稿（v1）已先行产出，再据此开发：
