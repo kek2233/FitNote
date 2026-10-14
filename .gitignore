@@ -12,3 +12,13 @@ android/.gradle/
 
 __pycache__/
 *.pyc
+
+# 大体积模型/运行时（见 README「离线食物识别所需资源」，从 CDN 获取）
+gradle-app/app/src/main/assets/ort.min.js
+gradle-app/app/src/main/assets/ort-wasm-simd.wasm
+gradle-app/app/src/main/assets/mobilenet_v2_food101.onnx
+
+# 工程缓存
+*.gradle-cache
+.gradle/
+gradle-app/.gradle/

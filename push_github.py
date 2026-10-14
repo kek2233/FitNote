@@ -8,6 +8,7 @@ GitHub 推送脚本（REST API 版）
 """
 import base64
 import json
+import os
 import subprocess
 import sys
 import time
@@ -45,11 +46,20 @@ def blob_bytes(blob_sha):
     return run("cat-file", "blob", blob_sha).stdout
 
 
+def local_head_message():
+    """远端提交信息 = 本地 HEAD 的提交信息（含正文），避免写死过时文案。"""
+    try:
+        msg = run("log", "-1", "--pretty=%B").stdout.decode("utf-8").strip()
+    except Exception:
+        msg = ""
+    return msg or "chore: 同步本地最新版本"
+
+
 def main():
-    if len(sys.argv) < 2:
-        print("用法: python3 push_github.py <GITHUB_TOKEN>", file=sys.stderr)
+    token = sys.argv[1].strip() if len(sys.argv) > 1 else os.environ.get("GITHUB_TOKEN", "").strip()
+    if not token:
+        print("用法: python3 push_github.py <GITHUB_TOKEN>（或设置环境变量 GITHUB_TOKEN）", file=sys.stderr)
         return 2
-    token = sys.argv[1].strip()
     headers = {
         "Authorization": "Bearer " + token,
         "Accept": "application/vnd.github+json",
@@ -104,21 +114,7 @@ def main():
 
     # 4) commit
     r = requests.post(API + "/git/commits", headers=headers, timeout=60, json={
-        "message": "feat: v1.2.0 离线食物识别 + 食物库 + 数据图表 + 本地备份\n\n"
-                   "识别（P3）\n"
-                   "- 修复致命缺陷：HTML 从未加载 ort.min.js，离线模型永远无法运行\n"
-                   "- 接入 Food-101 MobileNetV2 ONNX：101 类离线识别 + 中文名/kcal 映射\n"
-                   "- 拍照后自动记入当前餐，支持点候选纠正与一键撤销\n"
-                   "- logits 需 softmax；实测加载 ~0.4s、推理 ~50ms\n\n"
-                   "功能（P4）\n"
-                   "- 新增「食物库」页：232+ 种食物，搜索/分类筛选/一键记餐/自定义增删\n"
-                   "- 记录页新增 4 张图表：体重趋势、近 7 天热量 vs 目标、签到完成率、今日热量来源\n"
-                   "- 本地自动备份：每次写入留快照，可一键恢复\n"
-                   "- 安卓导出改走原生桥（MediaStore/私有目录），解决 WebView a[download] 失效\n\n"
-                   "工程\n"
-                   "- MainActivity 增加 HostBridge.saveText\n"
-                   "- 版本升至 1.2.0 (versionCode 3)\n"
-                   "- README 与截图同步更新",
+        "message": local_head_message(),
         "tree": tree_sha,
         "parents": [parent],
     })

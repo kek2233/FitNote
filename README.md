@@ -23,26 +23,30 @@
 
 ```
 .
-├── 体脂率测算.html          # 网页版（单文件，双击即可用；也是 APK 内的页面）
+├── 体脂率测算.html          # 网页版（单文件，双击即可用；与 APK 内页面同源）
 ├── 体脂率测算-1.9.0.apk      # 已签名的安卓安装包（内含离线识别模型）
-├── 体脂率测算-诊断3.apk      # 诊断包：原生 UI 二分定位（旧界面 vs 新界面），失败点直接显示在屏幕上
-├── gradle-app/              # 安卓工程（WebView 壳 + 本地 aapt2/d8 构建）
-│   ├── settings.gradle
-│   ├── build.gradle
-│   ├── gradle.properties
+├── 体脂率测算-诊断3.apk      # 诊断包：原生 UI 逐步显示 外壳/WebView/旧界面/新界面 的成败
+├── gradle-app/              # 安卓工程（WebView 壳；可用 Gradle 或本地 aapt2/d8 构建）
+│   ├── settings.gradle · build.gradle · gradle.properties
 │   └── app/
 │       ├── build.gradle
-│       ├── release.keystore
+│       ├── release.keystore             # 本地签名用（不入库，见 .gitignore）
 │       └── src/main/
-│           ├── AndroidManifest.xml
-│           ├── java/com/bodyfat/app/     # MainActivity（WebView + 原生桥 + 安全模式/崩溃自愈）
+│           ├── AndroidManifest.xml       # 主壳（MainActivity）
+│           ├── AndroidManifest-diag.xml  # 诊断壳（DiagActivity）
+│           ├── java/com/bodyfat/app/
+│           │   ├── MainActivity.java     # WebView + 原生桥 + 安全模式/崩溃自愈
+│           │   ├── DiagActivity.java     # 诊断版外壳
+│           │   └── FileProvider.java     # 拍照取图的 ContentProvider
 │           ├── res/                      # 图标 / 字符串
 │           └── assets/
 │               ├── index.html            # 打包进 APK 的页面
-│               ├── ort.min.js            # onnxruntime-web 1.17.1（经典版，非多线程）
-│               ├── ort-wasm-simd.wasm    # wasm 运行时
-│               └── mobilenet_v2_food101.onnx  # Food-101 模型
-└── docs/screenshots/        # 界面截图
+│               ├── old.html              # v1.1.0 页面（诊断对照用）
+│               └── ort.min.js / ort-wasm-simd.wasm / mobilenet_v2_food101.onnx
+│                                         # ↑ 三个大文件不入库，按下方「离线食物识别所需资源」获取
+├── docs/screenshots/        # 界面截图
+└── push_github.py           # 推送到 GitHub（沙箱走 REST API）
+```
 ```
 
 ## 🚀 使用方法
@@ -151,15 +155,27 @@ $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
 
 ## 🎨 界面
 
-深色液态玻璃风格：悬浮玻璃 Dock（5 项：测算/记录/计划/热量/食物库）、彩色 iOS 圆角图标、跟随手指的阻尼高光与 3D 倾斜、彩色光斑壁纸、卡片周期扫光、SDF 位移图实现的真折射玻璃。APK 内首次启动默认「安全模式」（软件渲染、特效关闭）以保证任何机型都能打开，设置页可一键开启真折射特效。
+深色运动风仪表盘：近黑绿底 + 单一亮绿强调色 + 实心表面 + 0.5px 发丝分隔线。
+**玻璃只用在图层真正重叠处**（吸顶导航 / 底部标签胶囊 / 弹层 / Toast），内容层一律实心——遵守 [apple-design-skill](https://github.com/naplesblue/apple-design-skill) 的纪律。
+底部导航为 iOS 26 形态：悬浮玻璃胶囊 + 中间凸起主动作按钮 + **液态滑动高光**（选中项的玻璃块在标签之间"流"过去，带拉伸与回弹）。
 
-![热量页](docs/screenshots/02-calories.png)
-
-![记录页·数据统计](docs/screenshots/03-history.png)
-> 记录页：体脂率/体重双趋势、近 7 天热量 vs 目标、签到完成率、今日热量来源
-
-![食物库](docs/screenshots/04-food.png)
-> 食物库：232+ 种食物，搜索/分类筛选/一键记餐/自定义增删
+<table>
+<tr>
+<td><img src="docs/screenshots/01-home.png" width="210"><br><sub>首页仪表盘（大数字 + 数据方块）</sub></td>
+<td><img src="docs/screenshots/03-history.png" width="210"><br><sub>记录页（渐变面积折线 + 柱状）</sub></td>
+<td><img src="docs/screenshots/02-dock.png" width="210"><br><sub>底部导航（液态滑动 + 凸起主动作）</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/04-calories.png" width="210"><br><sub>热量记账</sub></td>
+<td><img src="docs/screenshots/05-food.png" width="210"><br><sub>食物库</sub></td>
+<td><img src="docs/screenshots/06-settings.png" width="210"><br><sub>设置（外观切换 / 特效开关）</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/07-home-light.png" width="210"><br><sub>浅色外观 · 首页</sub></td>
+<td><img src="docs/screenshots/08-history-light.png" width="210"><br><sub>浅色外观 · 记录页</sub></td>
+<td></td>
+</tr>
+</table>
 
 ## 🔒 隐私
 
