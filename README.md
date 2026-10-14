@@ -24,7 +24,7 @@
 ```
 .
 ├── 体脂率测算.html          # 网页版（单文件，双击即可用；也是 APK 内的页面）
-├── 体脂率测算-1.2.1.apk      # 已签名的安卓安装包（内含离线识别模型）
+├── 体脂率测算-1.2.2.apk      # 已签名的安卓安装包（内含离线识别模型）
 ├── gradle-app/              # 安卓工程（WebView 壳 + 本地 aapt2/d8 构建）
 │   ├── settings.gradle
 │   ├── build.gradle
@@ -49,9 +49,9 @@
 **网页版**：把 `体脂率测算.html` 用浏览器打开即可（手机浏览器同样可用）。
 离线形态识别需要同目录放置 `ort.min.js` / `ort-wasm-simd.wasm` / `mobilenet_v2_food101.onnx`；缺失时会优雅降级为本地颜色识别算法。
 
-**安卓版**：安装 `体脂率测算-1.2.1.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
+**安卓版**：安装 `体脂率测算-1.2.2.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
 
-> **v1.2.1 关键修复**：此前离线识别在 APK 内无法运行——onnxruntime-web 在其 Web Worker 内部用 `fetch()` 加载 wasm/onnx，而 `fetch()` 在 `file://` 协议下被浏览器直接拒绝（"URL scheme file is not supported"），主线程的 XHR 垫片也够不到 Worker 内部。本版本在 App 内启动一个绑定 `127.0.0.1` 的本地 HTTP 服务器来提供 assets，WebView 改为 `http://127.0.0.1:端口/index.html` 加载，同源 `http://` 下 Worker 可正常 `fetch`，离线识别在真机 APK 中即可生效。该服务器仅监听回环地址，不暴露到任何外部网络。
+> **v1.2.2 关键修复**：此前离线识别在 APK 内无法运行——onnxruntime-web 在其 Web Worker 内部用 `fetch()` 加载 wasm/onnx，而 `fetch()` 在 `file://` 协议下被浏览器直接拒绝（"URL scheme file is not supported"），主线程的 XHR 垫片也够不到 Worker 内部。本版本在 App 内启动一个绑定 `127.0.0.1` 的本地 HTTP 服务器来提供 assets，WebView 改为 `http://127.0.0.1:端口/index.html` 加载，同源 `http://` 下 Worker 可正常 `fetch`，离线识别在真机 APK 中即可生效。该服务器仅监听回环地址，不暴露到任何外部网络。
 
 ## 🔨 自行构建 APK
 
@@ -83,7 +83,7 @@ zip -q -j $WORK/app-dex.apk $WORK/classes.dex
 $BT/zipalign -f -p 4 $WORK/app-dex.apk $WORK/app-aligned.apk
 $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
   --ks-pass pass:android --key-pass pass:android \
-  --out 体脂率测算-1.2.1.apk $WORK/app-aligned.apk
+  --out 体脂率测算-1.2.2.apk $WORK/app-aligned.apk
 ```
 
 ### 离线食物识别所需资源
