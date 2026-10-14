@@ -24,7 +24,8 @@
 ```
 .
 ├── 体脂率测算.html          # 网页版（单文件，双击即可用；也是 APK 内的页面）
-├── 体脂率测算-1.3.0.apk      # 已签名的安卓安装包（内含离线识别模型）
+├── 体脂率测算-1.4.0.apk      # 已签名的安卓安装包（内含离线识别模型）
+├── 体脂率测算-诊断版.apk     # 诊断包（仅一行文字的最小页面，用于排查“打不开”是外壳还是界面的问题）
 ├── gradle-app/              # 安卓工程（WebView 壳 + 本地 aapt2/d8 构建）
 │   ├── settings.gradle
 │   ├── build.gradle
@@ -34,7 +35,7 @@
 │       ├── release.keystore
 │       └── src/main/
 │           ├── AndroidManifest.xml
-│           ├── java/com/bodyfat/app/     # MainActivity（WebView + 原生桥 + 本地资源服务器）
+│           ├── java/com/bodyfat/app/     # MainActivity（WebView + 原生桥 + 安全模式/崩溃自愈）
 │           ├── res/                      # 图标 / 字符串
 │           └── assets/
 │               ├── index.html            # 打包进 APK 的页面
@@ -49,9 +50,14 @@
 **网页版**：把 `体脂率测算.html` 用浏览器打开即可（手机浏览器同样可用）。
 离线形态识别需要同目录放置 `ort.min.js` / `ort-wasm-simd.wasm` / `mobilenet_v2_food101.onnx`；缺失时会优雅降级为本地颜色识别算法。
 
-**安卓版**：安装 `体脂率测算-1.3.0.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
+**安卓版**：安装 `体脂率测算-1.4.0.apk`（Android 6.0 及以上），模型与运行时已随包内置，首次识别无需联网、无需任何密钥。
 
-> **v1.3.0 关键修复**：此前离线识别在 APK 内无法运行——onnxruntime-web 在其 Web Worker 内部用 `fetch()` 加载 wasm/onnx，而 `fetch()` 在 `file://` 协议下被浏览器直接拒绝（"URL scheme file is not supported"），主线程的 XHR 垫片也够不到 Worker 内部。本版本在 App 内启动一个绑定 `127.0.0.1` 的本地 HTTP 服务器来提供 assets，WebView 改为 `http://127.0.0.1:端口/index.html` 加载，同源 `http://` 下 Worker 可正常 `fetch`，离线识别在真机 APK 中即可生效。该服务器仅监听回环地址，不暴露到任何外部网络。
+> **v1.4.0 关键修复（针对真机「装上但一闪就退」）**：
+> 1. **安全模式**：首次启动（或检测到上次启动未完成就绪）时自动进入安全模式——WebView 软件渲染 + 关闭 iOS 26 位移玻璃特效（`feDisplacementMap` 是部分机型 GPU 驱动崩溃的高危项）。界面此时为「半透明玻璃」观感，功能完全不受影响。
+> 2. **崩溃自愈**：若开启特效后 WebView 渲染进程崩溃（`onRenderProcessGone`），App 自行重建 WebView 并切回安全模式，不再整个进程被杀；用户手动开启特效视为授权，下次启动才会重新尝试。
+> 3. **启动轨迹日志**：onCreate → loadUrl → 页面就绪每步落盘（应用目录 + 「下载」目录各一份），设置页可一键「导出诊断日志」。
+> 4. **file:// 离线识别修复**：onnxruntime-web 以相对路径 `fetch('./ort-wasm-simd.wasm')` 加载 wasm，而原生 `fetch` 拒绝 `file:` 协议。现在页面内置 fetch 垫片：凡 `file://` 页面下的相对/绝对 file 请求一律改走 XHR（WebView 已开启 file 访问），实测模型加载约 0.5s、单次推理约 60ms，离线识别在纯 `file://` 外壳内即可工作，无需本地 HTTP 服务器。
+> 5. **特效开关**：设置页新增「液态玻璃特效」卡片，可随时手动开/关；开启用硬件加速 + 真折射位移贴图，关闭为软件渲染。
 
 ## 🔨 自行构建 APK
 
@@ -83,7 +89,7 @@ zip -q -j $WORK/app-dex.apk $WORK/classes.dex
 $BT/zipalign -f -p 4 $WORK/app-dex.apk $WORK/app-aligned.apk
 $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
   --ks-pass pass:android --key-pass pass:android \
-  --out 体脂率测算-1.3.0.apk $WORK/app-aligned.apk
+  --out 体脂率测算-1.4.0.apk $WORK/app-aligned.apk
 ```
 
 ### 离线食物识别所需资源
@@ -110,7 +116,7 @@ $BT/apksigner sign --ks $ROOT/release.keystore --ks-key-alias bft \
 
 ## 🎨 界面
 
-深色液态玻璃风格：悬浮玻璃 Dock（5 项：测算/记录/计划/热量/食物库）、彩色 iOS 圆角图标、跟随手指的阻尼高光与 3D 倾斜、彩色光斑壁纸、卡片周期扫光、SDF 位移图实现的真折射玻璃。
+深色液态玻璃风格：悬浮玻璃 Dock（5 项：测算/记录/计划/热量/食物库）、彩色 iOS 圆角图标、跟随手指的阻尼高光与 3D 倾斜、彩色光斑壁纸、卡片周期扫光、SDF 位移图实现的真折射玻璃。APK 内首次启动默认「安全模式」（软件渲染、特效关闭）以保证任何机型都能打开，设置页可一键开启真折射特效。
 
 ![热量页](docs/screenshots/02-calories.png)
 

@@ -9,3 +9,6 @@ android/build/
 android/app/build/
 android/.gradle/
 .gradle/
+
+__pycache__/
+*.pyc

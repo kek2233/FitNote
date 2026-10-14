@@ -445,6 +445,14 @@
   window.fetch = function (input, init){
     var url = (typeof input === 'string') ? input : (input && input.url) || ''
     if (url.indexOf('file://') === 0) return viaXhr(url)
+    /* 页面本身是 file:// 时，相对路径请求（ort 的 wasmPaths='./' 与模型文件名）也一并走 XHR，
+       否则会漏到原生 fetch 被 "URL scheme file is not supported" 拒绝 */
+    if (url && location.protocol === 'file:' && !/^(https?:|data:|blob:|about:)/i.test(url)){
+      try {
+        var abs = new URL(url, location.href).href
+        if (abs.indexOf('file://') === 0) return viaXhr(abs)
+      } catch (e) {}
+    }
     if (_fetch) return _fetch(input, init)
     return Promise.reject(new TypeError('fetch unavailable'))
   }
@@ -1047,6 +1055,18 @@ var FoodAI = (function () {
 })()
 
 /* ------------------------------ 应用状态与渲染 ------------------------------ */
+/* 安全模式提示 chip：点它直接进设置开特效（App.toggleGlass 会复用，故定义在顶层） */
+function showSafeChip(){
+  var hd = document.querySelector('.hd')
+  if (!hd || document.getElementById('safeChip')) return
+  var b = document.createElement('button')
+  b.id = 'safeChip'
+  b.className = 'hd-b'
+  b.textContent = '安全模式'
+  b.title = '液态玻璃特效已关闭（软件渲染），点此去设置开启'
+  b.onclick = function (){ App.settings() }
+  hd.appendChild(b)
+}
 var App = {
   state: {
     tab:'home',
@@ -1879,6 +1899,12 @@ var App = {
       '<button class="btn sm gray" style="margin-top:10px" onclick="App.saveMeals()">保存时间</button>' +
       '<div class="mini" style="margin-top:8px">过了该餐结束时间还没记，签到页会显示「没吃」。</div></div>'
 
+    var glassOn = LiquidGlass.active()
+    html += '<div class="card" style="box-shadow:none;border:1px solid var(--line);margin-bottom:12px"><div class="card-t"><span>' + ic('droplet',15) + ' 液态玻璃特效</span> <span class="sub">' + (glassOn ? '<span style="color:var(--great)">已开启</span>' : '<span style="color:var(--text-dim)">安全模式 · 已关闭</span>') + '</span></div>' +
+      '<div class="mini">iOS 26 真折射玻璃：位移贴图 + 边缘高光 + 3D 倾斜跟随，需要硬件加速渲染，更沉浸也更耗电。若开启后 App 闪退或画面异常，重启会自动回到安全模式。</div>' +
+      '<div class="row-btns" style="margin-top:10px"><button class="btn sm gray" onclick="App.toggleGlass()">' + (glassOn ? '关闭特效' : '开启特效') + '</button>' +
+      '<button class="btn sm gray" onclick="App.exportDiag()">导出诊断日志</button></div></div>'
+
     var bk = Store.latestBackup()
     html += '<div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="card-t">💾 数据备份</div>' +
       '<div class="fld"><div class="fld-l">本地自动备份</div><div class="fld-r" style="font-size:12px;color:var(--text-dim)">' +
@@ -1892,6 +1918,38 @@ var App = {
     this.openSheet(html)
     this._mealCfg = { breakfast:{ s:meals.breakfast.start, e:meals.breakfast.end }, lunch:{ s:meals.lunch.start, e:meals.lunch.end }, dinner:{ s:meals.dinner.start, e:meals.dinner.end } }
     this._ai_base = ai.baseUrl || ''; this._ai_model = ai.model || ''; this._ai_key = ai.apiKey || ''
+  },
+  /* 液态玻璃特效开关：开 = 硬件加速 + 位移滤镜；关 = 软件渲染 + 无滤镜（安全模式） */
+  toggleGlass: function () {
+    var on = !LiquidGlass.active()
+    LiquidGlass.setOverride(on)
+    if (window.Android && Android.setGlassEnabled) {
+      try { Android.setGlassEnabled(on) } catch (e) {}
+    }
+    if (on) {
+      var chip = document.getElementById('safeChip')
+      if (chip) chip.remove()
+      LiquidGlass.attachDock()
+      LiquidGlass.attachHero()
+      toast('液态玻璃已开启')
+    } else {
+      LiquidGlass.detachAll()
+      showSafeChip()
+      toast('特效已关闭（软件渲染）')
+    }
+    this.settings()
+  },
+  /* 导出诊断日志（启动轨迹 + UA）到「下载」目录，排障用 */
+  exportDiag: function () {
+    var info = '体脂率测算 诊断日志\nUA: ' + navigator.userAgent +
+      '\n液态玻璃: ' + (LiquidGlass.active() ? '开启' : '关闭（安全模式）') +
+      '\n---- 启动轨迹 ----\n'
+    var log = ''
+    if (window.Android && Android.startupLog) {
+      try { log = Android.startupLog() } catch (e) { log = '(读取失败: ' + e + ')' }
+    }
+    if (window.Android && Android.saveText) Android.saveText('bodyfat-诊断日志.txt', info + log)
+    else toast('当前环境不支持导出')
   },
   aiPreset: function (name) {
     var p = AI.PRESETS.filter(function (x){ return x.name === name })[0]
@@ -1931,6 +1989,17 @@ var App = {
 var LiquidGlass = (function () {
   var seq = 0
   var SUPPORTED = !!(typeof window !== 'undefined' && window.CSS && CSS.supports && CSS.supports('backdrop-filter', 'url(#lg)'))
+  /* 安全模式开关：URL 带 ?safe=1（外壳在首次启动/上次异常时强制）或原生桥报告安全模式时，
+     完全停用位移滤镜（feDisplacementMap 是真机 GPU 崩溃的高危项）。
+     glassOverride：本次会话内用户手动开关的覆盖值（null=跟随外壳）。 */
+  var glassOverride = null
+  function glassActive(){
+    if (glassOverride != null) return glassOverride
+    if (/[?&]safe=1/.test(location.search)) return false
+    try { if (window.Android && window.Android.isSafeMode) return !window.Android.isSafeMode() } catch (e) {}
+    return true
+  }
+  function setOverride(v){ glassOverride = v }
   function key_safe(k){ return String(k).replace(/[^a-zA-Z0-9_-]/g, '') }
   /* 圆角矩形 SDF：内部为负、边缘 0、外部为正 */
   function rrSDF(x, y, hw, hh, r){
@@ -1973,7 +2042,7 @@ var LiquidGlass = (function () {
   }
   function clear(){ var s = $('#lgDefs'); if (s) s.innerHTML = '' }
   function attach(el, opt){
-    if (!el || !SUPPORTED) return null
+    if (!el || !SUPPORTED || !glassActive()) return null
     var r = el.getBoundingClientRect()
     var w = Math.round(r.width), h = Math.round(r.height)
     if (w < 8 || h < 8) return null
@@ -2007,19 +2076,29 @@ var LiquidGlass = (function () {
   var dockTimer = null
   function attachDock(){
     var dock = $('#tabs')
-    if (!dock) return
+    if (!dock || !glassActive()) return
     setTimeout(function (){ attach(dock, { key:'dock', radius: 34, bezel: 24, maxDisp: 13 }) }, 80)
   }
   function attachHero(){
     var el = document.querySelector('.hero')
-    if (!el) return
+    if (!el || !glassActive()) return
     setTimeout(function (){ attach(el, { key:'hero', radius: 24, bezel: 20, maxDisp: 10, res: 0.5 }) }, 140)
+  }
+  /* 关闭特效时把内联的 backdrop-filter 撤掉，交还给样式表里的普通模糊 */
+  function detachAll(){
+    var els = [document.getElementById('tabs'), document.querySelector('.hero')]
+    for (var i = 0; i < els.length; i++){
+      if (!els[i]) continue
+      els[i].style.removeProperty('backdrop-filter')
+      els[i].style.removeProperty('-webkit-backdrop-filter')
+    }
+    clear()
   }
   function onResize(){
     clearTimeout(dockTimer)
     dockTimer = setTimeout(function (){ clear(); attachDock(); attachHero() }, 240)
   }
-  return { supported:SUPPORTED, attach:attach, attachDock:attachDock, attachHero:attachHero, clear:clear, onResize:onResize }
+  return { supported:SUPPORTED, active:glassActive, setOverride:setOverride, attach:attach, attachDock:attachDock, attachHero:attachHero, clear:clear, detachAll:detachAll, onResize:onResize }
 })()
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -2086,9 +2165,17 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('pointerup', function (e) { if (e.pointerType === 'touch') fade() }, { passive:true })
     document.addEventListener('pointercancel', function () { fade() }, { passive:true })
   })()
-  App.render()
+  try {
+    App.render()
+  } catch (e) {
+    var pg0 = document.getElementById('page')
+    if (pg0) pg0.innerHTML = '<div class="card"><div class="card-t">界面加载出错</div><div class="mini">' + (e && e.message ? e.message : e) + '</div><button class="btn sm gray" style="margin-top:10px" onclick="location.reload()">重试</button></div>'
+  }
+  if (!LiquidGlass.active()) showSafeChip()
   LiquidGlass.attachDock()
   window.addEventListener('resize', LiquidGlass.onResize)
+  /* 告诉外壳：页面已就绪（用于崩溃循环检测，见 MainActivity） */
+  try { if (window.Android && window.Android.onReady) window.Android.onReady() } catch (e) {}
 })
 </script>
 </body>
