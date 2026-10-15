@@ -31,14 +31,21 @@
   --sh:0 1px 2px rgba(0,0,0,.5);
 
   /* 排印角色尺度（typeset）：角色按用途命名，不按数值；层级靠 字号+字重+灰阶 三重区分 */
+  --fs-hero-xl:44px;  /* 最大读数（体脂百分比等大数字） */
   --fs-display:32px;  --lh-display:1.16;
+  --fs-hero:28px;     --lh-hero:1.15;    /* 次级大数字/统计主值 */
+  --fs-kpi-lg:23px;   --lh-kpi-lg:1.2;   /* 卡内主读数 */
   --fs-data:22px;     --lh-data:1.12;   /* 数字读数，tabular-nums 对齐 */
+  --fs-kpi:20px;      --lh-kpi:1.2;
   --fs-title:17px;    --lh-title:1.3;
+  --fs-action:16px;   --lh-action:1.25; /* 主按钮文字 */
+  --fs-lead:18px;     --lh-lead:1.45;   /* 引导语/段首 */
   --fs-body:15px;     --lh-body:1.55;   /* 浅字深底：行高补偿，不上全局比例 */
   --fs-sub:14px;      --lh-sub:1.5;
   --fs-label:13px;    --lh-label:1.35;  /* 分组标签 */
   --fs-meta:12px;     --lh-meta:1.4;    /* 次要说明 */
   --fs-micro:11.5px;  --lh-micro:1.35;  /* 单位/脚注 */
+  --fs-nav:10px;      --lh-nav:1.2;     /* 底部导航小字 */
 
   /* 间距尺度（layout）：4 单位基准，紧/松交替形成节奏，不用单一值平铺 */
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
@@ -83,7 +90,7 @@ h1,h2,h3,.hero h1,.card>.ttl{text-wrap:balance}
 p,.hero p,.row .mid span,.tile span,.sub{text-wrap:pretty}
 
 /* ---------- 状态栏 ---------- */
-.sb{height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 6px;font-size:14px;font-weight:600;position:relative;z-index:var(--z-status)}
+.sb{height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 6px;font-size:var(--fs-sub);font-weight:600;position:relative;z-index:var(--z-status)}
 .sb .r{display:flex;align-items:center;gap:5px}
 .sb svg{width:17px;height:11px;display:block}
 
@@ -140,22 +147,22 @@ p,.hero p,.row .mid span,.tile span,.sub{text-wrap:pretty}
 
 /* ---------- 按钮 ---------- */
 .btn{display:flex;align-items:center;justify-content:center;gap:7px;height:48px;border-radius:14px;
-  font-size:16px;font-weight:600;letter-spacing:-.1px;border:0;width:100%;
+  font-size:var(--fs-action);font-weight:600;letter-spacing:-.1px;border:0;width:100%;
   background:var(--accent-fill);color:var(--accent-ink);font-family:inherit}
 .btn.ghost{background:var(--surface-2);color:var(--t1);border:.5px solid var(--hairline)}
-.btn.sm{height:38px;border-radius:11px;font-size:14px;width:auto;padding:0 16px}
+.btn.sm{height:38px;border-radius:11px;font-size:var(--fs-sub);width:auto;padding:0 16px}
 .btn svg{width:18px;height:18px}
 
 /* ---------- 分段控件 ---------- */
 .seg{display:flex;background:var(--surface-2);border-radius:10px;padding:2px;gap:2px}
-.seg button{flex:1;height:32px;border:0;background:transparent;color:var(--t2);font-family:inherit;font-size:13.5px;font-weight:500;border-radius:8px}
+.seg button{flex:1;height:32px;border:0;background:transparent;color:var(--t2);font-family:inherit;font-size:var(--fs-label);font-weight:500;border-radius:8px}
 .seg button.on{background:var(--surface);color:var(--t1);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.22)}
 .seg.acc button.on{background:var(--accent-fill);color:var(--accent-ink);box-shadow:none}
 
 /* ---------- chips ---------- */
 .chips{display:flex;gap:8px;overflow:hidden;padding:0 16px}
 .chip{height:32px;padding:0 14px;border-radius:var(--r-pill);background:var(--surface-2);border:.5px solid var(--hairline);
-  color:var(--t2);font-size:13.5px;font-weight:500;display:flex;align-items:center;flex:none}
+  color:var(--t2);font-size:var(--fs-label);font-weight:500;display:flex;align-items:center;flex:none}
 .chip.on{background:var(--accent);border-color:transparent;color:var(--accent-ink);font-weight:600}
 
 /* ---------- 进度条 ---------- */
@@ -165,9 +172,9 @@ p,.hero p,.row .mid span,.tile span,.sub{text-wrap:pretty}
 
 /* ---------- 步进器（记组核心控件） ---------- */
 .stepper{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:14px;padding:6px;border:.5px solid var(--hairline)}
-.stepper button{width:44px;height:44px;border-radius:11px;border:0;background:var(--surface-3);color:var(--t1);font-size:22px;font-weight:400;display:flex;align-items:center;justify-content:center;font-family:inherit}
-.stepper .v{font-size:26px;font-weight:700;letter-spacing:-.6px;display:flex;align-items:baseline;gap:4px}
-.stepper .v u{font-size:13px;font-weight:600;color:var(--t2);text-decoration:none}
+.stepper button{width:44px;height:44px;border-radius:11px;border:0;background:var(--surface-3);color:var(--t1);font-size:var(--fs-data);font-weight:400;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.stepper .v{font-size:var(--fs-hero);font-weight:700;letter-spacing:-.6px;display:flex;align-items:baseline;gap:4px}
+.stepper .v u{font-size:var(--fs-label);font-weight:600;color:var(--t2);text-decoration:none}
 
 /* ---------- 底部 Tab 栏（玻璃层 2/4） ---------- */
 .tabbar{
@@ -180,7 +187,7 @@ p,.hero p,.row .mid span,.tile span,.sub{text-wrap:pretty}
 }
 .tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--t3);position:relative}
 .tabbar .tb svg{width:23px;height:23px}
-.tabbar .tb span{font-size:10px;letter-spacing:.1px}
+.tabbar .tb span{font-size:var(--fs-nav);letter-spacing:.1px}
 .tabbar .tb.on{color:var(--accent)}
 .tabbar .tb.on span{font-weight:600}
 /* 液态滑动高光块：本身也是小玻璃胶囊 */
@@ -276,7 +283,7 @@ p,.hero p,.row .mid span,.tile span,.sub{text-wrap:pretty}
 .sep{height:1px;background:var(--hairline)}
 .pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:99px;
   background:var(--surface-2);border:.5px solid var(--hairline);color:var(--t2);
-  font-size:11.5px;font-weight:500}
+  font-size:var(--fs-micro);font-weight:500}
 .pill.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
 .btn.gray{background:var(--surface-2);color:var(--t2);border:.5px solid var(--hairline)}
 :root{--warn-soft:#2B2311}
@@ -284,7 +291,7 @@ p,.hero p,.row .mid span,.tile span,.sub{text-wrap:pretty}
 
 /* toast */
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(8px);z-index:var(--z-toast);
-  background:var(--t1);color:var(--ground);font-size:13.5px;font-weight:500;padding:10px 16px;
+  background:var(--t1);color:var(--ground);font-size:var(--fs-label);font-weight:500;padding:10px 16px;
   border-radius:99px;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82vw;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -308,21 +315,21 @@ p,.hero p,.row .mid span,.tile span,.sub{text-wrap:pretty}
 
 /* 表单控件 */
 .fld{margin-bottom:14px}
-.fld label{display:block;font-size:12.5px;color:var(--t2);margin:0 2px 7px;letter-spacing:.2px}
+.fld label{display:block;font-size:var(--fs-meta);color:var(--t2);margin:0 2px 7px;letter-spacing:.2px}
 .inp{width:100%;height:46px;padding:0 13px;border-radius:12px;border:.5px solid var(--sep);
-  background:var(--surface-2);color:var(--t1);font-size:16px;font-family:inherit;font-variant-numeric:tabular-nums}
+  background:var(--surface-2);color:var(--t1);font-size:var(--fs-action);font-family:inherit;font-variant-numeric:tabular-nums}
 .inp:focus{outline:none;border-color:var(--accent)}
 .inp-row{display:flex;align-items:center;gap:8px}
 .inp-row .inp{flex:1}
-.inp-row .unit{font-size:13px;color:var(--t3);width:22px;flex:none}
+.inp-row .unit{font-size:var(--fs-label);color:var(--t3);width:22px;flex:none}
 select.inp{appearance:none;-webkit-appearance:none}
 
 /* 引导页 */
 .wheelrow{display:flex;align-items:flex-start;gap:0}
 .wheel{flex:1;text-align:center}
-.wheel .lbl{font-size:12px;color:var(--t3);margin-bottom:6px}
-.wheel .val{font-size:28px;font-weight:700;letter-spacing:-.6px}
-.wheel .val i{font-size:13px;font-weight:600;font-style:normal;color:var(--t2);margin-left:3px}
+.wheel .lbl{font-size:var(--fs-meta);color:var(--t3);margin-bottom:6px}
+.wheel .val{font-size:var(--fs-hero);font-weight:700;letter-spacing:-.6px}
+.wheel .val i{font-size:var(--fs-label);font-weight:600;font-style:normal;color:var(--t2);margin-left:3px}
 .wheel .rule{height:1px;background:var(--accent);margin:8px 22px 0;opacity:.5}
 
 /* 计划选择 */
@@ -333,48 +340,48 @@ select.inp{appearance:none;-webkit-appearance:none}
   display:flex;align-items:center;justify-content:center}
 .plan.on .rd{border-color:var(--accent);background:var(--accent)}
 .plan.on .rd svg{width:12px;height:12px;color:var(--accent-ink)}
-.plan b{display:block;font-size:16px;font-weight:600;letter-spacing:-.2px}
-.plan em{display:block;font-style:normal;font-size:13px;color:var(--t2);margin-top:3px;line-height:1.45}
-.plan i{display:inline-block;font-style:normal;font-size:11.5px;color:var(--t2);margin-top:7px;
+.plan b{display:block;font-size:var(--fs-action);font-weight:600;letter-spacing:-.2px}
+.plan em{display:block;font-style:normal;font-size:var(--fs-label);color:var(--t2);margin-top:3px;line-height:1.45}
+.plan i{display:inline-block;font-style:normal;font-size:var(--fs-micro);color:var(--t2);margin-top:7px;
   padding:2px 8px;border-radius:99px;background:var(--surface-2)}
 .plan.on i{background:rgba(62,209,127,.16);color:var(--accent)}
 .dot{width:30px;height:30px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:var(--t3);flex:none}
+  font-size:var(--fs-meta);color:var(--t3);flex:none}
 .dot.done{background:var(--accent);color:var(--accent-ink);font-weight:700}
 .dot.today{border:2px solid var(--accent);color:var(--accent);font-weight:700}
 
 /* 训练进行中 */
 .stepline{display:flex;align-items:center;gap:10px}
-.stepline>.lb{width:40px;font-size:13px;color:var(--t2);flex:none}
+.stepline>.lb{width:40px;font-size:var(--fs-label);color:var(--t2);flex:none}
 
 /* 人体图 */
 .bodywrap{display:flex;gap:0;align-items:flex-start;justify-content:center}
 .bodywrap figure{margin:0;flex:1;max-width:132px}
-.bodywrap figcaption{text-align:center;font-size:11px;color:var(--t3);margin-top:6px;letter-spacing:.02em}
-.legend{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:14px;font-size:10.5px;color:var(--t3);text-align:center}
+.bodywrap figcaption{text-align:center;font-size:var(--fs-micro);color:var(--t3);margin-top:6px;letter-spacing:.02em}
+.legend{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:14px;font-size:var(--fs-nav);color:var(--t3);text-align:center}
 .mrw{display:flex;align-items:center;gap:10px;padding:10px 0}
-.mrw .nm{flex:1;font-size:14px}
+.mrw .nm{flex:1;font-size:var(--fs-sub)}
 .mrw .bar{position:relative;width:64px;height:5px}
 .mrw .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--accent)}
 .mrw .bar i.over{background:var(--warn)}
 
 /* 日历 */
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.wd{font-size:11px;color:var(--t3);text-align:center;padding-bottom:4px}
+.wd{font-size:var(--fs-micro);color:var(--t3);text-align:center;padding-bottom:4px}
 .cd{aspect-ratio:1;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:3px;font-size:12.5px;color:var(--t2);position:relative}
+  align-items:center;justify-content:center;gap:3px;font-size:var(--fs-meta);color:var(--t2);position:relative}
 .cd.blank{background:transparent}
 .cd.done{background:var(--accent-soft);color:var(--t1)}
 .cd.done::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent)}
 .cd.today{outline:2px solid var(--accent);outline-offset:-2px;color:var(--t1);font-weight:700}
 .cd.rest{color:var(--t3)}
-.lg{display:flex;gap:14px;font-size:11.5px;color:var(--t3)}
+.lg{display:flex;gap:14px;font-size:var(--fs-micro);color:var(--t3)}
 .lg i{width:8px;height:8px;border-radius:50%;display:inline-block;vertical-align:-1px;margin-right:4px}
 
 /* PR */
 .prrow{display:flex;align-items:center;gap:10px;padding:12px 0}
 .prrow .rk{width:22px;height:22px;border-radius:50%;background:var(--surface-3);color:var(--t2);
-  font-size:11.5px;display:flex;align-items:center;justify-content:center;flex:none}
+  font-size:var(--fs-micro);display:flex;align-items:center;justify-content:center;flex:none}
 .prrow.top .rk{background:var(--accent);color:var(--accent-ink);font-weight:700}
 .spark{display:flex;align-items:flex-end;gap:3px;height:34px}
 .spark i{width:5px;border-radius:2px;background:var(--surface-3)}
@@ -385,7 +392,7 @@ select.inp{appearance:none;-webkit-appearance:none}
 .alt .ico{width:34px;height:34px;border-radius:10px;background:var(--surface-2);
   display:flex;align-items:center;justify-content:center;flex:none}
 .alt .ico svg{width:17px;height:17px;color:var(--t2)}
-.tag{font-size:11px;color:var(--t3);border:1px solid var(--sep);border-radius:6px;padding:2px 6px}
+.tag{font-size:var(--fs-micro);color:var(--t3);border:1px solid var(--sep);border-radius:6px;padding:2px 6px}
 
 /* 空状态 */
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 30px 30px}
@@ -399,12 +406,12 @@ select.inp{appearance:none;-webkit-appearance:none}
 .backnav{flex:none;z-index:var(--z-sticky);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;
   background:var(--nav-bg);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
   border-bottom:.5px solid var(--hairline)}
-.backnav .bk{font-size:15px;color:var(--accent);font-weight:500}
-.backnav .ttl{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.backnav .bk{font-size:var(--fs-body);color:var(--accent);font-weight:500}
+.backnav .ttl{font-size:var(--fs-action);font-weight:600;letter-spacing:-.2px}
 .backnav .sp{width:52px}
 
 /* 状态栏 */
-.sb{height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 6px;font-size:14px;font-weight:600;position:relative;z-index:var(--z-status);flex:none}
+.sb{height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 6px;font-size:var(--fs-sub);font-weight:600;position:relative;z-index:var(--z-status);flex:none}
 .sb .r{display:flex;align-items:center;gap:5px}
 .sb svg{width:17px;height:11px;display:block}
 
@@ -414,13 +421,13 @@ select.inp{appearance:none;-webkit-appearance:none}
 /* 品牌标识：设计稿 F 图标（矢量内联，随字号缩放，不依赖外部图片） */
 .fn-mark{display:block;flex:none;filter:drop-shadow(0 6px 18px rgba(37,232,92,.24))}
 .fn-brand{display:flex;flex-direction:column;align-items:center;text-align:center}
-.fn-brand .fn-name{font-size:19px;font-weight:800;letter-spacing:-.4px;color:var(--t1);margin-top:10px}
-.fn-brand .fn-sub{font-size:12px;color:var(--t3);margin-top:3px}
+.fn-brand .fn-name{font-size:var(--fs-lead);font-weight:800;letter-spacing:-.4px;color:var(--t1);margin-top:10px}
+.fn-brand .fn-sub{font-size:var(--fs-meta);color:var(--t3);margin-top:3px}
 /* 记录页左滑删除：只在行内位移，不触发页面切换 */
 .swipewrap{position:relative;overflow:hidden;background:var(--danger,#FF453A)}
 .swiperow{position:relative;background:var(--surface);transition:transform .26s cubic-bezier(.22,1,.36,1);touch-action:pan-y}
 .swipewrap.open .swiperow{transform:translateX(-78px)}
-.swipedel{position:absolute;top:0;right:0;width:78px;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;letter-spacing:.2px}
+.swipedel{position:absolute;top:0;right:0;width:78px;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:var(--fs-sub);font-weight:600;letter-spacing:.2px}
 
 /* 真机适配（覆盖原型固定画布） */
 body{width:100vw;height:100vh;max-width:100vw}
@@ -1984,8 +1991,8 @@ var App = {
   _confirm: function (title, desc, onOk){
     var self = this
     this._sheet = function (){
-      return '<div class="grab"></div><div style="padding:4px 20px 0"><div style="font-size:18px;font-weight:700;letter-spacing:-.3px">' + title + '</div>'
-        + '<p style="margin:9px 0 16px;font-size:13.5px;color:var(--t2);line-height:1.6">' + desc + '</p>'
+      return '<div class="grab"></div><div style="padding:4px 20px 0"><div style="font-size:var(--fs-lead);font-weight:700;letter-spacing:-.3px">' + title + '</div>'
+        + '<p style="margin:9px 0 16px;font-size:var(--fs-label);color:var(--t2);line-height:1.6">' + desc + '</p>'
         + '<div style="display:flex;gap:10px;margin-bottom:6px"><button class="btn ghost" style="flex:1;height:46px;border-radius:14px" data-act="closeSheet">取消</button><button class="btn" style="flex:1;height:46px;border-radius:14px;background:var(--danger,#FF453A)" data-act="confirmOk">确认删除</button></div></div>'
     }
     this._confirmCb = onOk
@@ -2040,19 +2047,19 @@ var App = {
     /* 今日训练主卡 */
     h += '<div class="card" style="padding:15px 16px 16px">'
     if (wk.planDay && !wk.planDay.isRest){
-      h += '<div style="display:flex;align-items:center;gap:8px"><span class="chip on" style="height:26px;padding:0 11px;font-size:12px">' + esc(wk.planDay.trainTitle) + '</span><span style="margin-left:auto;font-size:12.5px;color:var(--t2)" class="num">今天</span></div>'
+      h += '<div style="display:flex;align-items:center;gap:8px"><span class="chip on" style="height:26px;padding:0 11px;font-size:var(--fs-meta)">' + esc(wk.planDay.trainTitle) + '</span><span style="margin-left:auto;font-size:var(--fs-meta);color:var(--t2)" class="num">今天</span></div>'
       h += '<div style="margin-top:12px">'
       wk.items.forEach(function (it, i){
-        h += '<div style="display:flex;align-items:center;padding:9px 0' + (i ? ';border-top:.5px solid var(--hairline)' : '') + '"><span class="num" style="width:20px;font-size:13px;color:var(--t3)">' + (i + 1) + '</span><span style="flex:1;font-size:15px">' + esc(it) + '</span></div>'
+        h += '<div style="display:flex;align-items:center;padding:9px 0' + (i ? ';border-top:.5px solid var(--hairline)' : '') + '"><span class="num" style="width:20px;font-size:var(--fs-label);color:var(--t3)">' + (i + 1) + '</span><span style="flex:1;font-size:var(--fs-body)">' + esc(it) + '</span></div>'
       })
       h += '</div><button class="btn" style="margin-top:14px" data-act="startTrain">' + icn('i-bolt', 18) + '开始训练</button>'
     } else if (wk.active){
       var sets = Train.setCount(wk.active)
-      h += '<div style="display:flex;align-items:center;gap:8px"><span class="chip on" style="height:26px;padding:0 11px;font-size:12px">进行中的训练</span><span style="margin-left:auto;font-size:12.5px;color:var(--t2)" class="num">' + sets + ' 组已完成</span></div>'
-      h += '<div style="margin-top:12px;font-size:14px;color:var(--t2)">上次练到一半，继续记完这组吧。</div>'
+      h += '<div style="display:flex;align-items:center;gap:8px"><span class="chip on" style="height:26px;padding:0 11px;font-size:var(--fs-meta)">进行中的训练</span><span style="margin-left:auto;font-size:var(--fs-meta);color:var(--t2)" class="num">' + sets + ' 组已完成</span></div>'
+      h += '<div style="margin-top:12px;font-size:var(--fs-sub);color:var(--t2)">上次练到一半，继续记完这组吧。</div>'
       h += '<button class="btn" style="margin-top:14px" data-act="startTrain">' + icn('i-bolt', 18) + '继续训练</button>'
     } else {
-      h += '<div style="font-size:14px;color:var(--t2)">今天是休息日，或还没有训练计划。</div>'
+      h += '<div style="font-size:var(--fs-sub);color:var(--t2)">今天是休息日，或还没有训练计划。</div>'
       h += '<button class="btn" style="margin-top:14px" data-act="startTrain">' + icn('i-plus', 18) + '开始一次训练</button>'
     }
     h += '</div>'
@@ -2070,7 +2077,7 @@ var App = {
     /* 身体：整卡可点进编辑（身高体重腰围随时改） */
     h += '<div class="sec"><h2>身体档案</h2><div class="card"><div class="rows">'
     if (pro){
-      h += '<div class="row" data-act="recordBody"><span class="ic">' + icn('i-user', 16) + '</span><span class="mid"><b>身高 ' + pro.heightCm + ' · 体重 ' + pro.weightKg + 'kg</b><span>腰围 ' + pro.waistCm + 'cm · 点击修改</span></span><span class="val num">' + fmt(pro.bf, 1) + '<i style="font-size:11px;font-style:normal;color:var(--t3)">%</i></span><span class="chev"></span></div>'
+      h += '<div class="row" data-act="recordBody"><span class="ic">' + icn('i-user', 16) + '</span><span class="mid"><b>身高 ' + pro.heightCm + ' · 体重 ' + pro.weightKg + 'kg</b><span>腰围 ' + pro.waistCm + 'cm · 点击修改</span></span><span class="val num">' + fmt(pro.bf, 1) + '<i style="font-size:var(--fs-micro);font-style:normal;color:var(--t3)">%</i></span><span class="chev"></span></div>'
       h += '<div class="row" data-act="recordBody"><span class="ic acc">' + icn('i-trend', 16) + '</span><span class="mid"><b>更新体脂率</b><span>上次 ' + mdLabel(pro.ts ? isoDate(new Date(pro.ts)) : today) + ' · 围度法实测</span></span><span class="chev"></span></div>'
     } else {
       h += '<div class="row" data-act="recordBody"><span class="ic acc">' + icn('i-trend', 16) + '</span><span class="mid"><b>录入身体数据</b><span>身高 / 体重 / 腰围 —— 用来算体脂与热量目标</span></span><span class="chev"></span></div>'
@@ -2086,8 +2093,8 @@ var App = {
     return '<div class="scroll"><div class="hero" style="padding-bottom:10px"><h1>今天</h1><p>还没有任何记录，先从下面任意一步开始</p></div><div class="pad">'
       + '<div class="card" style="padding:0;overflow:hidden"><div class="empty"><div class="ico">' + icn('i-dumbbell', 28) + '</div><h2>今天还没有训练</h2><p>记一组只需要 3 次点击。<br>也可以先录一次体脂，拿到基线再看计划。</p></div><div class="sep"></div>'
       + '<div style="padding:14px 16px;display:flex;flex-direction:column;gap:9px"><button class="btn" style="height:46px" data-act="startTrain">开始训练</button><button class="btn ghost" style="height:46px" data-act="recordBody">手动记一组</button></div></div>'
-      + '<div class="card" style="margin-top:12px;padding:14px 16px"><div style="font-size:14.5px;font-weight:600;margin-bottom:4px">先建立基线</div><div style="font-size:12.5px;color:var(--t2);line-height:1.55">录入身高体重腰围，得到体脂率与每日热量目标，计划会自动按它生成。</div><div class="sep" style="margin:12px 0"></div><div style="display:flex;align-items:center;gap:10px" data-act="recordBody"><span class="iconbtn" style="background:var(--surface-2)">' + icn('i-bolt', 16) + '</span><span style="flex:1;font-size:14px">录入身体数据</span><span style="font-size:12.5px;color:var(--t3)">约 30 秒</span></div></div>'
-      + '<p style="font-size:11.5px;color:var(--t3);text-align:center;margin:16px 0 0">数据仅存本机，不会上传 · 全程无需联网</p></div></div>'
+      + '<div class="card" style="margin-top:12px;padding:14px 16px"><div style="font-size:var(--fs-sub);font-weight:600;margin-bottom:4px">先建立基线</div><div style="font-size:var(--fs-meta);color:var(--t2);line-height:1.55">录入身高体重腰围，得到体脂率与每日热量目标，计划会自动按它生成。</div><div class="sep" style="margin:12px 0"></div><div style="display:flex;align-items:center;gap:10px" data-act="recordBody"><span class="iconbtn" style="background:var(--surface-2)">' + icn('i-bolt', 16) + '</span><span style="flex:1;font-size:var(--fs-sub)">录入身体数据</span><span style="font-size:var(--fs-meta);color:var(--t3)">约 30 秒</span></div></div>'
+      + '<p style="font-size:var(--fs-micro);color:var(--t3);text-align:center;margin:16px 0 0">数据仅存本机，不会上传 · 全程无需联网</p></div></div>'
   },
 
   dietCard: function (today){
@@ -2097,7 +2104,7 @@ var App = {
     var kcal = sumKcal(today)
     var pct = Math.min(100, Math.round(kcal / target * 100))
     var h = '<div class="sec"><h2>饮食</h2><div class="card">'
-    h += '<div style="padding:14px 16px 12px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:23px;font-weight:700;letter-spacing:-.5px">' + num(kcal) + '</span><span style="font-size:13px;color:var(--t2)">/ ' + num(target) + ' kcal</span><span style="margin-left:auto;font-size:12.5px;color:var(--t2)">' + (kcal < target ? '还差 ' + num(target - kcal) : '已超 ' + num(kcal - target)) + '</span></div><div class="bar" style="margin-top:10px"><i style="width:' + pct + '%"></i></div></div>'
+    h += '<div style="padding:14px 16px 12px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:var(--fs-kpi-lg);font-weight:700;letter-spacing:-.5px">' + num(kcal) + '</span><span style="font-size:var(--fs-label);color:var(--t2)">/ ' + num(target) + ' kcal</span><span style="margin-left:auto;font-size:var(--fs-meta);color:var(--t2)">' + (kcal < target ? '还差 ' + num(target - kcal) : '已超 ' + num(kcal - target)) + '</span></div><div class="bar" style="margin-top:10px"><i style="width:' + pct + '%"></i></div></div>'
     h += '<div class="rows" style="padding:0 16px 4px">'
     keys.forEach(function (k){
       var m = AppCfg.mealMeta(k)
@@ -2133,7 +2140,7 @@ var App = {
     })
     if (!hasAny) h += '<div class="empty" style="padding-top:60px"><div class="ico">' + icn('i-list', 28) + '</div><h2>还没有记录</h2><p>完成一次训练或记一餐，就会出现在这里。</p>'
       + '<button class="btn" style="margin-top:16px;max-width:220px" data-act="startTrain">＋ 开始训练</button></div>'
-    h += '<p style="text-align:center;font-size:12.5px;color:var(--t3);margin:18px 0 0">数据仅存本机 · 「我的」可导出 CSV 备份</p></div></div>'
+    h += '<p style="text-align:center;font-size:var(--fs-meta);color:var(--t3);margin:18px 0 0">数据仅存本机 · 「我的」可导出 CSV 备份</p></div></div>'
     return h
   },
   logDays: function (){
@@ -2152,14 +2159,14 @@ var App = {
     if (seg === 'all' || seg === 'train'){
       Store.sessionsByDate(date).forEach(function (sv){
         var vol = Train.volumeOf(sv), sets = Train.setCount(sv), min = Math.max(1, Math.round(((sv.endTs || Date.now()) - (sv.startTs || Date.now())) / 60000))
-        h += '<div class="swipewrap"><div class="swiperow" data-act="viewSession" data-v="' + sv.id + '"><span class="ic acc">' + icn('i-dumbbell', 16) + '</span><span class="mid"><b>' + ((sv.title || (Train.byId((sv.sets[0] || {}).exId) || {}).muscle) || '训练') + '</b><span>' + sets + ' 组 · ' + min + ' 分钟</span></span><span class="val num">' + num(vol) + '<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kg</i></span><span class="chev"></span></div><span class="swipedel" data-act="delSession" data-v="' + sv.id + '">删除</span></div>'
+        h += '<div class="swipewrap"><div class="swiperow" data-act="viewSession" data-v="' + sv.id + '"><span class="ic acc">' + icn('i-dumbbell', 16) + '</span><span class="mid"><b>' + ((sv.title || (Train.byId((sv.sets[0] || {}).exId) || {}).muscle) || '训练') + '</b><span>' + sets + ' 组 · ' + min + ' 分钟</span></span><span class="val num">' + num(vol) + '<i style="font-size:var(--fs-micro);font-style:normal;color:var(--t3);margin-left:1px">kg</i></span><span class="chev"></span></div><span class="swipedel" data-act="delSession" data-v="' + sv.id + '">删除</span></div>'
       })
     }
     if (seg === 'all' || seg === 'food'){
       var logs = Store.logs(date)
       var kk = logs.reduce(function (s, x){ return s + (+x.kcal || 0) }, 0)
       if (logs.length){
-        h += '<div class="row"><span class="ic acc">' + icn('i-flame', 16) + '</span><span class="mid"><b>饮食</b><span>' + logs.length + ' 项 · 蛋白 ' + num(sumP(date, 'proteinG')) + 'g · 碳水 ' + num(sumP(date, 'carbG')) + 'g</span></span><span class="val num">' + num(kk) + '<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kcal</i></span><span class="chev"></span></div>'
+        h += '<div class="row"><span class="ic acc">' + icn('i-flame', 16) + '</span><span class="mid"><b>饮食</b><span>' + logs.length + ' 项 · 蛋白 ' + num(sumP(date, 'proteinG')) + 'g · 碳水 ' + num(sumP(date, 'carbG')) + 'g</span></span><span class="val num">' + num(kk) + '<i style="font-size:var(--fs-micro);font-style:normal;color:var(--t3);margin-left:1px">kcal</i></span><span class="chev"></span></div>'
       }
     }
     if (seg === 'all' || seg === 'body'){
@@ -2185,7 +2192,7 @@ var App = {
     var h = '<div class="scroll"><div class="hero" style="padding-bottom:12px"><h1>计划</h1><p>' + gm.title + '期 · 每周 ' + this.weeklyCount(plan) + ' 练 · 目标 ' + num(plan.kcal) + ' kcal</p></div><div class="pad">'
 
     /* 本周进度 */
-    h += '<div class="card" style="padding:15px 16px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:23px;font-weight:700;letter-spacing:-.5px">' + done + '</span><span style="font-size:13px;color:var(--t2)">/ ' + this.weeklyCount(plan) + ' 次训练完成</span><span style="margin-left:auto;font-size:12.5px;color:var(--t2)">' + (done >= this.weeklyCount(plan) ? '本周完成' : '还剩 ' + (this.weeklyCount(plan) - done) + ' 次') + '</span></div>'
+    h += '<div class="card" style="padding:15px 16px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:var(--fs-kpi-lg);font-weight:700;letter-spacing:-.5px">' + done + '</span><span style="font-size:var(--fs-label);color:var(--t2)">/ ' + this.weeklyCount(plan) + ' 次训练完成</span><span style="margin-left:auto;font-size:var(--fs-meta);color:var(--t2)">' + (done >= this.weeklyCount(plan) ? '本周完成' : '还剩 ' + (this.weeklyCount(plan) - done) + ' 次') + '</span></div>'
     h += '<div style="display:flex;gap:8px;margin-top:14px">'
     for (var i = 0; i < 7; i++){
       var cls = 'dot num'
@@ -2199,17 +2206,17 @@ var App = {
     if (adv){
       var dismissed = (Store.cfg() || {}).adviceSkip === adv.key
       if (dismissed){
-        h += '<div class="card" style="margin-top:12px;padding:13px 16px"><div style="display:flex;align-items:center;gap:9px"><span style="font-size:13px;color:var(--t2);flex:1">本周建议已忽略</span><span style="font-size:13px;color:var(--accent)" data-act="adviceUndo">恢复</span></div></div>'
+        h += '<div class="card" style="margin-top:12px;padding:13px 16px"><div style="display:flex;align-items:center;gap:9px"><span style="font-size:var(--fs-label);color:var(--t2);flex:1">本周建议已忽略</span><span style="font-size:var(--fs-label);color:var(--accent)" data-act="adviceUndo">恢复</span></div></div>'
       } else {
         h += '<div class="card" style="margin-top:12px;padding:14px 16px;border-color:rgba(62,209,127,.28);background:var(--accent-soft)">'
-        h += '<div style="display:flex;gap:10px"><span style="width:28px;height:28px;border-radius:9px;background:rgba(62,209,127,.18);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-bolt', 16) + '</span><span style="flex:1"><b style="display:block;font-size:14.5px;font-weight:600">' + adv.title + '</b>'
-        h += '<span style="display:block;font-size:13px;color:var(--t2);margin-top:3px;line-height:1.5">' + adv.why + '</span>'
-        h += '<span style="display:block;font-size:12.5px;color:var(--t3);margin-top:6px;line-height:1.5">代价：' + adv.cost + '</span></span></div>'
-        h += '<div style="display:flex;gap:9px;margin-top:13px"><button class="btn sm" style="flex:1;height:38px;border-radius:11px;font-size:13.5px" data-act="adviceTake">采纳</button><button class="btn ghost sm" style="flex:1;height:38px;border-radius:11px;font-size:13.5px" data-act="adviceSkip">本周不再建议</button></div>'
+        h += '<div style="display:flex;gap:10px"><span style="width:28px;height:28px;border-radius:9px;background:rgba(62,209,127,.18);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-bolt', 16) + '</span><span style="flex:1"><b style="display:block;font-size:var(--fs-sub);font-weight:600">' + adv.title + '</b>'
+        h += '<span style="display:block;font-size:var(--fs-label);color:var(--t2);margin-top:3px;line-height:1.5">' + adv.why + '</span>'
+        h += '<span style="display:block;font-size:var(--fs-meta);color:var(--t3);margin-top:6px;line-height:1.5">代价：' + adv.cost + '</span></span></div>'
+        h += '<div style="display:flex;gap:9px;margin-top:13px"><button class="btn sm" style="flex:1;height:38px;border-radius:11px;font-size:var(--fs-label)" data-act="adviceTake">采纳</button><button class="btn ghost sm" style="flex:1;height:38px;border-radius:11px;font-size:var(--fs-label)" data-act="adviceSkip">本周不再建议</button></div>'
         h += '</div>'
       }
     } else {
-      h += '<div class="card" style="margin-top:12px;padding:14px 16px"><div style="display:flex;gap:10px"><span style="width:28px;height:28px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-bolt', 16) + '</span><span style="flex:1"><b style="display:block;font-size:14.5px;font-weight:600">节奏正常</b><span style="display:block;font-size:13px;color:var(--t2);margin-top:3px;line-height:1.5">按本周计划推进即可，练完记得记录，趋势会自动更新。</span></span></div></div>'
+      h += '<div class="card" style="margin-top:12px;padding:14px 16px"><div style="display:flex;gap:10px"><span style="width:28px;height:28px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-bolt', 16) + '</span><span style="flex:1"><b style="display:block;font-size:var(--fs-sub);font-weight:600">节奏正常</b><span style="display:block;font-size:var(--fs-label);color:var(--t2);margin-top:3px;line-height:1.5">按本周计划推进即可，练完记得记录，趋势会自动更新。</span></span></div></div>'
     }
 
     /* 本周安排 */
@@ -2218,10 +2225,10 @@ var App = {
     plan.week.forEach(function (w, i){
       var isRest = w.key === 'recovery' || w.key === 'mobility'
       var todayCls = (i === dow) ? ' style="background:var(--accent-soft);margin:0 -16px;padding:13px 16px"' : ''
-      h += '<div class="row"' + todayCls + '><span class="num" style="width:32px;font-size:13.5px;color:' + (i === dow ? 'var(--accent)' : 'var(--t3)') + (i === dow ? ';font-weight:600' : '') + '">' + WD2[i] + '</span><span class="mid"><b' + (i === dow ? ' style="color:var(--accent);font-weight:600"' : (isRest ? ' style="color:var(--t2)"' : '')) + '>' + w.title + '</b><span>' + (isRest ? '恢复日' : w.items.length + ' 项') + '</span></span>' + (i === dow ? '<span style="font-size:12.5px;color:var(--accent);font-weight:600">今天</span>' : '') + '</div>'
+      h += '<div class="row"' + todayCls + '><span class="num" style="width:32px;font-size:var(--fs-label);color:' + (i === dow ? 'var(--accent)' : 'var(--t3)') + (i === dow ? ';font-weight:600' : '') + '">' + WD2[i] + '</span><span class="mid"><b' + (i === dow ? ' style="color:var(--accent);font-weight:600"' : (isRest ? ' style="color:var(--t2)"' : '')) + '>' + w.title + '</b><span>' + (isRest ? '恢复日' : w.items.length + ' 项') + '</span></span>' + (i === dow ? '<span style="font-size:var(--fs-meta);color:var(--accent);font-weight:600">今天</span>' : '') + '</div>'
     })
     h += '</div></div></div>'
-    h += '<div style="display:flex;gap:10px;margin-top:16px"><button class="btn ghost" style="height:44px;border-radius:13px;font-size:14.5px" data-act="planAdj">调整计划</button><button class="btn ghost" style="height:44px;border-radius:13px;font-size:14.5px" data-open="settings">更换模板</button></div>'
+    h += '<div style="display:flex;gap:10px;margin-top:16px"><button class="btn ghost" style="height:44px;border-radius:13px;font-size:var(--fs-sub)" data-act="planAdj">调整计划</button><button class="btn ghost" style="height:44px;border-radius:13px;font-size:var(--fs-sub)" data-open="settings">更换模板</button></div>'
     h += '</div></div>'
     return h
   },
@@ -2341,10 +2348,10 @@ var App = {
     var split = Train.muscleSplit(30)
     if (split.length){
       split.slice(0, 4).forEach(function (m, i){
-        h += '<div style="margin-bottom:12px"><div style="display:flex;font-size:13px;margin-bottom:6px"><span>' + esc(m.muscle) + '</span><span class="num" style="margin-left:auto;color:var(--t2)">' + m.pct + '%</span></div><div class="bar thin"><i style="width:' + m.pct + '%;opacity:' + (1 - i * 0.2) + '"></i></div></div>'
+        h += '<div style="margin-bottom:12px"><div style="display:flex;font-size:var(--fs-label);margin-bottom:6px"><span>' + esc(m.muscle) + '</span><span class="num" style="margin-left:auto;color:var(--t2)">' + m.pct + '%</span></div><div class="bar thin"><i style="width:' + m.pct + '%;opacity:' + (1 - i * 0.2) + '"></i></div></div>'
       })
     } else {
-      h += '<p style="font-size:13px;color:var(--t3);padding:6px 0">记录训练后自动统计。</p>'
+      h += '<p style="font-size:var(--fs-label);color:var(--t3);padding:6px 0">记录训练后自动统计。</p>'
     }
     h += '</div></div>'
 
@@ -2361,7 +2368,7 @@ var App = {
     return h
   },
   tileStat: function (v, u, label){
-    return '<div><div class="num" style="font-size:19px;font-weight:700;letter-spacing:-.4px">' + v + '<i style="font-size:11px;font-style:normal;font-weight:600;color:var(--t3)">' + u + '</i></div><div style="font-size:11.5px;color:var(--t2);margin-top:3px">' + label + '</div></div>'
+    return '<div><div class="num" style="font-size:var(--fs-lead);font-weight:700;letter-spacing:-.4px">' + v + '<i style="font-size:var(--fs-micro);font-style:normal;font-weight:600;color:var(--t3)">' + u + '</i></div><div style="font-size:var(--fs-micro);color:var(--t2);margin-top:3px">' + label + '</div></div>'
   },
   volumeChart: function (){
     var data = Train.weeklyVolume(8)
@@ -2372,7 +2379,7 @@ var App = {
     var area = line + ' L' + W + ' ' + base + ' L0 ' + base + ' Z'
     var last = pts[pts.length - 1]
     return '<svg viewBox="0 0 326 86" style="width:100%;height:auto;color:var(--accent);display:block"><defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".26"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs><path d="' + area + '" fill="url(#ga)"/><path d="' + line + '" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="' + last.x + '" cy="' + last.y + '" r="4" fill="currentColor" stroke="var(--surface)" stroke-width="2.4"/></svg>'
-      + '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-top:2px"><span>8周前</span><span>4周前</span><span>本周</span></div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:var(--fs-micro);color:var(--t3);margin-top:2px"><span>8周前</span><span>4周前</span><span>本周</span></div>'
   },
 
   /* ================= 训练 ================= */
@@ -2407,20 +2414,20 @@ var App = {
     var el = Math.max(0, Math.floor(((sv.startTs || Date.now()) - Date.now()) / 1000))
     var dur = this.fmtDur(Date.now() - (sv.startTs || Date.now()))
     var restLeft = Math.max(0, Math.round((t.restUntil - Date.now()) / 1000))
-    var h = '<div class="backnav" style="background:transparent;border-bottom:0"><span class="bk" style="flex:0 0 56px" data-act="finishTrain">结束</span><span class="num" style="flex:1;text-align:center;font-size:15px;font-weight:600">' + dur + '</span><span style="flex:0 0 56px;display:flex;justify-content:flex-end">' + icn('i-more', 18) + '</span></div>'
+    var h = '<div class="backnav" style="background:transparent;border-bottom:0"><span class="bk" style="flex:0 0 56px" data-act="finishTrain">结束</span><span class="num" style="flex:1;text-align:center;font-size:var(--fs-body);font-weight:600">' + dur + '</span><span style="flex:0 0 56px;display:flex;justify-content:flex-end">' + icn('i-more', 18) + '</span></div>'
     h += '<div class="scroll" style="padding-bottom:20px"><div class="hero" style="padding-top:2px"><h1>' + esc(e.name) + '</h1><p>' + e.muscle + ' · ' + e.equip + (e.rec ? ' · 建议 ' + e.rec : '') + '</p></div><div class="pad">'
 
     /* 已完成组 */
     h += '<div class="card" style="padding:6px 16px">'
     var lastSet = null
     done.forEach(function (st, i){
-      h += '<div style="display:flex;align-items:center;padding:10px 0' + (i ? ';border-top:.5px solid var(--hairline)' : '') + '"><span class="num" style="width:56px;font-size:13.5px;color:var(--t3)">第 ' + (i + 1) + ' 组</span><span class="num" style="flex:1;font-size:16px;font-weight:500">' + wkg(st.weightKg) + ' kg × ' + st.reps + (st.isWarmup ? ' · 热身' : '') + '</span>' + icn('i-check', 17) + '</div>'
+      h += '<div style="display:flex;align-items:center;padding:10px 0' + (i ? ';border-top:.5px solid var(--hairline)' : '') + '"><span class="num" style="width:56px;font-size:var(--fs-label);color:var(--t3)">第 ' + (i + 1) + ' 组</span><span class="num" style="flex:1;font-size:var(--fs-action);font-weight:500">' + wkg(st.weightKg) + ' kg × ' + st.reps + (st.isWarmup ? ' · 热身' : '') + '</span>' + icn('i-check', 17) + '</div>'
       lastSet = st
     })
     if (restLeft > 0){
-      h += '<div style="display:flex;align-items:center;padding:11px 12px;margin:0 -8px 8px;background:var(--accent-soft);border-radius:12px"><span class="num" style="width:56px;font-size:13.5px;color:var(--accent);font-weight:600">休息</span><span style="flex:1;font-size:14px;color:var(--t2)">组间休息 ' + restLeft + ' 秒</span></div>'
+      h += '<div style="display:flex;align-items:center;padding:11px 12px;margin:0 -8px 8px;background:var(--accent-soft);border-radius:12px"><span class="num" style="width:56px;font-size:var(--fs-label);color:var(--accent);font-weight:600">休息</span><span style="flex:1;font-size:var(--fs-sub);color:var(--t2)">组间休息 ' + restLeft + ' 秒</span></div>'
     } else {
-      h += '<div style="display:flex;align-items:center;padding:11px 12px;margin:0 -8px 8px;background:var(--accent-soft);border-radius:12px"><span class="num" style="width:56px;font-size:13.5px;color:var(--accent);font-weight:600">第 ' + (done.length + 1) + ' 组</span><span style="flex:1;font-size:14px;color:var(--t2)">准备开始…</span></div>'
+      h += '<div style="display:flex;align-items:center;padding:11px 12px;margin:0 -8px 8px;background:var(--accent-soft);border-radius:12px"><span class="num" style="width:56px;font-size:var(--fs-label);color:var(--accent);font-weight:600">第 ' + (done.length + 1) + ' 组</span><span style="flex:1;font-size:var(--fs-sub);color:var(--t2)">准备开始…</span></div>'
     }
     h += '</div>'
 
@@ -2428,14 +2435,14 @@ var App = {
     h += '<div class="sec" style="margin-top:20px">'
     h += '<div class="stepline" style="margin-bottom:10px"><span class="lb">重量</span><span class="stepper" style="flex:1"><button data-act="trW" data-v="-2.5">−</button><span class="v num">' + wkg(t.weight) + '<u>kg</u></span><button data-act="trW" data-v="2.5">+</button></span></div>'
     h += '<div class="stepline"><span class="lb">次数</span><span class="stepper" style="flex:1"><button data-act="trR" data-v="-1">−</button><span class="v num">' + t.reps + '<u>次</u></span><button data-act="trR" data-v="1">+</button></span></div>'
-    h += '<div style="display:flex;gap:8px;margin-top:8px;padding-left:50px"><span class="chip" style="height:28px;font-size:12px;padding:0 11px" data-act="trWarm">' + (t.warmup ? '热身组 ✓' : '热身组') + '</span><span class="chip" style="height:28px;font-size:12px;padding:0 11px">力竭</span></div>'
+    h += '<div style="display:flex;gap:8px;margin-top:8px;padding-left:50px"><span class="chip" style="height:28px;font-size:var(--fs-meta);padding:0 11px" data-act="trWarm">' + (t.warmup ? '热身组 ✓' : '热身组') + '</span><span class="chip" style="height:28px;font-size:var(--fs-meta);padding:0 11px">力竭</span></div>'
     h += '</div>'
 
     /* 组间休息 */
-    h += '<div class="card" style="margin-top:16px;padding:12px 14px;display:flex;align-items:center;gap:12px"><span style="width:34px;height:34px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-timer', 18) + '</span><span style="flex:1;min-width:0"><b style="display:block;font-size:14px;font-weight:500">组间休息 · 90 秒</b><span class="bar thin" style="display:block;margin-top:8px"><i style="width:' + (restLeft > 0 ? Math.round((1 - restLeft / 90) * 100) : 0) + '%"></i></span></span><span class="num" style="font-size:21px;font-weight:700;letter-spacing:-.4px">' + (restLeft > 0 ? '0:' + pad(restLeft) : '1:30') + '</span></div>'
+    h += '<div class="card" style="margin-top:16px;padding:12px 14px;display:flex;align-items:center;gap:12px"><span style="width:34px;height:34px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-timer', 18) + '</span><span style="flex:1;min-width:0"><b style="display:block;font-size:var(--fs-sub);font-weight:500">组间休息 · 90 秒</b><span class="bar thin" style="display:block;margin-top:8px"><i style="width:' + (restLeft > 0 ? Math.round((1 - restLeft / 90) * 100) : 0) + '%"></i></span></span><span class="num" style="font-size:var(--fs-kpi-lg);font-weight:700;letter-spacing:-.4px">' + (restLeft > 0 ? '0:' + pad(restLeft) : '1:30') + '</span></div>'
 
-    h += '<button class="btn" style="margin-top:16px;height:54px;border-radius:16px;font-size:17px" data-act="addSet">' + icn('i-check', 18) + '完成本组</button>'
-    h += '<div style="display:flex;gap:10px;margin-top:12px"><button class="btn ghost" style="height:44px;border-radius:13px;font-size:14.5px" data-act="switchEx">' + icn('i-plus', 16) + '添加动作</button><button class="btn ghost" style="height:44px;border-radius:13px;font-size:14.5px" data-act="switchEx">切换动作</button></div>'
+    h += '<button class="btn" style="margin-top:16px;height:54px;border-radius:16px;font-size:var(--fs-title)" data-act="addSet">' + icn('i-check', 18) + '完成本组</button>'
+    h += '<div style="display:flex;gap:10px;margin-top:12px"><button class="btn ghost" style="height:44px;border-radius:13px;font-size:var(--fs-sub)" data-act="switchEx">' + icn('i-plus', 16) + '添加动作</button><button class="btn ghost" style="height:44px;border-radius:13px;font-size:var(--fs-sub)" data-act="switchEx">切换动作</button></div>'
 
     /* 本场接下来 */
     var upcoming = (sv.sets || []).map(function (x){ return x.exId }).filter(function (id, i, a){ return a.indexOf(id) === i }).filter(function (id){ return id !== t.exId })
@@ -2451,7 +2458,7 @@ var App = {
     var act = Store.activeSession()
     var h = '<div class="scroll"><div class="hero" style="padding-bottom:12px"><h1>训练</h1><p>记组 + 计时 + 容量统计</p></div><div class="pad">'
     if (act && Train.setCount(act) > 0){
-      h += '<div class="card" style="padding:18px 16px"><div style="font-size:15px;font-weight:600">有未完成的训练</div><div style="font-size:13px;color:var(--t2);margin-top:4px">已完成 ' + Train.setCount(act) + ' 组</div><button class="btn" style="margin-top:12px" data-act="startTrain">继续</button></div></div>'
+      h += '<div class="card" style="padding:18px 16px"><div style="font-size:var(--fs-body);font-weight:600">有未完成的训练</div><div style="font-size:var(--fs-label);color:var(--t2);margin-top:4px">已完成 ' + Train.setCount(act) + ' 组</div><button class="btn" style="margin-top:12px" data-act="startTrain">继续</button></div></div>'
     } else {
       h += '<div class="card" style="padding:20px 16px;text-align:center"><div class="empty" style="padding:6px 0 4px"><div class="ico">' + icn('i-dumbbell', 28) + '</div><h2>开始训练</h2><p>选择动作，逐组记录重量与次数。</p></div><button class="btn" data-act="startTrain">＋ 开始新训练</button></div>'
     }
@@ -2498,7 +2505,7 @@ var App = {
     h += '<div class="pad">'
 
     /* 人体图 */
-    h += '<div class="card" style="margin-top:16px;padding:14px 14px 10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--t3)">目标肌群</span></div><div class="bodywrap"><figure id="trFigA"><figcaption>正面</figcaption></figure><figure id="trFigP"><figcaption>背面</figcaption></figure></div></div>'
+    h += '<div class="card" style="margin-top:16px;padding:14px 14px 10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:var(--fs-micro);font-weight:700;letter-spacing:.08em;color:var(--t3)">目标肌群</span></div><div class="bodywrap"><figure id="trFigA"><figcaption>正面</figcaption></figure><figure id="trFigP"><figcaption>背面</figcaption></figure></div></div>'
 
     var list = Train.search(this._trQ || '', cur || null)
     var recents = Store.sessions().slice().reverse().map(function (sv){ return sv.sets.map(function (x){ return x.exId }) }).flat().filter(function (id, i, a){ return a.indexOf(id) === i }).map(Train.byId).filter(Boolean).slice(0, 4)
@@ -2510,8 +2517,8 @@ var App = {
     h += '<div class="sec" style="margin-top:16px"><h2>' + (cur ? cur + '动作' : '全部动作') + '</h2><div class="card"><div class="rows">'
     list.slice(0, 40).forEach(function (e){ h += App.exRow(e) })
     h += '</div></div></div>'
-    h += '<div style="display:flex;gap:10px;margin-top:16px"><button class="btn ghost" style="height:44px;border-radius:13px;font-size:14.5px" data-act="newEx">' + icn('i-plus', 16) + '新建自定义动作</button></div>'
-    h += '<p style="text-align:center;font-size:12.5px;color:var(--t3);margin:14px 0 0">器械被占用？点动作可看「同类替代」</p></div></div>'
+    h += '<div style="display:flex;gap:10px;margin-top:16px"><button class="btn ghost" style="height:44px;border-radius:13px;font-size:var(--fs-sub)" data-act="newEx">' + icn('i-plus', 16) + '新建自定义动作</button></div>'
+    h += '<p style="text-align:center;font-size:var(--fs-meta);color:var(--t3);margin:14px 0 0">器械被占用？点动作可看「同类替代」</p></div></div>'
     return h
   },
   exRow: function (e){
@@ -2536,10 +2543,10 @@ var App = {
     var alts = Train.altsOf(e.id)
     var h = '<div class="backnav"><span class="bk" data-back>返回</span><span class="ttl">动作库</span><span class="sp"></span></div>'
     h += '<div class="scroll"><div class="hero" style="padding-bottom:10px"><h1>' + esc(e.name) + '</h1><p>' + e.muscle + ' · ' + e.equip + ' · 复合动作</p></div><div class="pad">'
-    h += '<div class="card" style="padding:14px 16px"><div style="font-size:12.5px;color:var(--t2)">上次' + (last ? '（' + last.date + '）' : '') + '</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:3px"><span class="num" style="font-size:28px;font-weight:700;letter-spacing:-.8px">' + (last ? wkg(last.weightKg) : '—') + '</span><span style="font-size:13px;color:var(--t2)">kg × ' + (last ? last.reps : '—') + '</span><span class="pill" style="margin-left:auto">' + (last ? last.sets + ' 组' : '未练') + '</span></div><div class="sep" style="margin:12px 0"></div><div style="display:flex;gap:8px"><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">1RM</div><div class="num" style="font-size:15px;font-weight:600">' + (pr.best1RM ? pr.best1RM + ' kg' : '—') + '</div></div><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">总容量</div><div class="num" style="font-size:15px;font-weight:600">' + num(pr.maxVolume) + ' kg</div></div><div style="flex:1" data-act="viewPr" data-v="' + e.id + '"><div style="font-size:11.5px;color:var(--t3)">PR</div><div class="num" style="font-size:15px;font-weight:600;color:var(--accent)">详情</div></div></div></div>'
+    h += '<div class="card" style="padding:14px 16px"><div style="font-size:var(--fs-meta);color:var(--t2)">上次' + (last ? '（' + last.date + '）' : '') + '</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:3px"><span class="num" style="font-size:var(--fs-hero);font-weight:700;letter-spacing:-.8px">' + (last ? wkg(last.weightKg) : '—') + '</span><span style="font-size:var(--fs-label);color:var(--t2)">kg × ' + (last ? last.reps : '—') + '</span><span class="pill" style="margin-left:auto">' + (last ? last.sets + ' 组' : '未练') + '</span></div><div class="sep" style="margin:12px 0"></div><div style="display:flex;gap:8px"><div style="flex:1"><div style="font-size:var(--fs-micro);color:var(--t3)">1RM</div><div class="num" style="font-size:var(--fs-body);font-weight:600">' + (pr.best1RM ? pr.best1RM + ' kg' : '—') + '</div></div><div style="flex:1"><div style="font-size:var(--fs-micro);color:var(--t3)">总容量</div><div class="num" style="font-size:var(--fs-body);font-weight:600">' + num(pr.maxVolume) + ' kg</div></div><div style="flex:1" data-act="viewPr" data-v="' + e.id + '"><div style="font-size:var(--fs-micro);color:var(--t3)">PR</div><div class="num" style="font-size:var(--fs-body);font-weight:600;color:var(--accent)">详情</div></div></div></div>'
     if (alts.length){
-      h += '<div class="card" style="margin-top:12px;padding:6px 16px"><div style="display:flex;align-items:center;gap:8px;padding:10px 0 6px"><span style="font-size:14.5px;font-weight:600">同类替代</span><span style="font-size:11.5px;color:var(--t3)">同肌群 · 同动作模式</span></div><div class="sep"></div>'
-      alts.forEach(function (a, i){ h += (i ? '<div class="sep"></div>' : '') + '<div class="alt"><span class="ico">' + icn('i-dumbbell', 17) + '</span><div style="flex:1"><div style="font-size:14px">' + esc(a.name) + '</div><div style="font-size:11.5px;color:var(--t3)">' + a.equip + '</div></div><span class="tag">' + a.muscle + '</span></div>' })
+      h += '<div class="card" style="margin-top:12px;padding:6px 16px"><div style="display:flex;align-items:center;gap:8px;padding:10px 0 6px"><span style="font-size:var(--fs-sub);font-weight:600">同类替代</span><span style="font-size:var(--fs-micro);color:var(--t3)">同肌群 · 同动作模式</span></div><div class="sep"></div>'
+      alts.forEach(function (a, i){ h += (i ? '<div class="sep"></div>' : '') + '<div class="alt"><span class="ico">' + icn('i-dumbbell', 17) + '</span><div style="flex:1"><div style="font-size:var(--fs-sub)">' + esc(a.name) + '</div><div style="font-size:var(--fs-micro);color:var(--t3)">' + a.equip + '</div></div><span class="tag">' + a.muscle + '</span></div>' })
       h += '</div>'
     }
     h += '<div style="display:flex;gap:9px;margin-top:12px"><button class="btn ghost" style="flex:1;height:46px" data-back>返回</button><button class="btn" style="flex:1;height:46px" data-act="useEx" data-v="' + e.id + '">用它训练</button></div>'
@@ -2554,12 +2561,12 @@ var App = {
     var prs = Train.prsIn(sv)
     var d = new Date(sv.startTs || Date.now())
     var h = '<div class="backnav"><span class="bk" data-back>返回</span><span class="ttl">训练完成</span><span class="sp"></span></div>'
-    h += '<div class="scroll"><div class="hero" style="padding-top:4px;padding-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="width:26px;height:26px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center">' + icn('i-check', 15) + '</span><span style="font-size:13px;color:var(--accent);font-weight:600">训练完成</span></div><h1>' + (sv.title || this.sessionTitle(sv)) + '</h1><p>' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · ' + min + ' 分钟</p></div><div class="pad">'
-    h += '<div class="card" style="padding:18px 16px 16px"><div style="font-size:12.5px;color:var(--t2)">总容量</div><div style="display:flex;align-items:baseline;gap:7px;margin-top:4px"><span class="num" style="font-size:46px;font-weight:800;letter-spacing:-1.6px;line-height:1.05">' + num(vol) + '</span><span style="font-size:15px;color:var(--t2);font-weight:600">kg</span></div></div>'
+    h += '<div class="scroll"><div class="hero" style="padding-top:4px;padding-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="width:26px;height:26px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center">' + icn('i-check', 15) + '</span><span style="font-size:var(--fs-label);color:var(--accent);font-weight:600">训练完成</span></div><h1>' + (sv.title || this.sessionTitle(sv)) + '</h1><p>' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · ' + min + ' 分钟</p></div><div class="pad">'
+    h += '<div class="card" style="padding:18px 16px 16px"><div style="font-size:var(--fs-meta);color:var(--t2)">总容量</div><div style="display:flex;align-items:baseline;gap:7px;margin-top:4px"><span class="num" style="font-size:var(--fs-hero-xl);font-weight:800;letter-spacing:-1.6px;line-height:1.05">' + num(vol) + '</span><span style="font-size:var(--fs-body);color:var(--t2);font-weight:600">kg</span></div></div>'
     h += '<div class="tiles" style="margin-top:12px"><div class="tile"><b class="num">' + sets + '<i>组</i></b><span>' + this.uniqEx(sv) + ' 个动作</span></div><div class="tile"><b class="num">' + min + '<i>分</i></b><span>含组间休息</span></div><div class="tile on"><b class="num">' + prs.length + '<i>PR</i></b><span>新突破</span></div></div>'
     h += '<div class="sec"><h2>动作明细</h2><div class="card"><div class="rows">'
     this.groupSets(sv).forEach(function (g){
-      h += '<div class="row"><span class="mid" style="padding-left:2px"><b>' + esc(g.name) + '</b><span>' + g.sets.map(function (st){ return wkg(st.weightKg) + 'kg×' + st.reps + (st.isWarmup ? '热身' : '') }).join(' · ') + '</span></span><span class="val num">' + num(g.vol) + '<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kg</i></span></div>'
+      h += '<div class="row"><span class="mid" style="padding-left:2px"><b>' + esc(g.name) + '</b><span>' + g.sets.map(function (st){ return wkg(st.weightKg) + 'kg×' + st.reps + (st.isWarmup ? '热身' : '') }).join(' · ') + '</span></span><span class="val num">' + num(g.vol) + '<i style="font-size:var(--fs-micro);font-style:normal;color:var(--t3);margin-left:1px">kg</i></span></div>'
     })
     h += '</div></div></div>'
     h += '<button class="btn" style="margin-top:18px;height:50px;border-radius:15px" data-back>完成</button>'
@@ -2593,8 +2600,8 @@ var App = {
     var pct = Math.min(100, Math.round(kcal / target * 100))
     var h = '<div class="backnav"><span class="bk" data-back>返回</span><span class="ttl">热量</span><span class="sp"></span></div>'
     h += '<div class="scroll"><div class="hero" style="padding-bottom:14px"><h1>热量</h1><p>拍照识餐 · 三餐时间窗记账 · 数据只在本机</p></div><div class="pad">'
-    h += '<div class="card" style="padding:15px 16px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:30px;font-weight:800;letter-spacing:-1.1px;line-height:1">' + num(kcal) + '</span><span style="font-size:13px;color:var(--t2)">/ ' + num(target) + ' kcal</span><span style="margin-left:auto;font-size:12.5px;color:var(--t2)">' + (kcal < target ? '还差 ' + num(target - kcal) : '已超 ' + num(kcal - target)) + '</span></div><div class="bar" style="margin-top:13px"><i style="width:' + pct + '%"></i></div><div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--t2)"><span>蛋白 <b class="num" style="color:var(--t1);font-weight:600">' + num(sumP(today, 'proteinG')) + '</b>g</span><span>碳水 <b class="num" style="color:var(--t1);font-weight:600">' + num(sumP(today, 'carbG')) + '</b>g</span><span>脂肪 <b class="num" style="color:var(--t1);font-weight:600">' + num(sumP(today, 'fatG')) + '</b>g</span></div></div>'
-    h += '<div class="card" style="margin-top:12px;padding:16px;display:flex;align-items:center;gap:13px" data-act="recog"><span style="width:46px;height:46px;border-radius:15px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-camera', 23) + '</span><span style="flex:1;min-width:0"><b style="display:block;font-size:16px;font-weight:600;letter-spacing:-.2px">拍照识别食物</b><span style="display:block;font-size:12.5px;color:var(--t2);margin-top:2px">离线识别 · 照片处理完即丢，不保留原图</span></span><span class="chev"></span></div>'
+    h += '<div class="card" style="padding:15px 16px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:var(--fs-hero);font-weight:800;letter-spacing:-1.1px;line-height:1">' + num(kcal) + '</span><span style="font-size:var(--fs-label);color:var(--t2)">/ ' + num(target) + ' kcal</span><span style="margin-left:auto;font-size:var(--fs-meta);color:var(--t2)">' + (kcal < target ? '还差 ' + num(target - kcal) : '已超 ' + num(kcal - target)) + '</span></div><div class="bar" style="margin-top:13px"><i style="width:' + pct + '%"></i></div><div style="display:flex;gap:18px;margin-top:12px;font-size:var(--fs-meta);color:var(--t2)"><span>蛋白 <b class="num" style="color:var(--t1);font-weight:600">' + num(sumP(today, 'proteinG')) + '</b>g</span><span>碳水 <b class="num" style="color:var(--t1);font-weight:600">' + num(sumP(today, 'carbG')) + '</b>g</span><span>脂肪 <b class="num" style="color:var(--t1);font-weight:600">' + num(sumP(today, 'fatG')) + '</b>g</span></div></div>'
+    h += '<div class="card" style="margin-top:12px;padding:16px;display:flex;align-items:center;gap:13px" data-act="recog"><span style="width:46px;height:46px;border-radius:15px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex:none">' + icn('i-camera', 23) + '</span><span style="flex:1;min-width:0"><b style="display:block;font-size:var(--fs-action);font-weight:600;letter-spacing:-.2px">拍照识别食物</b><span style="display:block;font-size:var(--fs-meta);color:var(--t2);margin-top:2px">离线识别 · 照片处理完即丢，不保留原图</span></span><span class="chev"></span></div>'
 
     /* 为你推荐 */
     var meal = AppCfg.currentMeal()
@@ -2602,7 +2609,7 @@ var App = {
     var rec = FoodDB.mealRecommend(meal, remain)
     h += '<div class="sec"><h2>为你推荐</h2><div class="card"><div class="ttl" style="padding-bottom:6px">' + AppCfg.mealMeta(meal).label + ' · 还能吃 ' + num(remain) + ' kcal</div><div class="rows" style="padding-bottom:6px">'
     rec.forEach(function (f, i){
-      h += '<div class="row" data-act="foodSel" data-v="' + f.name + '"><span class="ic' + (i === 0 ? ' acc' : '') + '">' + icn('i-utensils', 16) + '</span><span class="mid"><b>' + esc(f.name) + '</b><span>' + f.cat + ' · 建议 ' + f.def + 'g</span></span><span class="val num">' + FoodDB.calc(f, f.def) + '<i style="font-size:11px;font-style:normal;color:var(--t3);margin-left:1px">kcal</i></span></div>'
+      h += '<div class="row" data-act="foodSel" data-v="' + f.name + '"><span class="ic' + (i === 0 ? ' acc' : '') + '">' + icn('i-utensils', 16) + '</span><span class="mid"><b>' + esc(f.name) + '</b><span>' + f.cat + ' · 建议 ' + f.def + 'g</span></span><span class="val num">' + FoodDB.calc(f, f.def) + '<i style="font-size:var(--fs-micro);font-style:normal;color:var(--t3);margin-left:1px">kcal</i></span></div>'
     })
     h += '</div></div></div>'
 
@@ -2637,7 +2644,7 @@ var App = {
       h += '<div class="row" data-act="foodSel" data-v="' + f.name + '"><span class="ic">' + icn('i-utensils', 16) + '</span><span class="mid"><b>' + esc(f.name) + '</b><span>' + f.cat + ' · 默认 ' + f.def + 'g</span></span><span class="val num">' + FoodDB.calc(f, f.def) + '</span><span class="chev"></span></div>'
     })
     h += '</div></div></div>'
-    h += '<p style="text-align:center;font-size:12.5px;color:var(--t3);margin:14px 0 0">全部数据随包内置 · 离线可查 · 无网络请求</p></div></div>'
+    h += '<p style="text-align:center;font-size:var(--fs-meta);color:var(--t3);margin:14px 0 0">全部数据随包内置 · 离线可查 · 无网络请求</p></div></div>'
     return h
   },
 
@@ -2676,8 +2683,8 @@ var App = {
     var pr = Train.prOf(exId)
     var h = '<div class="backnav"><span class="bk" data-back>返回</span><span class="ttl">个人记录</span><span class="sp"></span></div>'
     h += '<div class="scroll"><div class="hero" style="padding-bottom:10px"><h1>PR · ' + esc(e.name) + '</h1><p>三种口径：1RM / 单次最大重量 / 单组最大容量</p></div><div class="pad">'
-    h += '<div class="card" style="padding:18px 16px"><div style="font-size:12.5px;color:var(--t2)">估算 1RM</div><div style="display:flex;align-items:baseline;gap:5px;margin-top:4px"><span class="num" style="font-size:44px;font-weight:800;letter-spacing:-1.6px;line-height:1.05">' + (pr.best1RM || '—') + '</span><span style="font-size:14px;color:var(--t2)">kg</span></div><div style="font-size:12px;color:var(--t3);margin-top:8px">由历史正式组换算（Epley）</div></div>'
-    h += '<p style="font-size:11.5px;color:var(--t3);margin:14px 2px 0">1RM = 重量 × (1 + 次数/30)，仅统计正式组。</p></div></div>'
+    h += '<div class="card" style="padding:18px 16px"><div style="font-size:var(--fs-meta);color:var(--t2)">估算 1RM</div><div style="display:flex;align-items:baseline;gap:5px;margin-top:4px"><span class="num" style="font-size:var(--fs-hero-xl);font-weight:800;letter-spacing:-1.6px;line-height:1.05">' + (pr.best1RM || '—') + '</span><span style="font-size:var(--fs-sub);color:var(--t2)">kg</span></div><div style="font-size:var(--fs-meta);color:var(--t3);margin-top:8px">由历史正式组换算（Epley）</div></div>'
+    h += '<p style="font-size:var(--fs-micro);color:var(--t3);margin:14px 2px 0">1RM = 重量 × (1 + 次数/30)，仅统计正式组。</p></div></div>'
     return h
   },
 
@@ -2694,14 +2701,14 @@ var App = {
     var h = '<div class="backnav"><span class="bk" data-back>返回</span><span class="ttl">肌肉分布</span><span class="sp"></span></div>'
     h += '<div class="scroll"><div class="hero" style="padding-bottom:8px"><h1>训练分布</h1><p>按本周组数着色 · 越深练得越多</p></div><div class="pad">'
     h += '<div class="card" style="padding:16px 14px 14px"><div class="bodywrap"><figure id="fig-a"><figcaption>正面</figcaption></figure><figure id="fig-p"><figcaption>背面</figcaption></figure></div><div class="legend"><div><span class="lg-sq" style="background:var(--surface-3)"></span>未练</div><div><span class="lg-sq" style="background:rgba(86,213,123,.26)"></span>偏低</div><div><span class="lg-sq" style="background:rgba(86,213,123,.55)"></span>中等</div><div><span class="lg-sq" style="background:var(--accent)"></span>达标</div><div><span class="lg-sq" style="background:var(--warn)"></span>过量</div></div></div>'
-    h += '<div class="card" style="margin-top:12px;padding:6px 16px"><div style="padding:10px 0 6px;font-size:14.5px;font-weight:600">部位明细</div><div class="sep"></div>'
+    h += '<div class="card" style="margin-top:12px;padding:6px 16px"><div style="padding:10px 0 6px;font-size:var(--fs-sub);font-weight:600">部位明细</div><div class="sep"></div>'
     var rows = Object.keys(MUSCLE_GROUP).map(function (m){ return { m:m, sets:det[m] || 0, tier:load[m] } }).sort(function (a, b){ return b.sets - a.sets })
     rows.forEach(function (r, i){
       var pct = r.tier === 'over' ? 100 : r.tier === 'full' ? 80 : r.tier === 'mid' ? 55 : r.tier === 'light' ? 30 : 0
-      h += (i ? '<div class="sep"></div>' : '') + '<div class="mrw"><span class="nm">' + r.m + '</span><span class="num" style="font-size:12.5px;color:var(--t2)">' + r.sets + ' 组</span><span class="bar"><i class="' + (r.tier === 'over' ? 'over' : '') + '" style="width:' + pct + '%"></i></span></div>'
+      h += (i ? '<div class="sep"></div>' : '') + '<div class="mrw"><span class="nm">' + r.m + '</span><span class="num" style="font-size:var(--fs-meta);color:var(--t2)">' + r.sets + ' 组</span><span class="bar"><i class="' + (r.tier === 'over' ? 'over' : '') + '" style="width:' + pct + '%"></i></span></div>'
     })
     h += '</div>'
-    h += '<p style="font-size:11.5px;color:var(--t3);margin:14px 2px 0;line-height:1.6">色阶按「该部位本周组数 ÷ 推荐区间」分档：大肌群（胸/背/腿）10–20 组 · 小肌群（肩/手臂/核心）6–14 组；超过上限 130% 记为过量。</p></div></div>'
+    h += '<p style="font-size:var(--fs-micro);color:var(--t3);margin:14px 2px 0;line-height:1.6">色阶按「该部位本周组数 ÷ 推荐区间」分档：大肌群（胸/背/腿）10–20 组 · 小肌群（肩/手臂/核心）6–14 组；超过上限 130% 记为过量。</p></div></div>'
     return h
   },
   fillBodyHeatFigure: function (){
@@ -2737,7 +2744,7 @@ var App = {
 
     if (p){
       var lv = Engine.level(p.gender, p.bf)
-      h += '<div class="card" style="margin-top:12px;padding:16px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:38px;font-weight:800;letter-spacing:-1.2px">' + fmt(p.bf, 1) + '</span><span style="font-size:14px;color:var(--t2)">%</span><span class="pill acc" style="margin-left:auto">' + lv.label + '</span></div><div class="bar" style="margin-top:12px"><i style="width:' + Math.min(100, p.bf * 2) + '%"></i></div><div style="display:flex;gap:8px;margin-top:12px"><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">BMI</div><div class="num" style="font-size:15px;font-weight:600">' + fmt(p.bmi, 1) + '</div></div><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">脂肪重量</div><div class="num" style="font-size:15px;font-weight:600">' + fmt(Engine.fatMass(p.weightKg, p.bf), 1) + ' kg</div></div><div style="flex:1"><div style="font-size:11.5px;color:var(--t3)">去脂体重</div><div class="num" style="font-size:15px;font-weight:600">' + fmt(Engine.leanMass(p.weightKg, p.bf), 1) + ' kg</div></div></div></div>'
+      h += '<div class="card" style="margin-top:12px;padding:16px"><div style="display:flex;align-items:baseline;gap:6px"><span class="num" style="font-size:var(--fs-hero-xl);font-weight:800;letter-spacing:-1.2px">' + fmt(p.bf, 1) + '</span><span style="font-size:var(--fs-sub);color:var(--t2)">%</span><span class="pill acc" style="margin-left:auto">' + lv.label + '</span></div><div class="bar" style="margin-top:12px"><i style="width:' + Math.min(100, p.bf * 2) + '%"></i></div><div style="display:flex;gap:8px;margin-top:12px"><div style="flex:1"><div style="font-size:var(--fs-micro);color:var(--t3)">BMI</div><div class="num" style="font-size:var(--fs-body);font-weight:600">' + fmt(p.bmi, 1) + '</div></div><div style="flex:1"><div style="font-size:var(--fs-micro);color:var(--t3)">脂肪重量</div><div class="num" style="font-size:var(--fs-body);font-weight:600">' + fmt(Engine.fatMass(p.weightKg, p.bf), 1) + ' kg</div></div><div style="flex:1"><div style="font-size:var(--fs-micro);color:var(--t3)">去脂体重</div><div class="num" style="font-size:var(--fs-body);font-weight:600">' + fmt(Engine.leanMass(p.weightKg, p.bf), 1) + ' kg</div></div></div></div>'
     }
     h += '<button class="btn" style="margin-top:14px;height:50px;border-radius:15px" data-act="bodySave">' + (profile() ? '保存更新' : '计算并保存') + '</button>'
     h += '</div></div>'
@@ -2777,7 +2784,7 @@ var App = {
     h += '<div class="row" data-act="clear"><span class="mid"><b>清空全部数据</b></span><span class="chev"></span></div>'
     h += '</div></div>'
     var ai = Store.aiCfg()
-    h += '<div class="sec"><h2>AI 识餐（可选）</h2><div class="card" style="padding:14px 16px"><p style="font-size:12.5px;color:var(--t2);margin:0 0 12px;line-height:1.5">' + (ai && ai.apiKey ? '已配置：' + (ai.model || '') : '未配置 · 默认用免费本地算法识餐') + '</p><div class="fld"><label>API Key</label><input class="inp" id="aiKey" placeholder="粘贴你的密钥" value="' + (ai ? esc(ai.apiKey || '') : '') + '"></div><button class="btn sm" data-act="saveAi">保存密钥</button></div></div>'
+    h += '<div class="sec"><h2>AI 识餐（可选）</h2><div class="card" style="padding:14px 16px"><p style="font-size:var(--fs-meta);color:var(--t2);margin:0 0 12px;line-height:1.5">' + (ai && ai.apiKey ? '已配置：' + (ai.model || '') : '未配置 · 默认用免费本地算法识餐') + '</p><div class="fld"><label>API Key</label><input class="inp" id="aiKey" placeholder="粘贴你的密钥" value="' + (ai ? esc(ai.apiKey || '') : '') + '"></div><button class="btn sm" data-act="saveAi">保存密钥</button></div></div>'
     h += '</div></div>'
     return h
   },
@@ -2791,7 +2798,7 @@ var App = {
     h += '<div class="row" data-act="notices"><span class="mid"><b>开源许可</b><span>CC BY-NC-SA 4.0 · 禁止商用</span></span><span class="chev"></span></div>'
     h += '<div class="row" data-act="notices3"><span class="mid"><b>第三方组件与数据来源</b><span>模型 / 字体 / 食物成分表 等</span></span><span class="chev"></span></div>'
     h += '</div></div>'
-    h += '<p style="font-size:12px;color:var(--t3);text-align:center;margin:18px 0 0;line-height:1.6">训练、体脂、饮食，一本记清。<br>离线可用 · 无账号 · 不上传</p></div></div>'
+    h += '<p style="font-size:var(--fs-meta);color:var(--t3);text-align:center;margin:18px 0 0;line-height:1.6">训练、体脂、饮食，一本记清。<br>离线可用 · 无账号 · 不上传</p></div></div>'
     return h
   },
 
@@ -2800,26 +2807,26 @@ var App = {
     var s = this.state._onboard
     var h = ''
     if (s === 0){
-      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:14px 20px 0;display:flex;justify-content:flex-end"><span style="font-size:15px;color:var(--t2)" data-act="onbSkip">跳过</span></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px 8px"><div style="margin-bottom:20px"><svg class="fn-mark" width="76" height="76" aria-hidden="true"><use href="#fn-mark"/></svg></div><h1 style="margin:0;font-size:34px;font-weight:800;letter-spacing:-.9px;line-height:1.12">FitNote</h1><p style="margin:11px 0 0;font-size:16px;color:var(--t2);line-height:1.5">装在手机里的私人身体数据本<br>训练、体脂、饮食，一本记清</p><div style="margin-top:32px;display:flex;flex-direction:column;gap:15px">' + this.featRow('数据只存本机', '没有账号，没有云端，不上传') + this.featRow('识餐在本地完成', '照片处理完即丢，不保留原图') + this.featRow('没网也能用', '健身房地下室、地铁里照样记') + '</div></div><div class="dock"><div class="dots" style="margin-bottom:18px"><i class="on"></i><i></i><i></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:16.5px" data-act="onbNext">开始使用</button><p style="text-align:center;font-size:12px;color:var(--t3);margin:11px 0 0">第 1 步 / 共 3 步</p></div></div>'
+      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:14px 20px 0;display:flex;justify-content:flex-end"><span style="font-size:var(--fs-body);color:var(--t2)" data-act="onbSkip">跳过</span></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px 8px"><div style="margin-bottom:20px"><svg class="fn-mark" width="76" height="76" aria-hidden="true"><use href="#fn-mark"/></svg></div><h1 style="margin:0;font-size:var(--fs-display);font-weight:800;letter-spacing:-.9px;line-height:1.12">FitNote</h1><p style="margin:11px 0 0;font-size:var(--fs-action);color:var(--t2);line-height:1.5">装在手机里的私人身体数据本<br>训练、体脂、饮食，一本记清</p><div style="margin-top:32px;display:flex;flex-direction:column;gap:15px">' + this.featRow('数据只存本机', '没有账号，没有云端，不上传') + this.featRow('识餐在本地完成', '照片处理完即丢，不保留原图') + this.featRow('没网也能用', '健身房地下室、地铁里照样记') + '</div></div><div class="dock"><div class="dots" style="margin-bottom:18px"><i class="on"></i><i></i><i></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:var(--fs-action)" data-act="onbNext">开始使用</button><p style="text-align:center;font-size:var(--fs-meta);color:var(--t3);margin:11px 0 0">第 1 步 / 共 3 步</p></div></div>'
     } else if (s === 1){
       var p = this.state._onboardProfile
-      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:16px 16px 0;display:flex;justify-content:flex-end"><span style="font-size:15px;color:var(--t2)" data-act="onbSkip">跳过</span></div><div class="hero" style="padding-top:22px"><h1>你的身体数据</h1><p>用来算体脂率与热量目标，只存在这台手机上</p></div><div class="pad" style="margin-top:6px"><div class="card" style="padding:20px 8px 16px"><div class="wheelrow">' + this.wheel('身高', p.heightCm, 'cm') + this.wheel('体重', p.weightKg, 'kg') + this.wheel('腰围', p.waistCm, 'cm') + '</div><div style="height:1px;background:var(--hairline);margin:16px 16px 14px"></div><p style="margin:0 16px;font-size:12.5px;color:var(--t2);line-height:1.6">已按常见值预填，直接「下一步」也行——之后在「我的 → 身体档案」随时改。</p></div></div><div class="dock"><div class="dots" style="margin-bottom:18px"><i></i><i class="on"></i><i></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:16.5px" data-act="onbNext">下一步</button><p style="text-align:center;font-size:12px;color:var(--t3);margin:11px 0 0">第 2 步 / 共 3 步</p></div></div>'
+      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:16px 16px 0;display:flex;justify-content:flex-end"><span style="font-size:var(--fs-body);color:var(--t2)" data-act="onbSkip">跳过</span></div><div class="hero" style="padding-top:22px"><h1>你的身体数据</h1><p>用来算体脂率与热量目标，只存在这台手机上</p></div><div class="pad" style="margin-top:6px"><div class="card" style="padding:20px 8px 16px"><div class="wheelrow">' + this.wheel('身高', p.heightCm, 'cm') + this.wheel('体重', p.weightKg, 'kg') + this.wheel('腰围', p.waistCm, 'cm') + '</div><div style="height:1px;background:var(--hairline);margin:16px 16px 14px"></div><p style="margin:0 16px;font-size:var(--fs-meta);color:var(--t2);line-height:1.6">已按常见值预填，直接「下一步」也行——之后在「我的 → 身体档案」随时改。</p></div></div><div class="dock"><div class="dots" style="margin-bottom:18px"><i></i><i class="on"></i><i></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:var(--fs-action)" data-act="onbNext">下一步</button><p style="text-align:center;font-size:var(--fs-meta);color:var(--t3);margin:11px 0 0">第 2 步 / 共 3 步</p></div></div>'
     } else {
       var plans = [
         { k:'cut', t:'轻松入门', d:'每周 3 练，每次 30 分钟，动作以器械和固定轨迹为主', tag:'新手 · 每周 3 练' },
         { k:'bulk', t:'均衡进阶', d:'每周 4 练，推 / 拉 / 腿分化，覆盖全部大肌群', tag:'有 6 个月以上经验 · 每周 4 练' },
         { k:'maintain', t:'高效强化', d:'每周 5 练，高容量 + 强度周期，含 PR 冲击组', tag:'1 年以上系统训练 · 每周 5 练' }
       ]
-      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;color:var(--t2)" data-act="onbPrev">返回</span><span style="font-size:15px;color:var(--t2)" data-act="onbSkip">跳过</span></div><div class="hero" style="padding-top:26px"><h1>选一个起点</h1><p>按你的训练经验推荐，之后随时能改</p></div><div class="pad" style="padding:0 20px">'
+      h = '<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column"><div style="padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center"><span style="font-size:var(--fs-body);color:var(--t2)" data-act="onbPrev">返回</span><span style="font-size:var(--fs-body);color:var(--t2)" data-act="onbSkip">跳过</span></div><div class="hero" style="padding-top:26px"><h1>选一个起点</h1><p>按你的训练经验推荐，之后随时能改</p></div><div class="pad" style="padding:0 20px">'
       plans.forEach(function (pl){
         h += '<div class="plan' + (App.state._onboardPlan === pl.k ? ' on' : '') + '" data-act="onbPlan" data-v="' + pl.k + '"><span class="rd">' + (App.state._onboardPlan === pl.k ? icn('i-check', 12) : '') + '</span><span style="flex:1"><b>' + pl.t + '</b><em>' + pl.d + '</em><i>' + pl.tag + '</i></span></div>'
       })
-      h += '</div><div class="dock"><div class="dots" style="margin-bottom:18px"><i></i><i></i><i class="on"></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:16.5px" data-act="onbNext">开始我的训练计划</button><p style="text-align:center;font-size:12px;color:var(--t3);margin:11px 0 0">第 3 步 / 共 3 步</p></div></div>'
+      h += '</div><div class="dock"><div class="dots" style="margin-bottom:18px"><i></i><i></i><i class="on"></i></div><button class="btn" style="height:52px;border-radius:16px;font-size:var(--fs-action)" data-act="onbNext">开始我的训练计划</button><p style="text-align:center;font-size:var(--fs-meta);color:var(--t3);margin:11px 0 0">第 3 步 / 共 3 步</p></div></div>'
     }
     return h
   },
   featRow: function (t, d){
-    return '<div style="display:flex;gap:11px;align-items:flex-start"><svg width="18" height="18" style="color:var(--accent);flex:none;margin-top:2px"><use href="#i-check"/></svg><span style="font-size:14.5px;line-height:1.45">' + t + '<span style="display:block;font-size:13px;color:var(--t2);margin-top:2px">' + d + '</span></span></div>'
+    return '<div style="display:flex;gap:11px;align-items:flex-start"><svg width="18" height="18" style="color:var(--accent);flex:none;margin-top:2px"><use href="#i-check"/></svg><span style="font-size:var(--fs-sub);line-height:1.45">' + t + '<span style="display:block;font-size:var(--fs-label);color:var(--t2);margin-top:2px">' + d + '</span></span></div>'
   },
   wheel: function (lbl, v, u){
     return '<div class="wheel"><div class="lbl">' + lbl + '</div><div class="val num">' + v + '<i>' + u + '</i></div><div class="rule"></div></div>'
@@ -2884,13 +2891,13 @@ var App = {
   openSheetText: function (title, paragraphs){
     var self = this
     this._sheet = function (){
-      var h = '<div class="grab"></div><div style="padding:2px 20px 0"><div style="font-size:20px;font-weight:800;letter-spacing:-.4px">' + title + '</div>'
+      var h = '<div class="grab"></div><div style="padding:2px 20px 0"><div style="font-size:var(--fs-kpi);font-weight:800;letter-spacing:-.4px">' + title + '</div>'
       h += '<div class="scroll" style="overflow-y:auto;max-height:56vh;margin-top:12px;padding-bottom:6px">'
       paragraphs.forEach(function (p){
         if (p.h){
-          h += '<div style="font-size:13.5px;font-weight:700;color:var(--t1);margin:16px 0 6px">' + p.h + '</div>'
+          h += '<div style="font-size:var(--fs-label);font-weight:700;color:var(--t1);margin:16px 0 6px">' + p.h + '</div>'
         } else {
-          h += '<p style="margin:0 0 10px;font-size:13px;line-height:1.68;color:var(--t2)">' + p.t + '</p>'
+          h += '<p style="margin:0 0 10px;font-size:var(--fs-label);line-height:1.68;color:var(--t2)">' + p.t + '</p>'
         }
       })
       h += '</div><button class="btn" style="margin-top:8px" data-act="closeSheet">知道了</button></div>'
@@ -2911,11 +2918,11 @@ var App = {
       var f = self._food
       var g = self._foodGrams
       var kcal = f ? FoodDB.calc(f, g) : 0
-      var h = '<div class="grab"></div><div style="padding:4px 16px 0"><div style="font-size:12.5px;color:var(--t2)">' + AppCfg.mealMeta(self._foodMeal).label + ' · ' + todayISO() + '</div>'
+      var h = '<div class="grab"></div><div style="padding:4px 16px 0"><div style="font-size:var(--fs-meta);color:var(--t2)">' + AppCfg.mealMeta(self._foodMeal).label + ' · ' + todayISO() + '</div>'
       if (f){
-        h += '<div style="font-size:22px;font-weight:700;margin-top:6px">' + esc(f.name) + '</div>'
-        h += '<div style="display:flex;align-items:center;gap:10px;margin-top:16px"><button class="btn ghost sm" data-act="grams" data-v="-50">−50</button><span class="num" style="flex:1;text-align:center;font-size:26px;font-weight:700">' + g + '<i style="font-size:13px;font-style:normal;color:var(--t2)">g</i></span><button class="btn ghost sm" data-act="grams" data-v="50">+50</button></div>'
-        h += '<div style="text-align:center;font-size:13px;color:var(--t2);margin-top:10px">约 <b class="num" style="color:var(--t1)">' + kcal + '</b> kcal</div>'
+        h += '<div style="font-size:var(--fs-data);font-weight:700;margin-top:6px">' + esc(f.name) + '</div>'
+        h += '<div style="display:flex;align-items:center;gap:10px;margin-top:16px"><button class="btn ghost sm" data-act="grams" data-v="-50">−50</button><span class="num" style="flex:1;text-align:center;font-size:var(--fs-hero);font-weight:700">' + g + '<i style="font-size:var(--fs-label);font-style:normal;color:var(--t2)">g</i></span><button class="btn ghost sm" data-act="grams" data-v="50">+50</button></div>'
+        h += '<div style="text-align:center;font-size:var(--fs-label);color:var(--t2);margin-top:10px">约 <b class="num" style="color:var(--t1)">' + kcal + '</b> kcal</div>'
         h += '<button class="btn" style="margin-top:18px" data-act="saveFood">记下这餐</button>'
       } else {
         h += '<div style="display:flex;align-items:center;gap:9px;height:44px;margin-top:12px;padding:0 12px;background:var(--surface-2);border-radius:11px;border:.5px solid var(--hairline)">' + icn('i-search', 16) + '<input class="inp" id="foodSearch" style="flex:1;height:auto;border:0;background:transparent;padding:0" placeholder="搜索食物" oninput="App._foodQ2=this.value;App.refreshFoodList()"></div>'
@@ -2974,7 +2981,7 @@ var App = {
     var self = this
     var meal = this.state._calMeal || AppCfg.currentMeal()
     this._sheet = function (){
-      var h = '<div class="grab"></div><div style="padding:4px 16px 0"><div style="font-size:15px;font-weight:600">识别结果</div><div style="font-size:12.5px;color:var(--t2);margin-top:2px">点选最接近的一项</div><div id="recogList" style="margin-top:10px">'
+      var h = '<div class="grab"></div><div style="padding:4px 16px 0"><div style="font-size:var(--fs-body);font-weight:600">识别结果</div><div style="font-size:var(--fs-meta);color:var(--t2);margin-top:2px">点选最接近的一项</div><div id="recogList" style="margin-top:10px">'
       top.slice(0, 6).forEach(function (t){
         var f = FoodDB.byName(t.name) || FoodDB.ensure(t.name, null, '其他', 100)
         h += '<div class="row" data-act="chooseRecog" data-v="' + t.name + '"><span class="mid"><b>' + esc(t.name) + '</b><span>' + f.cat + ' · ' + FoodDB.calc(f, f.def) + ' kcal / ' + f.def + 'g</span></span><span class="val num" style="color:var(--accent)">' + (t.p || '') + '%</span><span class="chev"></span></div>'
@@ -3015,8 +3022,8 @@ var App = {
   exportData: function (){
     var self = this
     this._sheet = function (){
-      var h = '<div class="grab"></div><div style="padding:2px 20px 0"><div style="font-size:20px;font-weight:800;letter-spacing:-.4px">导出数据</div>'
-      h += '<p style="margin:8px 0 14px;font-size:12.5px;color:var(--t2);line-height:1.6">纯本机生成，不上传任何数据。</p>'
+      var h = '<div class="grab"></div><div style="padding:2px 20px 0"><div style="font-size:var(--fs-kpi);font-weight:800;letter-spacing:-.4px">导出数据</div>'
+      h += '<p style="margin:8px 0 14px;font-size:var(--fs-meta);color:var(--t2);line-height:1.6">纯本机生成，不上传任何数据。</p>'
       h += '<div class="rows" style="border-radius:14px;overflow:hidden">'
       h += '<div class="row" data-act="expCSV"><span class="ic acc">' + icn('i-share', 16) + '</span><span class="mid"><b>训练记录 CSV</b><span>逐组明细 · Excel 可直接打开</span></span><span class="chev"></span></div>'
       h += '<div class="sep"></div>'
