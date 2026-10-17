@@ -416,7 +416,7 @@ select.inp{appearance:none;-webkit-appearance:none}
 .sb svg{width:17px;height:11px;display:block}
 
 /* 主容器 */
-#app{position:relative;width:100%;height:100vh;display:flex;flex-direction:column}
+#app{position:relative;width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column}
 .page{position:absolute;inset:0;display:flex;flex-direction:column}
 /* 品牌标识：设计稿 F 图标（矢量内联，随字号缩放，不依赖外部图片） */
 .fn-mark{display:block;flex:none;filter:drop-shadow(0 6px 18px rgba(37,232,92,.24))}
@@ -430,10 +430,24 @@ select.inp{appearance:none;-webkit-appearance:none}
 .swipedel{position:absolute;top:0;right:0;width:78px;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:var(--fs-sub);font-weight:600;letter-spacing:.2px}
 
 /* 真机适配（覆盖原型固定画布） */
-body{width:100vw;height:100vh;max-width:100vw}
+body{width:100vw;height:100vh;height:100dvh;max-width:100vw}
 .scroll::after{display:none}
 .scroll{padding-bottom:130px}
 .page > .scroll{padding-bottom:130px}
+
+/* 减弱动效降级（plan-2 第 5 条 / apple-design §14）：
+   保留状态切换本身，仅去掉位移与弹簧，改为极短交叉淡入。 */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important}
+  .toast,.mask{transition:opacity .12s linear !important;transform:none !important}
+  .toast{transform:translateX(-50%) !important}
+  .toast.on{transform:translateX(-50%) !important}
+  .sheet{transition:opacity .12s linear !important;transform:none !important}
+  .sheet:not(.on){opacity:0;pointer-events:none}
+  .sheet.on{opacity:1}
+  .swiperow{transition:none !important}
+  .bodysvg .mu{transition:none !important}
+}
 
 </style>
 </head>
@@ -1604,6 +1618,12 @@ var LiquidGlass = (function () {
 
 var Glider = (function () {
   var el = null, ready = false, raf = null
+  /* 减弱动效：与 CSS @media (prefers-reduced-motion: reduce) 同源判定，
+     使弹簧滑块直接落位，不再 rAF 补间 */
+  var REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  try {
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', function (e){ REDUCED = e.matches })
+  } catch (e) {}
   var cur = 0, tgt = 0, v = 0, w = 0, tw = 0, wv = 0
   function measure(i){
     var box = document.getElementById('tabbar'); if (!box) return null
@@ -1639,13 +1659,13 @@ var Glider = (function () {
       ready = true; cur = tgt = t.l; w = tw = t.w; v = 0; wv = 0; apply(); return
     }
     tgt = t.l; tw = t.w
-    if (animate){
+    if (animate && !REDUCED){
       if (!raf) raf = requestAnimationFrame(step)
-    } else {                           /* 强制重落位（如 resize）：不播动画 */
+    } else {                           /* 强制重落位（如 resize）/ 减弱动效：不播动画 */
       cur = tgt = t.l; w = tw = t.w; v = 0; wv = 0; apply()
     }
   }
-  function bloom(){ wv += 9; if (!raf) raf = requestAnimationFrame(step) }
+  function bloom(){ if (REDUCED) return; wv += 9; if (!raf) raf = requestAnimationFrame(step) }
   return { sync: sync, bloom: bloom }
 })()
 </script>
